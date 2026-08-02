@@ -467,10 +467,11 @@
     <div class="card">
       <div class="mascot-wrap"><span class="mascot">🐼</span></div>
       <h2 style="text-align:center;">Ringgit Shop</h2>
-      <p class="tagline">Do you want to be the Buyer or the Seller?</p>
-      <div class="choice-grid" style="grid-template-columns:1fr 1fr;">
+      <p class="tagline">Do you want to be the Buyer, the Seller, or play with a friend?</p>
+      <div class="choice-grid" style="grid-template-columns:1fr 1fr 1fr;">
         <div class="choice-card" onclick="pickRinggitRole('buyer')"><span class="emoji">🛒</span>Buyer</div>
         <div class="choice-card" onclick="pickRinggitRole('seller')"><span class="emoji">🧾</span>Seller</div>
+        <div class="choice-card" onclick="pickRinggitRole('both')"><span class="emoji">👥</span>Two<br>Players</div>
       </div>
     </div>
   </section>
@@ -507,6 +508,7 @@
     <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
     <div class="card">
       <div class="mascot-wrap"><span class="mascot" id="mascot-ringgit-buyer">🐼</span></div>
+      <div class="mission-banner" id="ringgit-buyer-player-badge" style="display:none; background:#FFE9A8; color:#7a5b00; font-weight:800;"></div>
       <div class="mission-banner" id="ringgit-mission"></div>
       <div class="budget-banner" id="ringgit-budget-label"></div>
       <div class="money-row" id="ringgit-budget-money"></div>
@@ -521,11 +523,25 @@
     </div>
   </section>
 
+  <!-- RINGGIT: HAND-OFF (Two Players mode) -->
+  <section class="screen" id="screen-ringgit-handoff">
+    <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;">Great Shopping! 🛍️</h2>
+      <p class="tagline" id="ringgit-handoff-text">Pass the device to Player 2 — the Seller!</p>
+      <div class="btn-row">
+        <button class="btn green" onclick="proceedToSellerPhase()">🧾 I'm the Seller — Continue</button>
+      </div>
+    </div>
+  </section>
+
   <!-- RINGGIT: SELLER GAME -->
   <section class="screen" id="screen-ringgit-seller-game">
     <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
     <div class="card">
       <div class="mascot-wrap"><span class="mascot" id="mascot-ringgit-seller">🐼</span></div>
+      <div class="mission-banner" id="ringgit-seller-player-badge" style="display:none; background:#FFE9A8; color:#7a5b00; font-weight:800;"></div>
       <div class="mission-banner">Give the customer their correct change!</div>
       <div class="cart-summary" id="ringgit-receipt"></div>
       <div class="budget-banner" id="ringgit-paid-label"></div>
@@ -2363,7 +2379,8 @@ let state = {
   ringgitProducts:[], ringgitCart:[],
   ringgitSellerCart:[], ringgitSellerTotal:0, ringgitCustomerPaid:0, ringgitPaidBreakdown:[],
   ringgitChangeGiven:[], ringgitAttempts:0, ringgitResolved:false, ringgitPendingScore:0,
-  ringgitSellerQueue:[], ringgitSellerQueueDifficulty:null
+  ringgitSellerQueue:[], ringgitSellerQueueDifficulty:null,
+  ringgitBuyerScore:0, ringgitSellerScore:0
 };
 
 /* ---------------- NAV ---------------- */
@@ -2882,20 +2899,24 @@ function renderRinggitInstructions(){
   if(state.ringgitRole === "buyer"){
     title.textContent = "How to Shop";
     text.textContent = "You'll get a budget and a shopping mission. Tap products to add them to your cart. Watch your total and remaining money, then submit when you're ready. Try to spend wisely without going over budget!";
-  } else {
+  } else if(state.ringgitRole === "seller"){
     title.textContent = "How to Give Change";
     text.textContent = "A customer will buy some items and pay with notes and coins. Work out the correct change, then tap the coins and notes to give it back. Try to use the fewest coins and notes possible!";
+  } else {
+    title.textContent = "How to Play (Two Players)";
+    text.textContent = "Player 1 is the Buyer: pick items within your budget, adding up the prices in your head. Then pass the device to Player 2, the Seller, who must work out and give back the correct change from the Buyer's budget!";
   }
   document.getElementById("btn-start-ringgit").textContent = "⭐ Let's Play!";
 }
 
 function startRinggitRound(){
-  if(state.ringgitRole === "buyer"){
-    generateBuyerRound();
-    goTo("ringgit-buyer-game");
-  } else {
+  if(state.ringgitRole === "seller"){
     generateSellerRound();
     goTo("ringgit-seller-game");
+  } else {
+    // "buyer" and "both" both begin with the buyer's shopping phase
+    generateBuyerRound();
+    goTo("ringgit-buyer-game");
   }
 }
 
@@ -2938,6 +2959,14 @@ function generateBuyerRound(){
 }
 
 function renderBuyerGame(){
+  const badge = document.getElementById("ringgit-buyer-player-badge");
+  if(state.ringgitRole === "both"){
+    badge.textContent = "🛒 Player 1's Turn — You are the Buyer";
+    badge.style.display = "";
+  } else {
+    badge.style.display = "none";
+  }
+
   document.getElementById("ringgit-mission").textContent = "🎯 Mission: " + state.ringgitMission;
   document.getElementById("ringgit-budget-label").textContent = "Your Budget: " + formatRM(state.ringgitBudget);
 
@@ -3038,9 +3067,31 @@ function submitBuyerRound(){
 
 function resolveRinggitBuyer(score){
   state.ringgitResolved = true;
-  state.ringgitPendingScore = score;
   document.getElementById("btn-ringgit-submit").disabled = true;
-  document.getElementById("btn-ringgit-next").style.display = "";
+  const nextBtn = document.getElementById("btn-ringgit-next");
+  nextBtn.style.display = "";
+  if(state.ringgitRole === "both"){
+    state.ringgitBuyerScore = score;
+    nextBtn.textContent = "➡ Pass to Seller";
+    nextBtn.onclick = ()=> goTo("ringgit-handoff");
+  } else {
+    state.ringgitPendingScore = score;
+    nextBtn.textContent = "Next ▶";
+    nextBtn.onclick = goToRinggitResults;
+  }
+}
+
+function proceedToSellerPhase(){
+  const cartItems = state.ringgitCart.map(idx=>state.ringgitProducts[idx]);
+  state.ringgitSellerCart = cartItems;
+  state.ringgitSellerTotal = Math.round(cartItems.reduce((s,p)=>s+p.price,0)*100)/100;
+  state.ringgitCustomerPaid = state.ringgitBudget;
+  state.ringgitPaidBreakdown = breakdownMoney(state.ringgitCustomerPaid);
+  state.ringgitChangeGiven = [];
+  state.ringgitAttempts = 0;
+  state.ringgitResolved = false;
+  goTo("ringgit-seller-game");
+  renderSellerGame();
 }
 
 /* ---------------- RINGGIT SHOP: SELLER MODE ---------------- */
@@ -3112,6 +3163,14 @@ function generateSellerRound(){
 }
 
 function renderSellerGame(){
+  const badge = document.getElementById("ringgit-seller-player-badge");
+  if(state.ringgitRole === "both"){
+    badge.textContent = "🧾 Player 2's Turn — You are the Seller";
+    badge.style.display = "";
+  } else {
+    badge.style.display = "none";
+  }
+
   const receiptEl = document.getElementById("ringgit-receipt");
   let html = '<div class="receipt-list">';
   state.ringgitSellerCart.forEach(p=>{
@@ -3205,11 +3264,58 @@ function submitSellerChange(){
 
 function resolveRinggitSeller(score){
   state.ringgitResolved = true;
-  state.ringgitPendingScore = score;
   document.getElementById("btn-ringgit-submit-change").disabled = true;
   document.getElementById("btn-ringgit-undo").disabled = true;
   document.getElementById("btn-ringgit-clear").disabled = true;
-  document.getElementById("btn-ringgit-next-seller").style.display = "";
+  const nextBtn = document.getElementById("btn-ringgit-next-seller");
+  nextBtn.style.display = "";
+  if(state.ringgitRole === "both"){
+    state.ringgitSellerScore = score;
+    const combined = Math.round((state.ringgitBuyerScore + score) / 2);
+    state.ringgitPendingScore = combined;
+    nextBtn.textContent = "See Results ▶";
+    nextBtn.onclick = showTwoPlayerResults;
+  } else {
+    state.ringgitPendingScore = score;
+    nextBtn.textContent = "Next ▶";
+    nextBtn.onclick = goToRinggitResults;
+  }
+}
+
+function showTwoPlayerResults(){
+  const t = UI_TEXT["en"];
+  const score = state.ringgitPendingScore;
+  const ratio = score/100;
+  let gradeKey;
+  if(ratio>=0.9) gradeKey="A+";
+  else if(ratio>=0.75) gradeKey="A";
+  else if(ratio>=0.6) gradeKey="B";
+  else if(ratio>=0.4) gradeKey="C";
+  else if(ratio>0) gradeKey="D";
+  else gradeKey="F";
+  const g = t.grades[gradeKey];
+  document.getElementById("grade-emoji").textContent = g.emoji;
+  document.getElementById("grade-label").textContent = g.label;
+  document.getElementById("grade-msg").textContent = g.msg;
+  document.getElementById("stat-score").textContent = score + "/100";
+  document.getElementById("stat-correct").textContent = state.ringgitBuyerScore + "/100";
+  document.getElementById("stat-wrong").textContent = state.ringgitSellerScore + "/100";
+  document.getElementById("stat-correct-label").textContent = "BUYER SCORE";
+  document.getElementById("stat-wrong-label").textContent = "SELLER SCORE";
+  const starsEarned = Math.round(ratio*10);
+  document.getElementById("stars-row").textContent = "⭐".repeat(starsEarned) + "☆".repeat(Math.max(0,10-starsEarned));
+
+  const btn1 = document.getElementById("btn-result-1");
+  const btn2 = document.getElementById("btn-result-2");
+  const btn3 = document.getElementById("btn-result-3");
+  btn1.textContent = "🔁 Play Again";
+  btn1.onclick = startRinggitRound;
+  btn2.textContent = "🌐 Change Level";
+  btn2.onclick = ()=>goTo("ringgit-difficulty");
+  btn3.onclick = ()=>goTo("welcome");
+
+  goTo("results");
+  if(ratio>=0.6) launchConfetti(40);
 }
 
 /* ---------------- RINGGIT SHOP: RESULTS ---------------- */
