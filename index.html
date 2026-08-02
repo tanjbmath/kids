@@ -542,6 +542,9 @@
     <div class="card">
       <div class="mascot-wrap"><span class="mascot" id="mascot-ringgit-seller">🐼</span></div>
       <div class="mission-banner" id="ringgit-seller-player-badge" style="display:none; background:#FFE9A8; color:#7a5b00; font-weight:800;"></div>
+      <div style="text-align:center;" id="ringgit-seller-timer-wrap">
+        <span class="pill stars-earned" id="ringgit-seller-timer" style="display:none;">⏱ 0s</span>
+      </div>
       <div class="mission-banner">Give the customer their correct change!</div>
       <div class="cart-summary" id="ringgit-receipt"></div>
       <div class="budget-banner" id="ringgit-paid-label"></div>
@@ -2380,7 +2383,8 @@ let state = {
   ringgitSellerCart:[], ringgitSellerTotal:0, ringgitCustomerPaid:0, ringgitPaidBreakdown:[],
   ringgitChangeGiven:[], ringgitAttempts:0, ringgitResolved:false, ringgitPendingScore:0,
   ringgitSellerQueue:[], ringgitSellerQueueDifficulty:null,
-  ringgitBuyerScore:0, ringgitSellerScore:0
+  ringgitBuyerScore:0, ringgitSellerScore:0,
+  ringgitSellerStartTime:0, ringgitSellerTimerInterval:null
 };
 
 /* ---------------- NAV ---------------- */
@@ -2904,7 +2908,7 @@ function renderRinggitInstructions(){
     text.textContent = "A customer will buy some items and pay with notes and coins. Work out the correct change, then tap the coins and notes to give it back. Try to use the fewest coins and notes possible!";
   } else {
     title.textContent = "How to Play (Two Players)";
-    text.textContent = "Player 1 is the Buyer: pick items within your budget, adding up the prices in your head. Then pass the device to Player 2, the Seller, who must work out and give back the correct change from the Buyer's budget!";
+    text.textContent = "Player 1 is the Buyer: pick items within your budget, adding up the prices in your head. Then pass the device to Player 2, the Seller, who must work out and give back the correct change from the Buyer's budget — and a timer will be running, so give the change quickly and correctly, just like a real cashier!";
   }
   document.getElementById("btn-start-ringgit").textContent = "⭐ Let's Play!";
 }
@@ -2921,7 +2925,7 @@ function startRinggitRound(){
 }
 
 function quitRinggitGame(){
-  openQuitModal("en", ()=>{ goTo("welcome"); });
+  openQuitModal("en", ()=>{ stopSellerTimer(); goTo("welcome"); });
 }
 
 /* ---------------- RINGGIT SHOP: BUYER MODE ---------------- */
@@ -3092,6 +3096,34 @@ function proceedToSellerPhase(){
   state.ringgitResolved = false;
   goTo("ringgit-seller-game");
   renderSellerGame();
+  startSellerTimer();
+}
+
+function startSellerTimer(){
+  stopSellerTimer();
+  const timerEl = document.getElementById("ringgit-seller-timer");
+  if(state.ringgitRole !== "both"){
+    timerEl.style.display = "none";
+    return;
+  }
+  state.ringgitSellerStartTime = Date.now();
+  timerEl.style.display = "";
+  timerEl.textContent = "⏱ 0s";
+  state.ringgitSellerTimerInterval = setInterval(()=>{
+    const secs = Math.floor((Date.now() - state.ringgitSellerStartTime) / 1000);
+    timerEl.textContent = "⏱ " + secs + "s";
+  }, 1000);
+}
+
+function stopSellerTimer(){
+  if(state.ringgitSellerTimerInterval){
+    clearInterval(state.ringgitSellerTimerInterval);
+    state.ringgitSellerTimerInterval = null;
+  }
+}
+
+function getSellerElapsedSeconds(){
+  return (Date.now() - state.ringgitSellerStartTime) / 1000;
 }
 
 /* ---------------- RINGGIT SHOP: SELLER MODE ---------------- */
@@ -3252,11 +3284,28 @@ function submitSellerChange(){
 
   const minimalBreakdown = breakdownMoney(correctChangeCents/100);
   const isMinimal = state.ringgitChangeGiven.length === minimalBreakdown.length;
-  const score = 20 + 50 + (isMinimal ? 30 : 0);
+
+  let score, msg;
+  if(state.ringgitRole === "both"){
+    const elapsed = getSellerElapsedSeconds();
+    let speedScore, speedLabel;
+    if(elapsed <= 10){ speedScore = 20; speedLabel = "Lightning fast! ⚡"; }
+    else if(elapsed <= 20){ speedScore = 15; speedLabel = "Quick work!"; }
+    else if(elapsed <= 30){ speedScore = 10; speedLabel = "Good pace."; }
+    else if(elapsed <= 45){ speedScore = 5; speedLabel = "A little slow — try to be quicker next time."; }
+    else { speedScore = 0; speedLabel = "Real cashiers need to be faster than that!"; }
+    score = 20 + 40 + (isMinimal ? 20 : 0) + speedScore;
+    const elapsedRounded = Math.max(1, Math.round(elapsed));
+    msg = (isMinimal ? "✅ Perfect change! " : "✅ Correct change! ") + "You took " + elapsedRounded + "s. " + speedLabel + " +" + score + " marks";
+  } else {
+    score = 20 + 50 + (isMinimal ? 30 : 0);
+    msg = isMinimal
+      ? "✅ Perfect change! You used the fewest coins and notes! +"+score+" marks"
+      : "✅ Correct change! (Tip: try using fewer coins/notes next time) +"+score+" marks";
+  }
+
   feedback.className = "feedback-line ok";
-  feedback.textContent = isMinimal
-    ? "✅ Perfect change! You used the fewest coins and notes! +"+score+" marks"
-    : "✅ Correct change! (Tip: try using fewer coins/notes next time) +"+score+" marks";
+  feedback.textContent = msg;
   document.getElementById("mascot-ringgit-seller").classList.add("happy");
   launchConfetti();
   resolveRinggitSeller(score);
@@ -3264,6 +3313,7 @@ function submitSellerChange(){
 
 function resolveRinggitSeller(score){
   state.ringgitResolved = true;
+  stopSellerTimer();
   document.getElementById("btn-ringgit-submit-change").disabled = true;
   document.getElementById("btn-ringgit-undo").disabled = true;
   document.getElementById("btn-ringgit-clear").disabled = true;
