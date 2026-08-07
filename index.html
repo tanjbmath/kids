@@ -222,6 +222,49 @@
   .receipt-list{ text-align:left; font-size:14px; font-weight:700; color:var(--plum); }
   .receipt-list .rline{ display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px dashed #E4E1F5; }
 
+  /* Science Detective */
+  .science-scenario{
+    background:#FAFBFF; border:3px dashed #C7CEFF; border-radius:16px;
+    padding:14px 16px; margin:10px 0 6px; font-weight:700; color:var(--plum); font-size:15px; text-align:left;
+  }
+  .science-question{
+    text-align:center; font-weight:800; color:var(--plum); font-size:16.5px; margin:6px 0 12px;
+  }
+  .science-choices{ display:flex; flex-direction:column; gap:10px; margin:10px 0; }
+  .science-choice{
+    font-family:'Baloo 2',cursive; font-weight:700; font-size:15px; text-align:left;
+    background:#fff; border:2.5px solid #E4E1F5; border-radius:14px; padding:12px 16px;
+    cursor:pointer; box-shadow:0 3px 0 #E4E1F5; color:var(--plum);
+  }
+  .science-choice:disabled{ cursor:default; opacity:0.6; }
+  .science-choice.correct{ background:#EAFCF2; border-color:var(--leaf); box-shadow:0 3px 0 var(--leaf); opacity:1; }
+  .science-choice.wrong{ background:#FFEEEC; border-color:var(--coral); box-shadow:0 3px 0 var(--coral); opacity:1; animation:shake .4s ease; }
+  .science-explain{
+    text-align:left; font-size:13px; font-weight:700; color:#5b5487;
+    background:#F5F7FF; border-radius:12px; padding:10px 14px; margin-top:8px;
+  }
+
+  /* Science Detective: interactive mini-games */
+  @keyframes magnetPull{0%{transform:translateY(0) scale(1);}40%{transform:translateY(-16px) scale(1.2) rotate(-6deg);}70%{transform:translateY(-6px) scale(1.1) rotate(4deg);}100%{transform:translateY(0) scale(1);}}
+  @keyframes noEffect{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+  .magnet-tile.pulled{ animation: magnetPull 0.6s ease; border-color:var(--leaf); background:#EAFCF2; box-shadow:0 3px 0 var(--leaf); }
+  .magnet-tile.no-effect{ animation: noEffect 0.4s ease; opacity:0.55; }
+  .needs-tile.used-correct{ opacity:0.3; pointer-events:none; border-color:var(--leaf); }
+  .needs-tile.used-wrong{ opacity:0.3; pointer-events:none; border-color:var(--coral); }
+  #science-needs-character{ transition: transform 0.4s ease; }
+  #science-needs-character.grow-happy{ transform:scale(1.15); }
+  #science-needs-character.grow-sad{ transform:scale(0.9) rotate(-4deg); }
+  .sort-bins-row{ display:flex; gap:12px; justify-content:center; margin:12px 0; }
+  .sort-bin{
+    flex:1; max-width:160px; text-align:center; font-family:'Baloo 2',cursive; font-weight:800;
+    padding:10px 8px; border-radius:14px; border:2.5px dashed #C7CEFF; background:#FAFBFF; color:var(--plum);
+  }
+  .sort-bin .emoji{ font-size:28px; display:block; }
+  .product-card.bin-a{ border-color:#4F9DDE; background:#EAF4FF; box-shadow:0 3px 0 #4F9DDE; }
+  .product-card.bin-b{ border-color:#E8A33D; background:#FFF6E5; box-shadow:0 3px 0 #E8A33D; }
+  .product-card.sort-correct{ border-color:var(--leaf); background:#EAFCF2; box-shadow:0 3px 0 var(--leaf); }
+  .product-card.sort-wrong{ border-color:var(--coral); background:#FFEEEC; box-shadow:0 3px 0 var(--coral); animation:shake .4s ease; }
+
   /* Confetti */
   .confetti{position:fixed; top:-10px; width:10px; height:14px; border-radius:2px; z-index:50; pointer-events:none;}
 
@@ -258,7 +301,7 @@
     <div class="card big-center">
       <div class="mascot-wrap"><span class="mascot" id="mascot-welcome">🐼</span></div>
       <h1 class="title">Words Game<br><span class="accent">Adventure</span></h1>
-      <p class="tagline">Pip the Panda has four games for you today!</p>
+      <p class="tagline">Pip the Panda has five games for you today!</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr; margin-top:20px;">
         <div class="choice-card" onclick="goTo('language')">
           <span class="emoji">📝</span>Words<br>Game
@@ -271,6 +314,9 @@
         </div>
         <div class="choice-card" onclick="goTo('ringgit-role')">
           <span class="emoji">💰</span>Ringgit<br>Shop
+        </div>
+        <div class="choice-card" style="grid-column:1 / -1;" onclick="goTo('science-language')">
+          <span class="emoji">🔬</span>Science Detective
         </div>
       </div>
     </div>
@@ -558,6 +604,129 @@
         <button class="btn secondary" id="btn-ringgit-clear" onclick="clearChangeTiles()">Clear ✕</button>
         <button class="btn sun" id="btn-ringgit-submit-change" onclick="submitSellerChange()">Submit ✓</button>
         <button class="btn green" id="btn-ringgit-next-seller" onclick="goToRinggitResults()" style="display:none;">Next ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCIENCE: LANGUAGE SELECT -->
+  <section class="screen" id="screen-science-language">
+    <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;">Choose your language</h2>
+      <p class="tagline">Pick the language you want to play in.</p>
+      <div class="choice-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="choice-card" onclick="pickScienceLang('en')"><span class="emoji">🇬🇧</span>English</div>
+        <div class="choice-card" onclick="pickScienceLang('zh')"><span class="emoji">🇨🇳</span>简体中文</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCIENCE: YEAR SELECT -->
+  <section class="screen" id="screen-science-year">
+    <button class="icon-btn home-btn" onclick="goTo('science-language')" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;" id="science-year-heading">Choose your year</h2>
+      <div class="choice-grid" id="science-year-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    </div>
+  </section>
+
+  <!-- SCIENCE: INSTRUCTIONS -->
+  <section class="screen" id="screen-science-instructions">
+    <button class="icon-btn home-btn" onclick="goTo('science-year')" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;" id="science-instr-title">How to play</h2>
+      <p class="tagline" id="science-instr-text"></p>
+      <div class="btn-row">
+        <button class="btn green" id="btn-start-science" onclick="startScienceGame()">⭐ Let's Play!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCIENCE: GAMEPLAY -->
+  <section class="screen" id="screen-science-game">
+    <button class="icon-btn home-btn" onclick="quitScienceGame()" aria-label="Stop and exit">🏠</button>
+    <div class="card">
+      <div class="top-bar">
+        <span class="pill" id="science-counter">Q 1/10</span>
+        <div class="progress-track"><div class="progress-fill" id="science-progress-fill" style="width:0%"></div></div>
+        <span class="pill stars-earned" id="science-score-pill">🏅 0/100</span>
+      </div>
+      <div class="mascot-wrap"><span class="mascot" id="mascot-science">🐼</span></div>
+      <div class="speech" id="science-topic">Topic</div>
+      <div style="text-align:center; font-size:56px; line-height:1.1; margin:4px 0;" id="science-topic-icon">🔬</div>
+      <div class="science-scenario" id="science-scenario"></div>
+      <div class="science-question" id="science-question"></div>
+      <div class="science-choices" id="science-choices"></div>
+
+      <div id="science-magnet-wrap" style="display:none;">
+        <div class="hint-line" id="science-magnet-hint">Tap the objects you think a magnet will attract, then test!</div>
+        <div class="product-grid" id="science-magnet-objects"></div>
+        <div class="btn-row">
+          <button class="btn sun" id="btn-magnet-test" onclick="testMagnet()">🧲 Test with Magnet!</button>
+        </div>
+      </div>
+
+      <div id="science-needs-wrap" style="display:none;">
+        <div style="text-align:center; font-size:64px; transition:transform 0.4s ease;" id="science-needs-character">🌱</div>
+        <div class="hint-line" id="science-needs-hint">Tap the things it needs to survive!</div>
+        <div class="product-grid" id="science-needs-items"></div>
+        <div class="btn-row">
+          <button class="btn green" id="btn-needs-done" onclick="finishNeedsGame()">Done ✓</button>
+        </div>
+      </div>
+
+      <div id="science-select-wrap" style="display:none;">
+        <div class="science-choices" id="science-select-choices"></div>
+      </div>
+
+      <div id="science-sort-wrap" style="display:none;">
+        <div class="hint-line" id="science-sort-hint">Tap each item to sort it — tap again to switch bins!</div>
+        <div class="product-grid" id="science-sort-items"></div>
+        <div class="sort-bins-row" id="science-sort-bins"></div>
+        <div class="btn-row">
+          <button class="btn sun" id="btn-sort-submit" onclick="submitSortGame()">Submit ✓</button>
+        </div>
+      </div>
+
+      <div id="science-sequence-wrap" style="display:none;">
+        <div class="hint-line" id="science-sequence-hint">Tap the stages in the correct order!</div>
+        <div class="sentence-target" id="science-sequence-target"></div>
+        <div class="word-bank" id="science-sequence-bank"></div>
+        <div class="btn-row">
+          <button class="btn sun" id="btn-sequence-submit" onclick="submitSequenceGame()">Submit ✓</button>
+          <button class="btn secondary" id="btn-sequence-clear" onclick="clearSequenceGame()">Clear ↺</button>
+        </div>
+      </div>
+
+      <div id="science-select-wrap" style="display:none;">
+        <div class="science-choices" id="science-select-options"></div>
+      </div>
+
+      <div id="science-sort-wrap" style="display:none;">
+        <div class="sort-bins-row" id="science-sort-bins"></div>
+        <div class="hint-line">Tap an item to place it, tap again to switch bins!</div>
+        <div class="product-grid" id="science-sort-items"></div>
+        <div class="btn-row">
+          <button class="btn sun" id="btn-sort-submit" onclick="submitSortGame()">Submit ✓</button>
+        </div>
+      </div>
+
+      <div id="science-sequence-wrap" style="display:none;">
+        <div class="sentence-target" id="science-sequence-target"></div>
+        <div class="hint-line">Tap the stages in the correct order!</div>
+        <div class="word-bank" id="science-sequence-bank"></div>
+        <div class="btn-row">
+          <button class="btn sun" id="btn-sequence-submit" onclick="submitSequenceGame()">Submit ✓</button>
+          <button class="btn secondary" id="btn-sequence-clear" onclick="clearSequenceGame()">Clear ↺</button>
+        </div>
+      </div>
+
+      <div class="feedback-line" id="science-feedback-line"></div>
+      <div class="btn-row">
+        <button class="btn green" id="btn-science-next" onclick="nextScienceQuestion()" style="display:none;">Next ▶</button>
       </div>
     </div>
   </section>
@@ -1326,7 +1495,57 @@ const WORD_BANK = [
   {topic:"Household Items", en:"chair", ms:"kerusi", zh:"椅子"},
   {topic:"Household Items", en:"bed", ms:"katil", zh:"床"},
   {topic:"Household Items", en:"mirror", ms:"cermin", zh:"镜子"},
-  {topic:"Household Items", en:"clock", ms:"jam", zh:"时钟"}
+  {topic:"Household Items", en:"clock", ms:"jam", zh:"时钟"},
+  {topic:"Farm Animals", en:"sheep", ms:"biri-biri", zh:"绵羊"},
+  {topic:"Farm Animals", en:"pig", ms:"babi", zh:"猪"},
+  {topic:"Farm Animals", en:"rooster", ms:"ayam jantan", zh:"公鸡"},
+  {topic:"Farm Animals", en:"donkey", ms:"keldai", zh:"驴"},
+  {topic:"Farm Animals", en:"turkey", ms:"ayam belanda", zh:"火鸡"},
+  {topic:"Birds", en:"eagle", ms:"helang", zh:"老鹰"},
+  {topic:"Birds", en:"owl", ms:"burung hantu", zh:"猫头鹰"},
+  {topic:"Birds", en:"parrot", ms:"burung kakak tua", zh:"鹦鹉"},
+  {topic:"Birds", en:"peacock", ms:"burung merak", zh:"孔雀"},
+  {topic:"Birds", en:"sparrow", ms:"burung pipit", zh:"麻雀"},
+  {topic:"Space", en:"astronaut", ms:"angkasawan", zh:"宇航员"},
+  {topic:"Space", en:"rocket", ms:"roket", zh:"火箭"},
+  {topic:"Space", en:"planet", ms:"planet", zh:"行星"},
+  {topic:"Space", en:"alien", ms:"makhluk asing", zh:"外星人"},
+  {topic:"Space", en:"spaceship", ms:"kapal angkasa", zh:"宇宙飞船"},
+  {topic:"School Subjects", en:"mathematics", ms:"matematik", zh:"数学"},
+  {topic:"School Subjects", en:"science", ms:"sains", zh:"科学"},
+  {topic:"School Subjects", en:"art", ms:"seni", zh:"美术"},
+  {topic:"School Subjects", en:"music", ms:"muzik", zh:"音乐"},
+  {topic:"School Subjects", en:"history", ms:"sejarah", zh:"历史"},
+  {topic:"Weather", en:"lightning", ms:"kilat", zh:"闪电"},
+  {topic:"Weather", en:"storm", ms:"ribut", zh:"暴风雨"},
+  {topic:"Weather", en:"rainbow", ms:"pelangi", zh:"彩虹"},
+  {topic:"Weather", en:"snow", ms:"salji", zh:"雪"},
+  {topic:"Weather", en:"fog", ms:"kabus", zh:"雾"},
+  {topic:"Drinks", en:"lemonade", ms:"air limau", zh:"柠檬水"},
+  {topic:"Drinks", en:"smoothie", ms:"smoothie", zh:"思慕雪"},
+  {topic:"Drinks", en:"hot chocolate", ms:"coklat panas", zh:"热巧克力"},
+  {topic:"Drinks", en:"soda", ms:"air soda", zh:"汽水"},
+  {topic:"Drinks", en:"coconut water", ms:"air kelapa", zh:"椰子水"},
+  {topic:"Camping", en:"tent", ms:"khemah", zh:"帐篷"},
+  {topic:"Camping", en:"campfire", ms:"unggun api", zh:"营火"},
+  {topic:"Camping", en:"backpack", ms:"beg sandang", zh:"背包"},
+  {topic:"Camping", en:"flashlight", ms:"lampu suluh", zh:"手电筒"},
+  {topic:"Camping", en:"sleeping bag", ms:"beg tidur", zh:"睡袋"},
+  {topic:"Bakery", en:"biscuit", ms:"biskut", zh:"饼干"},
+  {topic:"Bakery", en:"muffin", ms:"mufin", zh:"玛芬蛋糕"},
+  {topic:"Bakery", en:"pastry", ms:"pastri", zh:"糕点"},
+  {topic:"Bakery", en:"dough", ms:"doh", zh:"面团"},
+  {topic:"Bakery", en:"oven", ms:"ketuhar", zh:"烤箱"},
+  {topic:"Family", en:"grandmother", ms:"nenek", zh:"奶奶"},
+  {topic:"Family", en:"grandfather", ms:"datuk", zh:"爷爷"},
+  {topic:"Family", en:"cousin", ms:"sepupu", zh:"表兄弟姐妹"},
+  {topic:"Family", en:"aunt", ms:"makcik", zh:"阿姨"},
+  {topic:"Family", en:"uncle", ms:"pakcik", zh:"叔叔"},
+  {topic:"Feelings", en:"jealous", ms:"cemburu", zh:"嫉妒"},
+  {topic:"Feelings", en:"proud", ms:"bangga", zh:"骄傲"},
+  {topic:"Feelings", en:"worried", ms:"risau", zh:"担心"},
+  {topic:"Feelings", en:"confused", ms:"keliru", zh:"困惑"},
+  {topic:"Feelings", en:"calm", ms:"tenang", zh:"平静"}
 ];
 
 /* ---------------- STORY BLANKS DATA ----------------
@@ -1824,33 +2043,33 @@ const STORY_BANK = {
       id:"BM011", title:"Berjalan Sihat bersama Ayah", standard:1, difficulty:2,
       theme:"Kesihatan", grammar_focus:"Kata Bilangan",
       learning_objective:"Mengenal pasti kata bilangan dalam ayat mudah.",
-      story:"Setiap petang, Farid berjalan kaki bersama ayahnya sebanyak ____1____ pusingan di taman. Mereka berhenti selama ____2____ minit untuk minum air. Farid membawa ____3____ botol air untuk mereka berdua. Selepas berjalan, mereka makan ____4____ biji epal sebagai snek sihat. Farid berasa gembira kerana dapat berjalan bersama ayahnya sebanyak ____5____ kali seminggu.",
-      word_bank:["dua", "sepuluh", "lima", "enam", "satu", "lapan", "empat", "tiga"],
-      answers:{"1": "dua", "2": "lima", "3": "satu", "4": "empat", "5": "tiga"},
+      story:"Farid suka berjalan kaki bersama ayahnya setiap minggu. Dalam seminggu ada ____1____ hari, tetapi Farid hanya berjalan pada hari Isnin, Rabu, dan Jumaat sahaja, iaitu sebanyak ____2____ hari. Semasa berjalan, Farid menggunakan ____3____ kaki untuk melangkah ke hadapan. Dia juga menggenggam tangan ayahnya dengan salah satu daripada ____4____ tangannya. Selepas penat berjalan, Farid mengira jarinya yang berjumlah ____5____ jari pada satu tangan sambil berehat.",
+      word_bank:["tujuh", "enam", "tiga", "dua", "dua", "lapan", "sepuluh", "lima"],
+      answers:{"1": "tujuh", "2": "tiga", "3": "dua", "4": "dua", "5": "lima"},
       explanations:{
-        "1":"Dua ialah kata bilangan yang menunjukkan jumlah pusingan.",
-        "2":"Lima ialah kata bilangan yang menunjukkan jumlah minit.",
-        "3":"Satu ialah kata bilangan yang menunjukkan jumlah botol.",
-        "4":"Empat ialah kata bilangan yang menunjukkan jumlah epal.",
-        "5":"Tiga ialah kata bilangan yang menunjukkan kekerapan seminggu."
+        "1":"Tujuh ialah bilangan hari dalam seminggu.",
+        "2":"Tiga ialah bilangan hari yang disebut: Isnin, Rabu, dan Jumaat.",
+        "3":"Dua ialah bilangan kaki yang digunakan untuk berjalan.",
+        "4":"Dua ialah bilangan tangan yang dimiliki oleh Farid.",
+        "5":"Lima ialah bilangan jari pada sebelah tangan."
       },
-      hint:"Cari kata yang menunjukkan bilangan atau jumlah sesuatu."
+      hint:"Fikirkan bilangan yang biasa kita ketahui, seperti hari dalam seminggu atau jari pada tangan, atau kira apa yang disebut dalam ayat."
     },
     {
       id:"BM012", title:"Menjaga Kebersihan Kelas Kami", standard:2, difficulty:3,
       theme:"Kebersihan", grammar_focus:"Kata Bilangan",
       learning_objective:"Menggunakan kata bilangan dengan tepat dalam ayat.",
-      story:"Setiap hari Jumaat, murid Kelas 2 Bestari membersihkan kelas bersama-sama. Mereka membersihkan ____1____ tingkap yang berdebu. Ali menyapu lantai sebanyak ____2____ kali sehingga bersih. Mei mengelap ____3____ meja guru dengan kain lap. Farah membuang ____4____ beg sampah ke tempat pelupusan. Selepas itu, semua murid mencuci tangan selama ____5____ minit dengan sabun.",
-      word_bank:["empat", "enam", "dua", "tujuh", "satu", "lapan", "tiga", "lima"],
-      answers:{"1": "empat", "2": "dua", "3": "satu", "4": "tiga", "5": "lima"},
+      story:"Setiap hari Jumaat, murid Kelas 2 Bestari membersihkan kelas bersama-sama. Ali membersihkan dua buah tingkap di sebelah kiri dan dua buah lagi di sebelah kanan, menjadikan jumlahnya ____1____ buah tingkap. Dia menggunakan ____2____ tangan untuk memegang penyapu dengan kemas. Mei mengelap meja guru, meja ketua kelas, dan meja disiplin, iaitu sebanyak ____3____ buah meja kesemuanya. Farah membuang sampah menggunakan ____4____ beg sahaja kerana kelas mereka sudah bersih. Selepas itu, semua murid mencuci tangan sambil mengira jari mereka yang berjumlah ____5____ jari pada kedua-dua belah tangan.",
+      word_bank:["empat", "enam", "dua", "tiga", "lapan", "satu", "tujuh", "sepuluh"],
+      answers:{"1": "empat", "2": "dua", "3": "tiga", "4": "satu", "5": "sepuluh"},
       explanations:{
-        "1":"Empat menunjukkan jumlah tingkap yang dibersihkan.",
-        "2":"Dua menunjukkan kekerapan Ali menyapu lantai.",
-        "3":"Satu menunjukkan jumlah meja yang dilap.",
-        "4":"Tiga menunjukkan jumlah beg sampah yang dibuang.",
-        "5":"Lima menunjukkan tempoh masa mencuci tangan."
+        "1":"Dua buah tingkap di kiri dan dua buah di kanan menjadikan jumlahnya empat.",
+        "2":"Dua ialah bilangan tangan yang digunakan untuk memegang penyapu.",
+        "3":"Tiga ialah bilangan meja yang disebut: meja guru, meja ketua kelas, dan meja disiplin.",
+        "4":"Satu sahaja kerana kelas mereka sudah bersih.",
+        "5":"Sepuluh ialah jumlah jari pada kedua-dua belah tangan."
       },
-      hint:"Cari kata yang menunjukkan bilangan atau jumlah sesuatu."
+      hint:"Kira dengan teliti bilangan yang disebut atau dijumlahkan dalam cerita."
     },
     {
       id:"BM013", title:"Keseronokan di Karnival Sekolah", standard:1, difficulty:2,
@@ -2305,6 +2524,26 @@ const STORY_BANK = {
   ]
 };
 
+/* ---------------- SCIENCE DETECTIVE DATA ---------------- */
+const SCIENCE_BANK = {
+  en: {
+    1:[{"topic":"Living & Non-living","type":"sort","scenario":"Ali is sorting things in the garden into living and non-living things.","question":"Sort these into Living and Non-living!","bins":[{"name":"Living","emoji":"🌱"},{"name":"Non-living","emoji":"🪨"}],"items":[{"name":"Cat","emoji":"🐱","binIndex":0},{"name":"Rock","emoji":"🪨","binIndex":1},{"name":"Dog","emoji":"🐶","binIndex":0},{"name":"Table","emoji":"🪑","binIndex":1}],"explanation":"Living things like cats and dogs can grow, move, and need food. Rocks and tables cannot.","icon":"🐱"},{"topic":"Living & Non-living","type":"sort","scenario":"Mei Ling is sorting things in the park into living and non-living things.","question":"Sort these into Living and Non-living!","bins":[{"name":"Living","emoji":"🌱"},{"name":"Non-living","emoji":"🪨"}],"items":[{"name":"Snail","emoji":"🐌","binIndex":0},{"name":"Toy Car","emoji":"🚗","binIndex":1},{"name":"Bird","emoji":"🐦","binIndex":0},{"name":"Ball","emoji":"⚽","binIndex":1}],"explanation":"Living things like snails and birds can move on their own and need food. Toys and balls cannot.","icon":"🐌"},{"topic":"Living & Non-living","type":"sort","scenario":"Farah is sorting things in the garden into living and non-living things.","question":"Sort these into Living and Non-living!","bins":[{"name":"Living","emoji":"🌱"},{"name":"Non-living","emoji":"🪨"}],"items":[{"name":"Tree","emoji":"🌳","binIndex":0},{"name":"Chair","emoji":"🪑","binIndex":1},{"name":"Flower","emoji":"🌸","binIndex":0},{"name":"Book","emoji":"📖","binIndex":1}],"explanation":"Living things like trees and flowers need water, air, and sunlight. Chairs and books do not.","icon":"🌳"},{"topic":"Living & Non-living","type":"sort","scenario":"Kumar is sorting things near the pond into living and non-living things.","question":"Sort these into Living and Non-living!","bins":[{"name":"Living","emoji":"🌱"},{"name":"Non-living","emoji":"🪨"}],"items":[{"name":"Fish","emoji":"🐟","binIndex":0},{"name":"Stone","emoji":"🪨","binIndex":1},{"name":"Frog","emoji":"🐸","binIndex":0},{"name":"Cup","emoji":"🥤","binIndex":1}],"explanation":"Living things like fish and frogs grow and move by themselves. Stones and cups cannot.","icon":"🐟"},{"topic":"Living & Non-living","type":"sort","scenario":"Wei Jie is sorting things in the park into living and non-living things.","question":"Sort these into Living and Non-living!","bins":[{"name":"Living","emoji":"🌱"},{"name":"Non-living","emoji":"🪨"}],"items":[{"name":"Butterfly","emoji":"🦋","binIndex":0},{"name":"Kite","emoji":"🪁","binIndex":1},{"name":"Ant","emoji":"🐜","binIndex":0},{"name":"Pencil","emoji":"✏️","binIndex":1}],"explanation":"Living things like butterflies and ants need food for energy. Kites and pencils do not.","icon":"🦋"},{"topic":"Plants","type":"select","scenario":"Aisyah is looking at a small plant in a pot.","question":"Which part of the plant is under the soil?","choices":[{"label":"The leaf","emoji":"🍃"},{"label":"The root","emoji":"🥕"},{"label":"The flower","emoji":"🌸"}],"correct":1,"explanation":"The root grows under the soil and holds the plant in place.","icon":"🥕"},{"topic":"Plants","type":"select","scenario":"Danish sees green parts on a plant that make food using sunlight.","question":"What is this part of the plant called?","choices":[{"label":"The stem","emoji":"🌿"},{"label":"The leaf","emoji":"🍃"},{"label":"The root","emoji":"🥕"}],"correct":1,"explanation":"Leaves use sunlight to make food for the plant.","icon":"🍃"},{"topic":"Plants","type":"needs","scenario":"Priya has a small plant that needs the right things to grow well and stay healthy.","question":"Tap the things this plant needs to survive!","character":{"name":"Plant","emoji":"🌱"},"needs":[{"name":"Water","emoji":"💧"},{"name":"Sunlight","emoji":"☀️"},{"name":"Air","emoji":"🌬️"}],"distractors":[{"name":"Toy Car","emoji":"🚗"},{"name":"Storybook","emoji":"📖"},{"name":"Mobile Phone","emoji":"📱"}],"explanation":"Plants need water, sunlight, and air to grow well and stay healthy. Toys, books, and phones do not help a plant grow.","icon":"🌱"},{"topic":"Plants","type":"select","scenario":"Hafiz sees a tall part holding up the leaves and flowers of a plant.","question":"What is this part called?","choices":[{"label":"The stem","emoji":"🌿"},{"label":"The root","emoji":"🥕"},{"label":"The seed","emoji":"🌰"}],"correct":0,"explanation":"The stem supports the plant and carries water to the leaves.","icon":"🌿"},{"topic":"Plants","type":"select","scenario":"Amirah plants a small seed in the ground.","question":"What will the seed grow into?","choices":[{"label":"A rock","emoji":"🪨"},{"label":"A new plant","emoji":"🌱"},{"label":"A toy","emoji":"🧸"}],"correct":1,"explanation":"A seed grows into a new plant when given water, air, and sunlight.","icon":"🌱"},{"topic":"Animals","type":"select","scenario":"Zheng Wei sees a bird flying and a fish swimming.","question":"How do fish move around?","choices":[{"label":"They fly","emoji":"🕊️"},{"label":"They swim","emoji":"🏊"},{"label":"They crawl","emoji":"🐛"}],"correct":1,"explanation":"Fish use their fins and tails to swim in water.","icon":"🐟"},{"topic":"Animals","type":"needs","scenario":"Farid has a pet dog that needs the right things every day to stay healthy and happy.","question":"Tap the things this dog needs to survive!","character":{"name":"Dog","emoji":"🐶"},"needs":[{"name":"Food","emoji":"🍖"},{"name":"Water","emoji":"💧"},{"name":"Air","emoji":"🌬️"}],"distractors":[{"name":"Toy Blocks","emoji":"🧱"},{"name":"Umbrella","emoji":"☂️"},{"name":"Pencil","emoji":"✏️"}],"explanation":"Animals like dogs need food, water, and air every day to stay healthy. Toys, umbrellas, and pencils are not things a dog needs to survive.","icon":"🐶"},{"topic":"Animals","type":"select","scenario":"Sofia sees a cat and a duck at a farm.","question":"Which animal can swim in water?","choices":[{"label":"The cat","emoji":"🐱"},{"label":"The duck","emoji":"🦆"},{"label":"Neither of them","emoji":"🚫"}],"correct":1,"explanation":"Ducks have webbed feet that help them swim well in water.","icon":"🦆"},{"topic":"Animals","type":"select","scenario":"Wong observes an animal covered in fur that drinks milk from its mother.","question":"What group of animals is this?","choices":[{"label":"Mammals","emoji":"🐄"},{"label":"Insects","emoji":"🐜"},{"label":"Fish","emoji":"🐟"}],"correct":0,"explanation":"Mammals have fur and feed their babies with milk.","icon":"🐶"},{"topic":"Animals","type":"sort","scenario":"Mei is sorting animals into insects and mammals.","question":"Sort these into Insects and Mammals!","bins":[{"name":"Insect","emoji":"🐜"},{"name":"Mammal","emoji":"🐄"}],"items":[{"name":"Ant","emoji":"🐜","binIndex":0},{"name":"Cat","emoji":"🐱","binIndex":1},{"name":"Butterfly","emoji":"🦋","binIndex":0},{"name":"Cow","emoji":"🐄","binIndex":1}],"explanation":"Insects like ants and butterflies have six legs. Mammals like cats and cows have fur and drink milk from their mother.","icon":"🐜"},{"topic":"Human Body","type":"select","scenario":"Aiman closes his eyes and cannot see the toy in front of him.","question":"Which sense organ helps us see things?","choices":[{"label":"The nose","emoji":"👃"},{"label":"The eyes","emoji":"👀"},{"label":"The ears","emoji":"👂"}],"correct":1,"explanation":"The eyes are the sense organ that helps us see.","icon":"👁️"},{"topic":"Human Body","type":"select","scenario":"Ravi smells fresh bread baking in the kitchen.","question":"Which sense organ helps him smell the bread?","choices":[{"label":"The nose","emoji":"👃"},{"label":"The tongue","emoji":"👅"},{"label":"The skin","emoji":"✋"}],"correct":0,"explanation":"The nose is the sense organ that helps us smell things.","icon":"👃"},{"topic":"Human Body","type":"select","scenario":"Farah touches an ice cube and feels that it is cold.","question":"Which sense organ helps her feel cold and hot?","choices":[{"label":"The skin","emoji":"✋"},{"label":"The eyes","emoji":"👀"},{"label":"The ears","emoji":"👂"}],"correct":0,"explanation":"The skin is the sense organ that helps us feel touch, hot, and cold.","icon":"🧊"},{"topic":"Human Body","type":"select","scenario":"Kavin hears his friend calling his name from far away.","question":"Which sense organ helps him hear sounds?","choices":[{"label":"The eyes","emoji":"👀"},{"label":"The ears","emoji":"👂"},{"label":"The tongue","emoji":"👅"}],"correct":1,"explanation":"The ears are the sense organ that helps us hear sounds.","icon":"👂"},{"topic":"Human Body","type":"select","scenario":"Amira tastes a sour lemon and makes a funny face.","question":"Which sense organ helps her taste food?","choices":[{"label":"The tongue","emoji":"👅"},{"label":"The nose","emoji":"👃"},{"label":"The skin","emoji":"✋"}],"correct":0,"explanation":"The tongue is the sense organ that helps us taste food.","icon":"🍋"},{"topic":"Healthy Habits","type":"select","scenario":"Hafiz eats vegetables, fruits, and drinks plenty of water every day.","question":"Why does he do this?","choices":[{"label":"To stay healthy","emoji":"💪"},{"label":"To feel bored","emoji":"😴"},{"label":"To make more homework","emoji":"📚"}],"correct":0,"explanation":"Eating healthy food and drinking water helps our body stay strong and healthy.","icon":"🥦"},{"topic":"Healthy Habits","type":"select","scenario":"Danish washes his hands before every meal.","question":"Why is this a good habit?","choices":[{"label":"It removes germs","emoji":"🧼"},{"label":"It makes food taste better","emoji":"😋"},{"label":"It makes hands cold","emoji":"🥶"}],"correct":0,"explanation":"Washing hands removes germs and helps prevent sickness.","icon":"🧼"},{"topic":"Healthy Habits","type":"select","scenario":"Sofia brushes her teeth every morning and night.","question":"Why should she brush her teeth?","choices":[{"label":"To keep teeth clean and healthy","emoji":"🦷"},{"label":"To make teeth bigger","emoji":"📏"},{"label":"To change their colour","emoji":"🎨"}],"correct":0,"explanation":"Brushing teeth removes food and germs, keeping teeth clean and healthy.","icon":"🪥"},{"topic":"Healthy Habits","type":"select","scenario":"Wei Jie sleeps for 9 hours every night.","question":"Why is enough sleep important for him?","choices":[{"label":"It helps his body rest and grow","emoji":"😴"},{"label":"It makes him taller instantly","emoji":"📏"},{"label":"It stops him from eating","emoji":"🚫"}],"correct":0,"explanation":"Sleep helps our body rest, recover energy, and grow properly.","icon":"😴"},{"topic":"Healthy Habits","type":"select","scenario":"Aisyah exercises by running and playing outside every day.","question":"Why is exercise good for her body?","choices":[{"label":"It keeps her body fit and strong","emoji":"💪"},{"label":"It makes her feel sleepy all day","emoji":"😴"},{"label":"It stops her from growing","emoji":"🚫"}],"correct":0,"explanation":"Regular exercise keeps our body fit, strong, and healthy.","icon":"🏃"},{"topic":"Materials","type":"select","scenario":"Amirah has a spoon that is hard and shiny.","question":"What material is the spoon most likely made of?","choices":[{"label":"Metal","emoji":"🥄"},{"label":"Cotton","emoji":"🧵"},{"label":"Paper","emoji":"📄"}],"correct":0,"explanation":"Metal is hard and shiny, which is why spoons are often made of metal.","icon":"🥄"},{"topic":"Materials","type":"select","scenario":"Kumar wraps a gift using a thin, light material that can be torn easily.","question":"What material is he most likely using?","choices":[{"label":"Paper","emoji":"📄"},{"label":"Metal","emoji":"🥫"},{"label":"Glass","emoji":"🥛"}],"correct":0,"explanation":"Paper is thin, light, and can be torn easily, so it is used for wrapping.","icon":"🎁"},{"topic":"Materials","type":"select","scenario":"Mei Ling wears a soft shirt that feels comfortable on her skin.","question":"What material is the shirt most likely made of?","choices":[{"label":"Glass","emoji":"🥛"},{"label":"Cotton","emoji":"🧵"},{"label":"Metal","emoji":"🥫"}],"correct":1,"explanation":"Cotton is soft and comfortable, which is why it is used to make clothes.","icon":"👕"},{"topic":"Materials","type":"select","scenario":"Zheng Wei drinks juice from a clear container that can break if dropped.","question":"What material is the container most likely made of?","choices":[{"label":"Glass","emoji":"🥛"},{"label":"Cotton","emoji":"🧵"},{"label":"Wood","emoji":"🪵"}],"correct":0,"explanation":"Glass is clear and can break easily, unlike materials like cotton or wood.","icon":"🥤"},{"topic":"Materials","type":"select","scenario":"Farid sits on a chair made from a material that comes from trees.","question":"What material is the chair most likely made of?","choices":[{"label":"Wood","emoji":"🪵"},{"label":"Glass","emoji":"🥛"},{"label":"Paper","emoji":"📄"}],"correct":0,"explanation":"Wood comes from trees and is strong enough to make furniture like chairs.","icon":"🪑"}],
+    2:[{"topic":"Animal Habitats","type":"sort","scenario":"Sofia is sorting animals by the habitat they live in.","question":"Sort these animals into Desert and Arctic!","bins":[{"name":"Desert","emoji":"🏜️"},{"name":"Arctic","emoji":"❄️"}],"items":[{"name":"Camel","emoji":"🐪","binIndex":0},{"name":"Polar Bear","emoji":"🐻‍❄️","binIndex":1},{"name":"Scorpion","emoji":"🦂","binIndex":0},{"name":"Penguin","emoji":"🐧","binIndex":1}],"explanation":"The desert is hot and dry, home to animals like camels and scorpions. The Arctic is icy and cold, home to polar bears and penguins.","icon":"🐪"},{"topic":"Animal Habitats","type":"sort","scenario":"Wei Jie is sorting animals into the ocean and the forest.","question":"Sort these animals into Ocean and Forest!","bins":[{"name":"Ocean","emoji":"🌊"},{"name":"Forest","emoji":"🌳"}],"items":[{"name":"Shark","emoji":"🦈","binIndex":0},{"name":"Monkey","emoji":"🐒","binIndex":1},{"name":"Octopus","emoji":"🐙","binIndex":0},{"name":"Parrot","emoji":"🦜","binIndex":1}],"explanation":"The ocean is full of salty water, home to sharks and octopuses. The forest has many trees, home to monkeys and parrots.","icon":"🦈"},{"topic":"Animal Habitats","type":"sort","scenario":"Aiman is sorting animals into the forest and the desert.","question":"Sort these animals into Forest and Desert!","bins":[{"name":"Forest","emoji":"🌳"},{"name":"Desert","emoji":"🏜️"}],"items":[{"name":"Monkey","emoji":"🐒","binIndex":0},{"name":"Camel","emoji":"🐪","binIndex":1},{"name":"Toucan","emoji":"🦜","binIndex":0},{"name":"Lizard","emoji":"🦎","binIndex":1}],"explanation":"Forests have many trees and fruit for monkeys and toucans. Deserts are hot and dry, suited to camels and lizards.","icon":"🐒"},{"topic":"Animal Habitats","type":"sort","scenario":"Ravi is sorting animals into the Arctic and the desert.","question":"Sort these animals into Arctic and Desert!","bins":[{"name":"Arctic","emoji":"❄️"},{"name":"Desert","emoji":"🏜️"}],"items":[{"name":"Polar Bear","emoji":"🐻‍❄️","binIndex":0},{"name":"Camel","emoji":"🐪","binIndex":1},{"name":"Penguin","emoji":"🐧","binIndex":0},{"name":"Snake","emoji":"🐍","binIndex":1}],"explanation":"The Arctic is icy and cold, home to polar bears and penguins. The desert is hot and dry, home to camels and snakes.","icon":"🐻‍❄️"},{"topic":"Animal Habitats","type":"sort","scenario":"Farah is sorting animals into the pond and the desert.","question":"Sort these animals into Pond and Desert!","bins":[{"name":"Pond","emoji":"🌊"},{"name":"Desert","emoji":"🏜️"}],"items":[{"name":"Frog","emoji":"🐸","binIndex":0},{"name":"Camel","emoji":"🐪","binIndex":1},{"name":"Duck","emoji":"🦆","binIndex":0},{"name":"Scorpion","emoji":"🦂","binIndex":1}],"explanation":"Ponds have water for frogs and ducks to live in. Deserts are hot and dry, home to camels and scorpions.","icon":"🐸"},{"topic":"Plants","type":"sequence","scenario":"Sofia plants a seed and checks on it every week.","question":"Tap the stages of a plant's life cycle in the correct order!","stages":[{"name":"Seed","emoji":"🌰"},{"name":"Seedling","emoji":"🌱"},{"name":"Adult Plant","emoji":"🌿"},{"name":"Flower","emoji":"🌸"}],"explanation":"A plant's life cycle starts as a seed, grows into a seedling, becomes an adult plant, and can then flower.","icon":"🌰"},{"topic":"Animals","type":"sequence","scenario":"Kavin watches a caterpillar wrap itself into a cocoon.","question":"Tap the stages of a butterfly's life cycle in the correct order!","stages":[{"name":"Egg","emoji":"🥚"},{"name":"Caterpillar","emoji":"🐛"},{"name":"Cocoon","emoji":"🛖"},{"name":"Butterfly","emoji":"🦋"}],"explanation":"A butterfly changes from an egg, to a caterpillar, then a cocoon, and finally becomes a butterfly.","icon":"🦋"},{"topic":"Animals","type":"sequence","scenario":"Amira sees tadpoles swimming in a pond with tails but no legs.","question":"Tap the stages of a frog's life cycle in the correct order!","stages":[{"name":"Egg","emoji":"🥚"},{"name":"Tadpole","emoji":"🐡"},{"name":"Froglet","emoji":"🐸"},{"name":"Frog","emoji":"🐸"}],"explanation":"A frog's life cycle starts as an egg, hatches into a tadpole, grows legs as a froglet, and becomes an adult frog.","icon":"🐸"},{"topic":"Animals","type":"sequence","scenario":"Hafiz sees a hen sitting on eggs to keep them warm.","question":"Tap the stages of a chicken's life cycle in the correct order!","stages":[{"name":"Egg","emoji":"🥚"},{"name":"Chick","emoji":"🐤"},{"name":"Hen","emoji":"🐔"}],"explanation":"A chicken's life cycle starts as an egg, hatches into a chick, and grows into an adult hen.","icon":"🐔"},{"topic":"Animals","type":"select","scenario":"Danish learns that some animals go through egg, larva, pupa, and adult stages.","question":"Which animal has this life cycle?","choices":[{"label":"The butterfly","emoji":"🦋"},{"label":"The cat","emoji":"🐱"},{"label":"The cow","emoji":"🐄"}],"correct":0,"explanation":"Butterflies go through egg, larva (caterpillar), pupa, and adult stages.","icon":"🦋"},{"topic":"Human Body","type":"select","scenario":"Sofia was a small baby, but now she is taller and can walk and talk.","question":"What has happened to Sofia over time?","choices":[{"label":"She has grown","emoji":"📏"},{"label":"She has shrunk","emoji":"📉"},{"label":"She has changed into an animal","emoji":"🐾"}],"correct":0,"explanation":"As people get older, their bodies grow taller and stronger.","icon":"👶"},{"topic":"Human Body","type":"select","scenario":"Wei Jie eats a balanced diet of rice, vegetables, fish, and fruits.","question":"Why is a balanced diet important for growth?","choices":[{"label":"It gives the body nutrients to grow","emoji":"🥗"},{"label":"It makes the body smaller","emoji":"📉"},{"label":"It stops the body from growing","emoji":"🚫"}],"correct":0,"explanation":"A balanced diet provides nutrients that help the body grow and stay healthy.","icon":"🍚"},{"topic":"Human Body","type":"select","scenario":"Farah's baby brother cannot walk yet, but Farah can walk and run.","question":"Why can Farah do more things than her baby brother?","choices":[{"label":"She is older and has grown more","emoji":"🎂"},{"label":"She eats more sweets","emoji":"🍬"},{"label":"She is smaller than him","emoji":"👶"}],"correct":0,"explanation":"As children grow older, their bodies and skills develop further.","icon":"🚶"},{"topic":"Human Body","type":"sequence","scenario":"Aiman's teacher shows him pictures of people at different ages.","question":"Tap the stages of human growth in the correct order!","stages":[{"name":"Baby","emoji":"👶"},{"name":"Child","emoji":"🧒"},{"name":"Teenager","emoji":"🧑"},{"name":"Adult","emoji":"🧑‍💼"}],"explanation":"Humans grow through stages: baby, child, teenager, and adult.","icon":"👶"},{"topic":"Human Body","type":"select","scenario":"Priya grows two centimetres taller every year.","question":"What causes this change in her height?","choices":[{"label":"Growth","emoji":"📈"},{"label":"Sickness","emoji":"🤒"},{"label":"Sleeping","emoji":"😴"}],"correct":0,"explanation":"Growth is the natural process where the body becomes bigger over time.","icon":"📏"},{"topic":"Healthy Habits","type":"select","scenario":"Amirah covers her mouth with a tissue when she coughs.","question":"Why is this a healthy habit?","choices":[{"label":"It stops germs from spreading","emoji":"🦠"},{"label":"It makes her cough louder","emoji":"🔊"},{"label":"It makes her feel hungry","emoji":"😋"}],"correct":0,"explanation":"Covering the mouth when coughing stops germs from spreading to others.","icon":"🤧"},{"topic":"Healthy Habits","type":"select","scenario":"Farid eats too much sugary food and rarely eats vegetables.","question":"What might happen to his health?","choices":[{"label":"He may become unhealthy","emoji":"🤒"},{"label":"He will grow taller instantly","emoji":"📈"},{"label":"His teeth will be stronger","emoji":"🦷"}],"correct":0,"explanation":"Eating too much sugar and too few vegetables can harm health.","icon":"🍬"},{"topic":"Healthy Habits","type":"select","scenario":"Mei Ling wears a helmet when riding her bicycle.","question":"Why does she wear a helmet?","choices":[{"label":"To protect her head from injury","emoji":"🪖"},{"label":"To make her ride faster","emoji":"🏃"},{"label":"To keep her cool","emoji":"🥶"}],"correct":0,"explanation":"A helmet protects the head if the rider falls or has an accident.","icon":"🚴"},{"topic":"Healthy Habits","type":"select","scenario":"Kumar takes a bath every day and wears clean clothes.","question":"Why is personal cleanliness important?","choices":[{"label":"It keeps germs and sickness away","emoji":"🧼"},{"label":"It makes clothes torn","emoji":"👕"},{"label":"It makes him tired","emoji":"😴"}],"correct":0,"explanation":"Keeping clean helps remove germs and prevents sickness.","icon":"🛁"},{"topic":"Healthy Habits","type":"select","scenario":"Zheng Wei plays outside for one hour every afternoon.","question":"How does outdoor play benefit his health?","choices":[{"label":"It keeps his body active and fit","emoji":"🏃"},{"label":"It makes him weaker","emoji":"😴"},{"label":"It stops his growth","emoji":"🚫"}],"correct":0,"explanation":"Outdoor play and exercise help keep the body active, fit, and healthy.","icon":"⚽"},{"topic":"Materials","type":"select","scenario":"Aisyah notices that a rubber band can stretch and go back to its shape.","question":"What property does the rubber band have?","choices":[{"label":"Elasticity","emoji":"➰"},{"label":"Hardness","emoji":"🪨"},{"label":"Transparency","emoji":"🪟"}],"correct":0,"explanation":"Elasticity is the ability of a material to stretch and return to its shape.","icon":"➰"},{"topic":"Materials","type":"select","scenario":"Danish looks through a clear glass window to see outside.","question":"What property allows him to see through the glass?","choices":[{"label":"Transparency","emoji":"🪟"},{"label":"Elasticity","emoji":"➰"},{"label":"Softness","emoji":"🧽"}],"correct":0,"explanation":"Transparent materials like glass allow light to pass through, so we can see through them.","icon":"🪟"},{"topic":"Materials","type":"select","scenario":"Ravi tries to bend a metal spoon but it stays straight.","question":"What property does the metal spoon have?","choices":[{"label":"Hardness","emoji":"🥄"},{"label":"Softness","emoji":"🧽"},{"label":"Elasticity","emoji":"➰"}],"correct":0,"explanation":"Hard materials like metal do not bend or change shape easily.","icon":"🥄"},{"topic":"Materials","type":"select","scenario":"Farah squeezes a soft sponge and it changes shape easily.","question":"What property does the sponge have?","choices":[{"label":"Softness","emoji":"🧽"},{"label":"Hardness","emoji":"🥄"},{"label":"Transparency","emoji":"🪟"}],"correct":0,"explanation":"Soft materials like sponges can be squeezed and change shape easily.","icon":"🧽"},{"topic":"Materials","type":"select","scenario":"Kavin notices that his raincoat does not let water pass through it.","question":"What property does the raincoat material have?","choices":[{"label":"It is waterproof","emoji":"☔"},{"label":"It is transparent","emoji":"🪟"},{"label":"It is elastic","emoji":"➰"}],"correct":0,"explanation":"Waterproof materials do not let water pass through, keeping us dry.","icon":"☔"},{"topic":"Hot & Cold","type":"sort","scenario":"Amira is sorting things into Hot and Cold.","question":"Sort these into Hot and Cold!","bins":[{"name":"Hot","emoji":"🔥"},{"name":"Cold","emoji":"❄️"}],"items":[{"name":"Hot Tea","emoji":"☕","binIndex":0},{"name":"Ice Cube","emoji":"🧊","binIndex":1},{"name":"Hot Soup","emoji":"🍲","binIndex":0},{"name":"Cold Drink","emoji":"🥤","binIndex":1}],"explanation":"Hot things like tea and soup can burn our skin. Cold things like ice and cold drinks feel chilly to touch.","icon":"☕"},{"topic":"Hot & Cold","type":"select","scenario":"Hafiz puts an ice cube in his hand and it slowly disappears.","question":"What happens to the ice cube as it warms up?","choices":[{"label":"It melts into water","emoji":"💧"},{"label":"It turns into a rock","emoji":"🪨"},{"label":"It disappears by magic","emoji":"✨"}],"correct":0,"explanation":"Ice melts and turns into water when it becomes warm.","icon":"🧊"},{"topic":"Hot & Cold","type":"select","scenario":"Sofia leaves a cup of hot soup on the table, and after a while, it becomes warm.","question":"What happened to the soup over time?","choices":[{"label":"It cooled down","emoji":"📉"},{"label":"It became hotter","emoji":"📈"},{"label":"It changed into ice","emoji":"🧊"}],"correct":0,"explanation":"Hot things lose heat over time and become cooler.","icon":"🍲"},{"topic":"Hot & Cold","type":"select","scenario":"Wei Jie wears a thick jacket on a cold, windy day.","question":"Why does he wear the jacket?","choices":[{"label":"To keep his body warm","emoji":"🧥"},{"label":"To keep his body cool","emoji":"🥵"},{"label":"To make himself wet","emoji":"💦"}],"correct":0,"explanation":"Thick jackets trap heat and help keep our bodies warm in cold weather.","icon":"🧥"},{"topic":"Hot & Cold","type":"select","scenario":"Farah puts her cold drink outside on a hot day and it slowly becomes warm.","question":"Why does the cold drink become warm?","choices":[{"label":"It absorbs heat from the surroundings","emoji":"☀️"},{"label":"It loses its taste","emoji":"🎨"},{"label":"It turns into ice","emoji":"🧊"}],"correct":0,"explanation":"Cold objects absorb heat from warmer surroundings over time.","icon":"🥤"}],
+    3:[{"topic":"States of Matter","scenario":"Ali pours orange juice into a cup and it takes the shape of the cup.","question":"What state of matter is the orange juice?","choices":["Solid","Liquid","Gas"],"correct":1,"explanation":"Liquids take the shape of their container, like the orange juice in the cup.","icon":"🧃"},{"topic":"States of Matter","scenario":"Mei Ling holds an ice cube that keeps its shape in her hand.","question":"What state of matter is the ice cube?","choices":["Solid","Liquid","Gas"],"correct":0,"explanation":"Solids have a fixed shape that does not change, like the ice cube.","icon":"🧊"},{"topic":"States of Matter","scenario":"Kumar sees steam rising from a boiling pot of water.","question":"What state of matter is the steam?","choices":["Solid","Liquid","Gas"],"correct":2,"explanation":"Steam is water in its gas state, which spreads out and has no fixed shape.","icon":"💨"},{"topic":"States of Matter","scenario":"Farah leaves an ice cream outside and it slowly turns into a liquid.","question":"What is this change called?","choices":["Melting","Freezing","Evaporation"],"correct":0,"explanation":"Melting is when a solid changes into a liquid because of heat.","icon":"🍦"},{"topic":"States of Matter","scenario":"Danish puts water into the freezer and it becomes hard after some hours.","question":"What is this change called?","choices":["Freezing","Melting","Boiling"],"correct":0,"explanation":"Freezing is when a liquid changes into a solid because of cold temperatures.","icon":"🧊"},{"topic":"States of Matter","scenario":"Amira boils water in a pot and notices it slowly disappearing as steam.","question":"What is this change called?","choices":["Evaporation","Freezing","Melting"],"correct":0,"explanation":"Evaporation is when a liquid changes into a gas because of heat.","icon":"💨"},{"topic":"Water Cycle","scenario":"Hafiz sees water droplets forming on the outside of a cold glass on a hot day.","question":"What is this process called?","choices":["Condensation","Evaporation","Precipitation"],"correct":0,"explanation":"Condensation happens when water vapour in the air turns back into liquid water.","icon":"💦"},{"topic":"Water Cycle","scenario":"Priya notices puddles disappearing from the ground on a sunny day.","question":"Where does the water from the puddles go?","choices":["It evaporates into the air","It disappears forever","It turns into rock"],"correct":0,"explanation":"Water evaporates into the air as water vapour when heated by the sun.","icon":"☀️"},{"topic":"Water Cycle","scenario":"Sofia sees dark clouds in the sky before it starts to rain.","question":"What is rain falling from clouds called?","choices":["Precipitation","Evaporation","Condensation"],"correct":0,"explanation":"Precipitation is water falling from clouds as rain, snow, or hail.","icon":"🌧️"},{"topic":"Water Cycle","scenario":"Wei Jie learns that water goes through evaporation, condensation, and precipitation again and again.","question":"What is this repeating process called?","choices":["The water cycle","The food chain","The life cycle"],"correct":0,"explanation":"The water cycle is the continuous movement of water between the Earth and the sky.","icon":"🔄"},{"topic":"Water Cycle","scenario":"Aiman sees clouds forming high up in the sky.","question":"What are clouds mostly made of?","choices":["Tiny water droplets","Solid rocks","Metal dust"],"correct":0,"explanation":"Clouds are made of tiny water droplets that formed through condensation.","icon":"☁️"},{"topic":"Magnets","type":"magnet","scenario":"Ravi has a magnet and wants to find out which objects it will attract.","question":"Tap the objects you think the magnet will attract, then test it!","objects":[{"name":"Paperclip","emoji":"📎","magnetic":true},{"name":"Metal Spoon","emoji":"🥄","magnetic":true},{"name":"Plastic Ball","emoji":"⚽","magnetic":false},{"name":"Iron Nail","emoji":"🔩","magnetic":true},{"name":"Wooden Pencil","emoji":"✏️","magnetic":false},{"name":"Rubber Eraser","emoji":"🧽","magnetic":false}],"explanation":"Magnets attract objects made of metals like iron and steel, such as paperclips, spoons, and nails. They do not attract plastic, wood, or rubber.","icon":"🧲"},{"topic":"Magnets","scenario":"Farida tries to use a magnet to pick up a plastic spoon, but it does not move.","question":"Why doesn't the magnet attract the plastic spoon?","choices":["Plastic is not attracted by magnets","The magnet is too weak","The spoon is too heavy"],"correct":0,"explanation":"Magnets only attract certain metals, not materials like plastic or wood.","icon":"🥄"},{"topic":"Magnets","scenario":"Kavin brings the same poles of two magnets close together and they push apart.","question":"What happens when like poles of magnets meet?","choices":["They repel each other","They attract each other","They stick together"],"correct":0,"explanation":"Like poles (N-N or S-S) of magnets repel, or push away from, each other.","icon":"🧲"},{"topic":"Magnets","scenario":"Amirah brings the north pole of one magnet near the south pole of another.","question":"What happens when opposite poles meet?","choices":["They attract each other","They repel each other","Nothing happens"],"correct":0,"explanation":"Opposite poles (N-S) of magnets attract, or pull toward, each other.","icon":"🧲"},{"topic":"Magnets","scenario":"Danish uses a magnet to sort metal nails from a pile of mixed materials.","question":"Why is a magnet useful for this task?","choices":["It attracts metal objects like nails","It changes the colour of metals","It melts the metal nails"],"correct":0,"explanation":"Magnets attract metal objects, making them useful for sorting materials.","icon":"📌"},{"topic":"Light","scenario":"Farah shines a torchlight onto a mirror and the light bounces back.","question":"What is this bouncing of light called?","choices":["Reflection","Absorption","Refraction"],"correct":0,"explanation":"Reflection happens when light bounces off a shiny surface like a mirror.","icon":"🔦"},{"topic":"Light","scenario":"Zheng Wei stands under the sun and sees a dark shape on the ground behind him.","question":"What is this dark shape called?","choices":["A shadow","A reflection","A rainbow"],"correct":0,"explanation":"A shadow forms when an object blocks light from passing through.","icon":"👤"},{"topic":"Light","scenario":"Sofia tries to see through a thick wooden door but cannot.","question":"Why can't light pass through the wooden door?","choices":["Wood is an opaque material","Wood is transparent","Wood makes its own light"],"correct":0,"explanation":"Opaque materials like wood do not let light pass through them.","icon":"🚪"},{"topic":"Light","scenario":"Aiman looks through a clear glass window and can see the garden clearly.","question":"Why can light pass through the glass?","choices":["Glass is a transparent material","Glass is opaque","Glass blocks all light"],"correct":0,"explanation":"Transparent materials like glass allow light to pass through easily.","icon":"🪟"},{"topic":"Light","scenario":"Kumar notices that his shadow becomes shorter when the sun is directly above him.","question":"What causes the shadow to change size?","choices":["The position of the sun","The colour of his shirt","The type of shoes he wears"],"correct":0,"explanation":"The position of the light source changes the size and shape of a shadow.","icon":"🕐"},{"topic":"Force","scenario":"Amira pushes a shopping trolley to move it forward.","question":"What is this action called?","choices":["A push","A pull","A stretch"],"correct":0,"explanation":"A push is a force that moves an object away from you.","icon":"🛒"},{"topic":"Force","scenario":"Hafiz pulls a rope to bring a toy boat closer to him.","question":"What is this action called?","choices":["A pull","A push","A twist"],"correct":0,"explanation":"A pull is a force that moves an object closer to you.","icon":"⛵"},{"topic":"Force","scenario":"Priya notices that a ball rolling on the grass stops after a while.","question":"What force causes the ball to slow down and stop?","choices":["Friction","Magnetism","Gravity alone"],"correct":0,"explanation":"Friction is a force between surfaces that slows down moving objects.","icon":"⚽"},{"topic":"Force","scenario":"Wei Jie drops a ball and it falls straight to the ground.","question":"What force pulls the ball down to the ground?","choices":["Gravity","Friction","Magnetism"],"correct":0,"explanation":"Gravity is the force that pulls objects down toward the Earth.","icon":"⚽"},{"topic":"Materials","scenario":"Ravi puts a wooden block and an iron nail into a bucket of water.","question":"What most likely happens to the wooden block?","choices":["It floats","It sinks","It disappears"],"correct":0,"explanation":"Wood is light for its size and usually floats on water.","icon":"🪵"},{"topic":"Materials","scenario":"Farida puts a heavy iron nail into a bucket of water.","question":"What most likely happens to the iron nail?","choices":["It sinks","It floats","It turns into gas"],"correct":0,"explanation":"Iron is heavy for its size and usually sinks in water.","icon":"🔩"},{"topic":"Materials","scenario":"Kavin tests different objects to see which float and which sink in water.","question":"What mainly decides if an object floats or sinks?","choices":["Its weight and size","Its colour","Its smell"],"correct":0,"explanation":"Whether an object floats or sinks depends on its weight compared to its size.","icon":"🪣"},{"topic":"Materials","scenario":"Amirah puts a small plastic ball and a small metal ball of the same size into water.","question":"Which one is more likely to float?","choices":["The plastic ball","The metal ball","Both will sink"],"correct":0,"explanation":"Plastic is usually lighter than metal of the same size, so it is more likely to float.","icon":"⚫"},{"topic":"Materials","scenario":"Danish notices that a large ship made of metal still floats on the sea.","question":"Why can a heavy metal ship float on water?","choices":["Its shape helps spread out its weight","Metal always floats","The sea has no water"],"correct":0,"explanation":"A ship's wide, hollow shape spreads out its weight, allowing it to float despite being made of metal.","icon":"🚢"}],
+    4:[{"topic":"Electricity","scenario":"Aiman connects a battery, wires, and a bulb together and the bulb lights up.","question":"What is this complete path for electricity called?","choices":["A circuit","A magnet","A shadow"],"correct":0,"explanation":"A circuit is a complete path that allows electricity to flow and light the bulb.","icon":"💡"},{"topic":"Electricity","scenario":"Ravi removes one wire from his circuit and the bulb stops lighting up.","question":"Why did the bulb stop working?","choices":["The circuit is no longer complete","The battery grew bigger","The bulb turned into a magnet"],"correct":0,"explanation":"If a circuit is broken or incomplete, electricity cannot flow and the bulb will not light.","icon":"🔌"},{"topic":"Electricity","scenario":"Farah uses a metal spoon and a rubber eraser to test which lets electricity pass through.","question":"Which material is a better conductor of electricity?","choices":["The metal spoon","The rubber eraser","Neither of them"],"correct":0,"explanation":"Metals are good conductors of electricity, while rubber is an insulator.","icon":"🥄"},{"topic":"Electricity","scenario":"Kumar wraps his wires with plastic covering before touching them.","question":"Why is the plastic covering used?","choices":["Plastic is an insulator that stops electric shocks","Plastic makes electricity stronger","Plastic makes the wire heavier"],"correct":0,"explanation":"Plastic is an insulator, meaning it does not let electricity pass through, keeping us safe.","icon":"🔌"},{"topic":"Electricity","scenario":"Mei Ling switches off the lights and unplugs the fan before leaving the room.","question":"Why is this a good habit?","choices":["It saves electricity","It makes the room colder","It stops the sun from shining"],"correct":0,"explanation":"Turning off unused electrical devices helps save electricity and reduce waste.","icon":"💡"},{"topic":"Hot & Cold","scenario":"Danish uses a thermometer to measure the temperature of hot soup.","question":"What does a thermometer measure?","choices":["Temperature","Weight","Length"],"correct":0,"explanation":"A thermometer is a tool used to measure how hot or cold something is.","icon":"🌡️"},{"topic":"Hot & Cold","scenario":"Priya places a metal spoon and a wooden spoon into a cup of hot soup.","question":"Which spoon will heat up faster?","choices":["The metal spoon","The wooden spoon","Both heat up the same"],"correct":0,"explanation":"Metal is a good conductor of heat, so it heats up faster than wood.","icon":"🍲"},{"topic":"Hot & Cold","scenario":"Wei Jie touches a wooden spoon handle in hot soup and it still feels cool.","question":"Why does the wooden handle stay cool?","choices":["Wood is a poor conductor of heat","Wood repels heat completely","Wood is always cold"],"correct":0,"explanation":"Wood is a poor conductor of heat, also called an insulator, so it does not heat up quickly.","icon":"🥄"},{"topic":"Light","scenario":"Sofia holds an object between a lamp and a wall, creating a dark shape on the wall.","question":"What factor affects the size of the shadow?","choices":["The distance between the object and the light","The colour of the wall","The smell of the object"],"correct":0,"explanation":"Moving an object closer to or farther from a light source changes the size of its shadow.","icon":"🔦"},{"topic":"Light","scenario":"Aisyah shines a torchlight onto a flat mirror at an angle.","question":"What happens to the light when it hits the mirror?","choices":["It reflects off at an angle","It disappears completely","It turns into heat only"],"correct":0,"explanation":"Light reflects, or bounces off, a mirror's smooth surface at an angle.","icon":"🪞"},{"topic":"Light","scenario":"Hafiz notices his shadow is very long in the early morning and very short at noon.","question":"Why does his shadow change throughout the day?","choices":["The sun's position in the sky changes","His height changes constantly","The ground changes colour"],"correct":0,"explanation":"As the sun's position changes during the day, the length of shadows also changes.","icon":"👤"},{"topic":"Force","scenario":"Amira notices it is harder to slide a box across a rough carpet than a smooth floor.","question":"Why is it harder to slide the box on the carpet?","choices":["There is more friction on the carpet","There is less gravity on the carpet","The carpet is a magnet"],"correct":0,"explanation":"Rough surfaces create more friction, making it harder for objects to slide.","icon":"📦"},{"topic":"Force","scenario":"Kavin rubs his hands together quickly and they start to feel warm.","question":"What force causes his hands to feel warm?","choices":["Friction","Gravity","Magnetism"],"correct":0,"explanation":"Friction between his hands produces heat, making them feel warm.","icon":"👐"},{"topic":"Force","scenario":"Farid throws a ball high into the air and it eventually falls back down.","question":"What force pulls the ball back to the ground?","choices":["Gravity","Friction","Magnetism"],"correct":0,"explanation":"Gravity pulls all objects toward the Earth, causing the ball to fall back down.","icon":"⚾"},{"topic":"Force","scenario":"Zheng Wei notices that a bicycle with oiled wheels moves more smoothly than one without oil.","question":"Why does oiling the wheels help?","choices":["It reduces friction between moving parts","It increases gravity","It adds more weight"],"correct":0,"explanation":"Oil reduces friction between moving parts, allowing the wheels to turn more smoothly.","icon":"🚲"},{"topic":"States of Matter","scenario":"Ali notices water in a kettle boiling and turning into steam.","question":"What causes the water to change into steam?","choices":["Heating the water","Cooling the water","Freezing the water"],"correct":0,"explanation":"Heating a liquid can cause it to evaporate and turn into a gas, like steam.","icon":"☕"},{"topic":"States of Matter","scenario":"Mei Ling puts a tray of water into the freezer overnight.","question":"What state of matter will the water become?","choices":["Solid","Gas","It stays a liquid"],"correct":0,"explanation":"Cooling water below freezing point changes it from a liquid into a solid (ice).","icon":"🧊"},{"topic":"States of Matter","scenario":"Kumar notices water vapour on a cold window turning into water droplets.","question":"What is this change of gas into liquid called?","choices":["Condensation","Evaporation","Melting"],"correct":0,"explanation":"Condensation is when a gas, like water vapour, changes into a liquid.","icon":"🪟"},{"topic":"States of Matter","scenario":"Farah observes an ice cube changing into water on a warm table.","question":"What state of matter changes are happening?","choices":["Solid to liquid","Liquid to gas","Gas to solid"],"correct":0,"explanation":"Melting is the change from a solid state into a liquid state, caused by heat.","icon":"🍦"},{"topic":"Food Chain","scenario":"Danish learns that grass is eaten by a grasshopper, which is eaten by a frog.","question":"What do we call this feeding relationship?","choices":["A food chain","A water cycle","A life cycle"],"correct":0,"explanation":"A food chain shows how energy passes from one living thing to another through feeding.","icon":"🦗"},{"topic":"Food Chain","scenario":"Priya learns that plants make their own food using sunlight.","question":"What are plants called in a food chain?","choices":["Producers","Consumers","Decomposers"],"correct":0,"explanation":"Plants are called producers because they produce, or make, their own food.","icon":"🌿"},{"topic":"Food Chain","scenario":"Sofia learns that a rabbit eats plants to survive.","question":"What do we call an animal that eats plants?","choices":["A herbivore","A carnivore","A producer"],"correct":0,"explanation":"A herbivore is an animal that only eats plants.","icon":"🐰"},{"topic":"Food Chain","scenario":"Wei Jie learns that a lion eats other animals to survive.","question":"What do we call an animal that eats other animals?","choices":["A carnivore","A herbivore","A producer"],"correct":0,"explanation":"A carnivore is an animal that only eats other animals.","icon":"🦁"},{"topic":"Food Chain","scenario":"Aiman learns about an animal that eats both plants and other animals.","question":"What do we call this type of animal?","choices":["An omnivore","A herbivore","A producer"],"correct":0,"explanation":"An omnivore is an animal that eats both plants and other animals.","icon":"🐻"},{"topic":"Materials","scenario":"Ravi notices that a rubber tyre bounces back into shape after being squeezed.","question":"What property allows the tyre to do this?","choices":["Elasticity","Hardness","Transparency"],"correct":0,"explanation":"Elastic materials like rubber can be stretched or squeezed and return to their original shape.","icon":"🛞"},{"topic":"Materials","scenario":"Farida compares an umbrella's outer material with a bath towel.","question":"Which material is more likely to be waterproof?","choices":["The umbrella material","The bath towel","Both are the same"],"correct":0,"explanation":"Umbrellas are made of waterproof material to keep people dry, unlike absorbent towels.","icon":"☔"},{"topic":"Materials","scenario":"Kavin notices that his winter jacket keeps him warmer than his thin cotton shirt.","question":"Why does the jacket keep him warmer?","choices":["It traps heat better than thin cotton","It is heavier than the shirt","It is a brighter colour"],"correct":0,"explanation":"Thicker materials like jackets trap body heat better, keeping the wearer warmer.","icon":"🧥"},{"topic":"Electricity","scenario":"Amirah uses a switch to turn a lamp on and off.","question":"What does the switch do to the circuit?","choices":["It completes or breaks the circuit","It changes the colour of light","It makes the bulb bigger"],"correct":0,"explanation":"A switch opens or closes a circuit, turning the flow of electricity on or off.","icon":"🔘"},{"topic":"Force","scenario":"Hafiz notices a toy car travels further on a smooth tiled floor than on a rough carpet.","question":"Why does the car travel further on the tiled floor?","choices":["There is less friction on the tiled floor","There is more gravity on the tiled floor","The car becomes lighter"],"correct":0,"explanation":"Smooth surfaces create less friction, allowing objects to move more easily and travel further.","icon":"🚗"},{"topic":"Food Chain","scenario":"Mei Ling learns that a hawk eats a snake, which had eaten a mouse, which had eaten grain.","question":"Which living thing is the producer in this food chain?","choices":["The grain","The mouse","The hawk"],"correct":0,"explanation":"The grain is the producer because it is a plant that makes its own food using sunlight.","icon":"🦅"}],
+    5:[{"topic":"Energy","scenario":"Ali plugs in a lamp and it lights up the room.","question":"What type of energy changes into light energy here?","choices":["Electrical energy","Sound energy","Chemical energy in food"],"correct":0,"explanation":"Electrical energy from the plug changes into light energy in the lamp.","icon":"💡"},{"topic":"Energy","scenario":"Ravi eats a banana before running around the field.","question":"What energy from the food helps him run?","choices":["Chemical energy changed into movement energy","Light energy changed into sound","Heat energy changed into electricity"],"correct":0,"explanation":"Chemical energy stored in food changes into movement (kinetic) energy when we are active.","icon":"🍌"},{"topic":"Energy","scenario":"Farah rubs her hands together quickly and they feel warm.","question":"What energy change happens here?","choices":["Movement energy changes into heat energy","Light energy changes into sound","Heat energy changes into electricity"],"correct":0,"explanation":"The movement (kinetic) energy of rubbing changes into heat energy through friction.","icon":"👐"},{"topic":"Energy","scenario":"Kumar uses a solar panel to charge his calculator under the sun.","question":"What energy change is happening in the solar panel?","choices":["Light energy changes into electrical energy","Sound energy changes into heat","Electrical energy changes into chemical energy"],"correct":0,"explanation":"Solar panels change light energy from the sun into electrical energy.","icon":"☀️"},{"topic":"Energy","scenario":"Mei Ling strikes a drum and hears a loud sound.","question":"What energy change happens when she hits the drum?","choices":["Movement energy changes into sound energy","Heat energy changes into light","Chemical energy changes into electrical"],"correct":0,"explanation":"Hitting the drum changes movement energy into sound energy that we can hear.","icon":"🥁"},{"topic":"Food Chain","scenario":"Danish draws a diagram showing grass, grasshopper, frog, and snake all connected.","question":"When many food chains connect together, what is it called?","choices":["A food web","A water cycle","A life cycle"],"correct":0,"explanation":"A food web is formed when several food chains connect and overlap in an ecosystem.","icon":"🐍"},{"topic":"Food Chain","scenario":"Priya learns that mushrooms break down dead plants and animals into nutrients for soil.","question":"What role do mushrooms play in a food chain?","choices":["Decomposers","Producers","Carnivores"],"correct":0,"explanation":"Decomposers, like mushrooms and bacteria, break down dead matter and return nutrients to the soil.","icon":"🍄"},{"topic":"Food Chain","scenario":"Sofia learns that if all the grass in a field disappeared, the grasshoppers would have no food.","question":"What would most likely happen to the animals that eat grasshoppers?","choices":["They would also lack food","They would grow bigger","They would become producers"],"correct":0,"explanation":"If one part of a food chain is removed, the animals depending on it are also affected.","icon":"🦗"},{"topic":"Food Chain","scenario":"Wei Jie learns that energy from the sun passes to plants, then to animals that eat plants.","question":"Where does most of the energy in a food chain originally come from?","choices":["The sun","The soil","The air"],"correct":0,"explanation":"The sun is the original source of energy for almost all food chains, starting with plants.","icon":"☀️"},{"topic":"Adaptation","scenario":"Aiman learns that a camel can store fat in its hump for energy in the desert.","question":"How does this hump help the camel survive?","choices":["It helps the camel survive without food for a long time","It helps the camel fly","It helps the camel breathe underwater"],"correct":0,"explanation":"A camel's hump stores fat, which gives it energy when food is scarce in the desert.","icon":"🐪"},{"topic":"Adaptation","scenario":"Kavin learns that a polar bear has thick white fur.","question":"How does the polar bear's fur help it survive in the Arctic?","choices":["It keeps it warm and helps it blend into snow","It helps it breathe underwater","It helps it fly in the wind"],"correct":0,"explanation":"Thick white fur keeps polar bears warm and camouflages them in the snowy Arctic.","icon":"🐻‍❄️"},{"topic":"Adaptation","scenario":"Farid learns that a cactus has thick stems and few leaves.","question":"How do these features help the cactus survive in the desert?","choices":["They help store water and reduce water loss","They help the cactus fly","They help the cactus eat insects"],"correct":0,"explanation":"A cactus stores water in its thick stem and has few leaves to reduce water loss.","icon":"🌵"},{"topic":"Adaptation","scenario":"Zheng Wei learns that a duck has webbed feet.","question":"How do webbed feet help a duck?","choices":["They help it swim more easily in water","They help it climb trees","They help it dig underground"],"correct":0,"explanation":"Webbed feet act like paddles, helping ducks swim efficiently in water.","icon":"🦆"},{"topic":"Water Cycle","scenario":"Amira studies how water evaporates from the sea, forms clouds, and falls as rain.","question":"What is the main source of energy that drives the water cycle?","choices":["The sun","The moon","The wind alone"],"correct":0,"explanation":"Heat from the sun causes water to evaporate, powering the entire water cycle.","icon":"🌊"},{"topic":"Water Cycle","scenario":"Hafiz learns that rainwater flows into rivers and eventually back to the sea.","question":"What is this movement of water back to the sea called?","choices":["Runoff","Condensation","Evaporation"],"correct":0,"explanation":"Runoff is the flow of water over land back into rivers, lakes, and seas.","icon":"🏞️"},{"topic":"Water Cycle","scenario":"Priya notices that mist forms near a lake early in the morning.","question":"What process is most likely forming this mist?","choices":["Condensation of water vapour in cool air","Evaporation of solid ice","Melting of frozen water"],"correct":0,"explanation":"Mist forms when water vapour in the air condenses into tiny droplets in cool air.","icon":"🌫️"},{"topic":"Solar System","scenario":"Sofia learns that the Earth is one of several planets that travel around the Sun.","question":"What do we call the path a planet takes around the Sun?","choices":["An orbit","A shadow","A circuit"],"correct":0,"explanation":"An orbit is the curved path a planet follows as it moves around the Sun.","icon":"🪐"},{"topic":"Solar System","scenario":"Wei Jie learns that the Earth spins around on its own axis once every 24 hours.","question":"What does this spinning motion cause?","choices":["Day and night","The seasons only","The water cycle"],"correct":0,"explanation":"The Earth's rotation on its axis causes day and night.","icon":"🌓"},{"topic":"Solar System","scenario":"Aiman learns that Mercury, Venus, Earth, and Mars are closer to the Sun than the other planets.","question":"What do we call these four planets close to the Sun?","choices":["The inner planets","The outer planets","The dwarf planets"],"correct":0,"explanation":"Mercury, Venus, Earth, and Mars are called the inner planets because they orbit closest to the Sun.","icon":"☿️"},{"topic":"Solar System","scenario":"Ravi learns that the Moon does not produce its own light.","question":"Why can we see the Moon shining at night?","choices":["It reflects light from the Sun","It makes its own light","It borrows light from stars"],"correct":0,"explanation":"The Moon reflects sunlight, which is why we can see it shining at night.","icon":"🌕"},{"topic":"Solar System","scenario":"Farah learns that the Sun is much bigger than the Earth and gives out its own light and heat.","question":"What kind of object is the Sun?","choices":["A star","A planet","A moon"],"correct":0,"explanation":"The Sun is a star that produces its own light and heat.","icon":"☀️"},{"topic":"Force","scenario":"Kumar uses a lever to lift a heavy rock more easily.","question":"What is a lever an example of?","choices":["A simple machine","A magnet","A circuit"],"correct":0,"explanation":"A lever is a simple machine that helps us lift or move heavy objects with less effort.","icon":"🏋️"},{"topic":"Force","scenario":"Mei Ling rolls a heavy box up a ramp instead of lifting it straight up.","question":"What simple machine is the ramp an example of?","choices":["An inclined plane","A pulley","A wheel"],"correct":0,"explanation":"A ramp is an inclined plane, a simple machine that makes it easier to move objects to a height.","icon":"📦"},{"topic":"Force","scenario":"Danish uses a pulley system to lift a bucket of water from a well.","question":"How does a pulley help him lift the bucket?","choices":["It makes lifting the load easier","It makes the bucket heavier","It removes gravity"],"correct":0,"explanation":"A pulley is a simple machine that makes lifting loads easier by changing the direction of force.","icon":"🪣"},{"topic":"Adaptation","scenario":"Priya learns that a chameleon can change its skin colour to match its surroundings.","question":"How does this adaptation help the chameleon?","choices":["It helps it hide from predators","It helps it fly","It helps it breathe underwater"],"correct":0,"explanation":"Changing colour helps the chameleon camouflage and avoid being seen by predators.","icon":"🦎"},{"topic":"Adaptation","scenario":"Sofia learns that migratory birds fly to warmer places when winter comes.","question":"Why do these birds migrate?","choices":["To find food and warmer weather","To find new colours","To make new nests only"],"correct":0,"explanation":"Birds migrate to find food and better living conditions when the weather turns cold.","icon":"🐦"},{"topic":"Energy","scenario":"Wei Jie notices a windmill's blades turning and generating electricity.","question":"What energy change is happening in the windmill?","choices":["Movement energy of wind changes into electrical energy","Sound energy changes into heat","Light energy changes into chemical energy"],"correct":0,"explanation":"Windmills change the kinetic energy of moving wind into electrical energy.","icon":"🌬️"},{"topic":"Food Chain","scenario":"Aiman learns that in a pond, algae is eaten by small fish, which are eaten by big fish.","question":"What is the algae's role in this food chain?","choices":["Producer","Consumer","Decomposer"],"correct":0,"explanation":"Algae make their own food using sunlight, making them the producer in this food chain.","icon":"🐟"},{"topic":"Solar System","scenario":"Kavin learns that Saturn has beautiful rings made of ice and rock around it.","question":"Which planet is being described?","choices":["Saturn","Earth","Mercury"],"correct":0,"explanation":"Saturn is known for its large, visible rings made of ice and rock particles.","icon":"🪐"},{"topic":"Water Cycle","scenario":"Farida learns that plants release water vapour into the air through their leaves.","question":"What is this process called?","choices":["Transpiration","Condensation","Precipitation"],"correct":0,"explanation":"Transpiration is the release of water vapour from plants into the air, which is part of the water cycle.","icon":"🌿"}],
+    6:[{"topic":"Solar System","scenario":"Ali learns that Earth takes about 365 days to travel once around the Sun.","question":"What do we call this journey around the Sun?","choices":["A year","A day","A month"],"correct":0,"explanation":"One full orbit of the Earth around the Sun takes about 365 days, which we call a year.","icon":"🌍"},{"topic":"Solar System","scenario":"Mei Ling learns that the Earth is tilted on its axis as it orbits the Sun.","question":"What does this tilt mainly cause?","choices":["The seasons","Day and night","The water cycle"],"correct":0,"explanation":"The tilt of the Earth's axis causes different parts of the Earth to receive more or less sunlight, creating seasons.","icon":"🌗"},{"topic":"Solar System","scenario":"Kumar learns that Jupiter is the largest planet in the Solar System.","question":"Which planet is the largest?","choices":["Jupiter","Earth","Mars"],"correct":0,"explanation":"Jupiter is the largest planet in our Solar System.","icon":"🪐"},{"topic":"Solar System","scenario":"Farah learns that Mercury is the closest planet to the Sun.","question":"Which planet is closest to the Sun?","choices":["Mercury","Venus","Earth"],"correct":0,"explanation":"Mercury is the planet closest to the Sun in our Solar System.","icon":"☿️"},{"topic":"Solar System","scenario":"Danish learns that during a solar eclipse, the Moon passes between the Sun and the Earth.","question":"What happens to sunlight during a solar eclipse?","choices":["The Moon blocks some sunlight from reaching Earth","The Sun disappears forever","The Earth stops spinning"],"correct":0,"explanation":"During a solar eclipse, the Moon blocks the Sun's light from reaching parts of the Earth.","icon":"🌑"},{"topic":"Renewable Energy","scenario":"Amira learns that solar panels use sunlight to produce electricity.","question":"Why is solar energy called a renewable energy source?","choices":["Sunlight will not run out and is naturally replaced","It can only be used once","It comes from burning coal"],"correct":0,"explanation":"Renewable energy sources like sunlight are naturally replenished and will not run out.","icon":"☀️"},{"topic":"Renewable Energy","scenario":"Hafiz learns that wind turbines use moving air to generate electricity.","question":"What type of energy source is wind?","choices":["A renewable energy source","A non-renewable energy source","Not an energy source"],"correct":0,"explanation":"Wind is a renewable energy source because it is naturally available and does not run out.","icon":"🌬️"},{"topic":"Renewable Energy","scenario":"Priya learns that petrol and coal take millions of years to form and cannot be replaced quickly.","question":"What do we call these types of energy sources?","choices":["Non-renewable energy sources","Renewable energy sources","Solar energy sources"],"correct":0,"explanation":"Non-renewable energy sources like coal and petrol take a very long time to form and can run out.","icon":"⛽"},{"topic":"Renewable Energy","scenario":"Sofia learns that hydroelectric power uses flowing water from dams to generate electricity.","question":"Why is hydroelectric power considered renewable?","choices":["Water in rivers is naturally replenished by rain","Water is a non-renewable source","It uses coal to work"],"correct":0,"explanation":"Since water is continuously replenished by the water cycle, hydroelectric power is a renewable energy source.","icon":"💦"},{"topic":"Renewable Energy","scenario":"Wei Jie compares burning coal for electricity with using solar panels.","question":"What is an advantage of using solar panels instead of coal?","choices":["Solar panels do not produce harmful pollution","Solar panels use more coal","Solar panels only work at night"],"correct":0,"explanation":"Solar panels generate electricity without releasing harmful pollution, unlike burning coal.","icon":"🏭"},{"topic":"Environmental Conservation","scenario":"Aiman separates his rubbish into paper, plastic, and glass before throwing them away.","question":"What is this practice called?","choices":["Recycling","Polluting","Wasting"],"correct":0,"explanation":"Recycling is sorting and reusing materials like paper, plastic, and glass instead of throwing them away.","icon":"♻️"},{"topic":"Environmental Conservation","scenario":"Ravi notices a river near his house has become dirty from factory waste.","question":"What has happened to the river?","choices":["It has become polluted","It has become cleaner","It has evaporated"],"correct":0,"explanation":"Pollution happens when harmful substances are released into the environment, like factory waste into a river.","icon":"🏭"},{"topic":"Environmental Conservation","scenario":"Kavin's school plants more trees around the compound every year.","question":"How does planting more trees help the environment?","choices":["Trees help clean the air and provide oxygen","Trees make the air dirtier","Trees use up all the water"],"correct":0,"explanation":"Trees absorb carbon dioxide and release oxygen, helping to keep the air clean.","icon":"🌳"},{"topic":"Environmental Conservation","scenario":"Farida turns off the tap while brushing her teeth instead of letting it run.","question":"What is she practising by doing this?","choices":["Water conservation","Water pollution","Water wastage"],"correct":0,"explanation":"Turning off the tap when not in use helps conserve water and reduce waste.","icon":"🚰"},{"topic":"Environmental Conservation","scenario":"Zheng Wei's family switches off lights and unplugs devices when not in use.","question":"What are they practising?","choices":["Energy conservation","Energy pollution","Energy wastage"],"correct":0,"explanation":"Turning off unused electrical devices helps conserve energy and reduce waste.","icon":"🔌"},{"topic":"Scientific Investigation","scenario":"Amirah wants to find out if plants grow taller with more sunlight.","question":"What should she do first before testing her idea?","choices":["Make a prediction (hypothesis)","Write the final results","Throw away her plants"],"correct":0,"explanation":"Before testing an idea, scientists make a prediction called a hypothesis.","icon":"🌻"},{"topic":"Scientific Investigation","scenario":"Danish tests how different amounts of water affect plant growth using several identical pots.","question":"Why does he use identical pots and the same type of plant?","choices":["To make the test fair by changing only one factor","To make the test take longer","To use more plants than needed"],"correct":0,"explanation":"A fair test changes only one factor at a time while keeping everything else the same.","icon":"🪴"},{"topic":"Scientific Investigation","scenario":"Priya records her observations in a table after each day of her experiment.","question":"Why is it important to record observations carefully?","choices":["To have accurate data to draw conclusions from","To make the experiment longer","To confuse other scientists"],"correct":0,"explanation":"Accurate records help scientists analyse data and draw correct conclusions.","icon":"📋"},{"topic":"Scientific Investigation","scenario":"Sofia repeats her experiment three times to check her results.","question":"Why is repeating an experiment important?","choices":["To make sure the results are reliable","To waste more materials","To make the experiment harder"],"correct":0,"explanation":"Repeating an experiment helps confirm that the results are reliable and not just by chance.","icon":"🔁"},{"topic":"Scientific Investigation","scenario":"Wei Jie draws a conclusion after comparing all his experiment's results.","question":"What is a conclusion in a scientific investigation?","choices":["A summary of what the results show","A random guess with no evidence","The materials used in the experiment"],"correct":0,"explanation":"A conclusion is a summary of what the results of an investigation show, based on evidence.","icon":"📝"},{"topic":"Adaptation","scenario":"Aiman learns that a woodpecker has a strong, pointed beak.","question":"How does this beak help the woodpecker survive?","choices":["It helps it drill into wood to find insects","It helps it swim underwater","It helps it fly faster"],"correct":0,"explanation":"A woodpecker's strong, pointed beak helps it drill into wood to find insects to eat.","icon":"🐦"},{"topic":"Adaptation","scenario":"Ravi learns that a fish has gills instead of lungs.","question":"How do gills help a fish survive underwater?","choices":["They let the fish take in oxygen from water","They help the fish breathe air like humans","They help the fish see better"],"correct":0,"explanation":"Gills allow fish to take in oxygen dissolved in water, letting them breathe underwater.","icon":"🐟"},{"topic":"Adaptation","scenario":"Kavin learns that a giraffe has a very long neck.","question":"How does a long neck help the giraffe survive?","choices":["It helps the giraffe reach leaves high up in trees","It helps the giraffe swim faster","It helps the giraffe dig burrows"],"correct":0,"explanation":"A long neck allows giraffes to reach leaves on tall trees that other animals cannot reach.","icon":"🦒"},{"topic":"Energy","scenario":"Farida learns that energy cannot be created or destroyed, only changed from one form to another.","question":"What is this idea called?","choices":["Conservation of energy","Destruction of energy","Creation of energy"],"correct":0,"explanation":"The law of conservation of energy states that energy can change form but is never created or destroyed.","icon":"🔋"},{"topic":"Energy","scenario":"Zheng Wei notices that a moving toy car eventually slows down and stops due to friction.","question":"What happens to the movement energy that is lost?","choices":["It changes into heat energy","It disappears completely","It turns into light energy"],"correct":0,"explanation":"Movement energy lost to friction changes into heat energy, following the conservation of energy.","icon":"🚗"},{"topic":"Environmental Conservation","scenario":"Farah's community sets up a programme to protect endangered animals in the forest.","question":"Why is it important to protect endangered animals?","choices":["To prevent them from disappearing forever","To make them multiply too fast","To use them for food only"],"correct":0,"explanation":"Protecting endangered animals helps prevent extinction and keeps ecosystems balanced.","icon":"🐘"},{"topic":"Environmental Conservation","scenario":"Hafiz learns that cutting down too many trees can lead to soil erosion and loss of animal habitats.","question":"What is this large-scale cutting down of trees called?","choices":["Deforestation","Reforestation","Conservation"],"correct":0,"explanation":"Deforestation is the large-scale removal of trees, which can harm the environment and wildlife.","icon":"🪓"},{"topic":"Renewable Energy","scenario":"Aiman compares a wind turbine and a coal power plant for generating electricity.","question":"Which one will not run out over time?","choices":["The wind turbine","The coal power plant","Both will run out equally fast"],"correct":0,"explanation":"Wind is a renewable resource that will not run out, unlike coal, which is limited.","icon":"💨"},{"topic":"Solar System","scenario":"Priya learns that stars, unlike planets, produce their own light through nuclear reactions.","question":"What is the main difference between a star and a planet?","choices":["A star produces its own light, a planet does not","A planet is always bigger than a star","A star orbits a planet"],"correct":0,"explanation":"Stars produce their own light and heat, while planets only reflect light from stars.","icon":"⭐"},{"topic":"Scientific Investigation","scenario":"Sofia uses a magnifying glass and a ruler to carefully observe and measure a leaf.","question":"Why do scientists use tools like these during an investigation?","choices":["To make observations more accurate","To make the leaf grow faster","To change the leaf's colour"],"correct":0,"explanation":"Using proper tools helps scientists make more accurate and reliable observations.","icon":"🔍"}]
+  },
+  zh: {
+    1:[{"topic":"生物与非生物","type":"sort","scenario":"阿里正在把花园里的东西分成生物和非生物。","question":"把这些东西分类成生物和非生物！","bins":[{"name":"生物","emoji":"🌱"},{"name":"非生物","emoji":"🪨"}],"items":[{"name":"猫","emoji":"🐱","binIndex":0},{"name":"石头","emoji":"🪨","binIndex":1},{"name":"狗","emoji":"🐶","binIndex":0},{"name":"桌子","emoji":"🪑","binIndex":1}],"explanation":"像猫和狗这样的生物会生长、移动，也需要食物。石头和桌子不会。","icon":"🐱"},{"topic":"生物与非生物","type":"sort","scenario":"美玲正在把公园里的东西分成生物和非生物。","question":"把这些东西分类成生物和非生物！","bins":[{"name":"生物","emoji":"🌱"},{"name":"非生物","emoji":"🪨"}],"items":[{"name":"蜗牛","emoji":"🐌","binIndex":0},{"name":"玩具车","emoji":"🚗","binIndex":1},{"name":"小鸟","emoji":"🐦","binIndex":0},{"name":"球","emoji":"⚽","binIndex":1}],"explanation":"像蜗牛和小鸟这样的生物能自己移动，也需要食物。玩具和球不能。","icon":"🐌"},{"topic":"生物与非生物","type":"sort","scenario":"法拉正在把花园里的东西分成生物和非生物。","question":"把这些东西分类成生物和非生物！","bins":[{"name":"生物","emoji":"🌱"},{"name":"非生物","emoji":"🪨"}],"items":[{"name":"树","emoji":"🌳","binIndex":0},{"name":"椅子","emoji":"🪑","binIndex":1},{"name":"花","emoji":"🌸","binIndex":0},{"name":"书","emoji":"📖","binIndex":1}],"explanation":"像树和花这样的生物需要水、空气和阳光。椅子和书不需要。","icon":"🌳"},{"topic":"生物与非生物","type":"sort","scenario":"库马正在把池塘边的东西分成生物和非生物。","question":"把这些东西分类成生物和非生物！","bins":[{"name":"生物","emoji":"🌱"},{"name":"非生物","emoji":"🪨"}],"items":[{"name":"鱼","emoji":"🐟","binIndex":0},{"name":"石头","emoji":"🪨","binIndex":1},{"name":"青蛙","emoji":"🐸","binIndex":0},{"name":"杯子","emoji":"🥤","binIndex":1}],"explanation":"像鱼和青蛙这样的生物能自己生长和移动。石头和杯子不能。","icon":"🐟"},{"topic":"生物与非生物","type":"sort","scenario":"伟杰正在把公园里的东西分成生物和非生物。","question":"把这些东西分类成生物和非生物！","bins":[{"name":"生物","emoji":"🌱"},{"name":"非生物","emoji":"🪨"}],"items":[{"name":"蝴蝶","emoji":"🦋","binIndex":0},{"name":"风筝","emoji":"🪁","binIndex":1},{"name":"蚂蚁","emoji":"🐜","binIndex":0},{"name":"铅笔","emoji":"✏️","binIndex":1}],"explanation":"像蝴蝶和蚂蚁这样的生物需要食物来获得能量。风筝和铅笔不需要。","icon":"🦋"},{"topic":"植物","type":"select","scenario":"爱莎正在观察花盆里的一株小植物。","question":"植物的哪个部分长在泥土下面？","choices":[{"label":"叶子","emoji":"🍃"},{"label":"根","emoji":"🥕"},{"label":"花","emoji":"🌸"}],"correct":1,"explanation":"根长在泥土下面，帮助固定植物。","icon":"🥕"},{"topic":"植物","type":"select","scenario":"丹尼斯看到植物有一些绿色的部分，可以利用阳光制造食物。","question":"植物的这个部分叫什么？","choices":[{"label":"茎","emoji":"🌿"},{"label":"叶子","emoji":"🍃"},{"label":"根","emoji":"🥕"}],"correct":1,"explanation":"叶子利用阳光为植物制造食物。","icon":"🍃"},{"topic":"植物","type":"needs","scenario":"普里雅有一株小植物，它需要合适的东西才能长得好、保持健康。","question":"点一点这株植物生存所需要的东西！","character":{"name":"植物","emoji":"🌱"},"needs":[{"name":"水","emoji":"💧"},{"name":"阳光","emoji":"☀️"},{"name":"空气","emoji":"🌬️"}],"distractors":[{"name":"玩具车","emoji":"🚗"},{"name":"故事书","emoji":"📖"},{"name":"手机","emoji":"📱"}],"explanation":"植物需要水、阳光和空气才能长得好、保持健康。玩具、书本和手机都不能帮助植物生长。","icon":"🌱"},{"topic":"植物","type":"select","scenario":"哈菲兹看到植物有一个高高的部分，支撑着叶子和花朵。","question":"这个部分叫什么？","choices":[{"label":"茎","emoji":"🌿"},{"label":"根","emoji":"🥕"},{"label":"种子","emoji":"🌰"}],"correct":0,"explanation":"茎支撑着植物，并把水分输送到叶子。","icon":"🌿"},{"topic":"植物","type":"select","scenario":"阿米拉把一颗小种子种进了泥土里。","question":"这颗种子会长成什么？","choices":[{"label":"一块石头","emoji":"🪨"},{"label":"一株新植物","emoji":"🌱"},{"label":"一个玩具","emoji":"🧸"}],"correct":1,"explanation":"种子在有水、空气和阳光的情况下，会长成一株新的植物。","icon":"🌱"},{"topic":"动物","type":"select","scenario":"郑伟看到一只鸟在飞，一条鱼在游。","question":"鱼是怎样移动的？","choices":[{"label":"飞行","emoji":"🕊️"},{"label":"游泳","emoji":"🏊"},{"label":"爬行","emoji":"🐛"}],"correct":1,"explanation":"鱼用鱼鳍和尾巴在水中游泳。","icon":"🐟"},{"topic":"动物","type":"needs","scenario":"法里德养了一只宠物狗，它每天都需要合适的东西，才能保持健康快乐。","question":"点一点这只狗生存所需要的东西！","character":{"name":"狗","emoji":"🐶"},"needs":[{"name":"食物","emoji":"🍖"},{"name":"水","emoji":"💧"},{"name":"空气","emoji":"🌬️"}],"distractors":[{"name":"积木","emoji":"🧱"},{"name":"雨伞","emoji":"☂️"},{"name":"铅笔","emoji":"✏️"}],"explanation":"像狗这样的动物每天都需要食物、水和空气才能保持健康。玩具、雨伞和铅笔都不是狗生存所需要的东西。","icon":"🐶"},{"topic":"动物","type":"select","scenario":"苏菲亚在农场看到一只猫和一只鸭子。","question":"哪一种动物会游泳？","choices":[{"label":"猫","emoji":"🐱"},{"label":"鸭子","emoji":"🦆"},{"label":"两个都不会","emoji":"🚫"}],"correct":1,"explanation":"鸭子有蹼状的脚，可以帮助它们在水中游得很好。","icon":"🦆"},{"topic":"动物","type":"select","scenario":"黄同学观察到一种全身长毛、靠喝妈妈的奶长大的动物。","question":"这属于哪一类动物？","choices":[{"label":"哺乳动物","emoji":"🐄"},{"label":"昆虫","emoji":"🐜"},{"label":"鱼类","emoji":"🐟"}],"correct":0,"explanation":"哺乳动物身上长毛，用奶喂养自己的宝宝。","icon":"🐶"},{"topic":"动物","type":"sort","scenario":"美正在把动物分成昆虫和哺乳动物。","question":"把这些动物分类成昆虫和哺乳动物！","bins":[{"name":"昆虫","emoji":"🐜"},{"name":"哺乳动物","emoji":"🐄"}],"items":[{"name":"蚂蚁","emoji":"🐜","binIndex":0},{"name":"猫","emoji":"🐱","binIndex":1},{"name":"蝴蝶","emoji":"🦋","binIndex":0},{"name":"牛","emoji":"🐄","binIndex":1}],"explanation":"像蚂蚁和蝴蝶这样的昆虫有六条腿。像猫和牛这样的哺乳动物长毛，并喝妈妈的奶。","icon":"🐜"},{"topic":"人体","type":"select","scenario":"阿曼闭上眼睛，看不见前面的玩具。","question":"哪个感觉器官帮助我们看东西？","choices":[{"label":"鼻子","emoji":"👃"},{"label":"眼睛","emoji":"👀"},{"label":"耳朵","emoji":"👂"}],"correct":1,"explanation":"眼睛是帮助我们看东西的感觉器官。","icon":"👁️"},{"topic":"人体","type":"select","scenario":"拉维闻到厨房里刚烤好的面包香味。","question":"哪个感觉器官帮助他闻到面包的香味？","choices":[{"label":"鼻子","emoji":"👃"},{"label":"舌头","emoji":"👅"},{"label":"皮肤","emoji":"✋"}],"correct":0,"explanation":"鼻子是帮助我们闻气味的感觉器官。","icon":"👃"},{"topic":"人体","type":"select","scenario":"法拉摸了摸冰块，感觉到它很冰凉。","question":"哪个感觉器官帮助她感受冷和热？","choices":[{"label":"皮肤","emoji":"✋"},{"label":"眼睛","emoji":"👀"},{"label":"耳朵","emoji":"👂"}],"correct":0,"explanation":"皮肤是帮助我们感受触摸、冷和热的感觉器官。","icon":"🧊"},{"topic":"人体","type":"select","scenario":"卡文听到朋友在远处叫他的名字。","question":"哪个感觉器官帮助他听到声音？","choices":[{"label":"眼睛","emoji":"👀"},{"label":"耳朵","emoji":"👂"},{"label":"舌头","emoji":"👅"}],"correct":1,"explanation":"耳朵是帮助我们听声音的感觉器官。","icon":"👂"},{"topic":"人体","type":"select","scenario":"阿米拉尝了一口酸柠檬，做了个怪表情。","question":"哪个感觉器官帮助她尝到食物的味道？","choices":[{"label":"舌头","emoji":"👅"},{"label":"鼻子","emoji":"👃"},{"label":"皮肤","emoji":"✋"}],"correct":0,"explanation":"舌头是帮助我们尝食物味道的感觉器官。","icon":"🍋"},{"topic":"健康习惯","type":"select","scenario":"哈菲兹每天都吃蔬菜、水果，并喝很多水。","question":"他为什么要这样做？","choices":[{"label":"为了保持健康","emoji":"💪"},{"label":"为了感到无聊","emoji":"😴"},{"label":"为了增加更多功课","emoji":"📚"}],"correct":0,"explanation":"吃健康的食物和喝水可以帮助我们的身体保持强壮和健康。","icon":"🥦"},{"topic":"健康习惯","type":"select","scenario":"丹尼斯每次吃饭前都会洗手。","question":"为什么这是一个好习惯？","choices":[{"label":"可以去除细菌","emoji":"🧼"},{"label":"可以让食物更好吃","emoji":"😋"},{"label":"可以让手变冷","emoji":"🥶"}],"correct":0,"explanation":"洗手可以去除细菌，帮助预防生病。","icon":"🧼"},{"topic":"健康习惯","type":"select","scenario":"苏菲亚每天早晚都刷牙。","question":"她为什么要刷牙？","choices":[{"label":"为了保持牙齿清洁健康","emoji":"🦷"},{"label":"为了让牙齿变大","emoji":"📏"},{"label":"为了改变牙齿的颜色","emoji":"🎨"}],"correct":0,"explanation":"刷牙可以去除食物残渣和细菌，让牙齿保持清洁健康。","icon":"🪥"},{"topic":"健康习惯","type":"select","scenario":"伟杰每天晚上都睡九个小时。","question":"为什么充足的睡眠对他很重要？","choices":[{"label":"可以让身体休息和成长","emoji":"😴"},{"label":"可以让他立刻长高","emoji":"📏"},{"label":"可以让他不用吃饭","emoji":"🚫"}],"correct":0,"explanation":"睡眠可以让身体休息、恢复精力，并正常成长。","icon":"😴"},{"topic":"健康习惯","type":"select","scenario":"爱莎每天都在户外跑步和玩耍来锻炼身体。","question":"运动对她的身体有什么好处？","choices":[{"label":"可以让身体保持健康强壮","emoji":"💪"},{"label":"会让她整天想睡觉","emoji":"😴"},{"label":"会让她停止长高","emoji":"🚫"}],"correct":0,"explanation":"经常运动可以让身体保持健康、强壮。","icon":"🏃"},{"topic":"材料","type":"select","scenario":"阿米拉有一把又硬又亮的勺子。","question":"这把勺子最可能是用什么材料做的？","choices":[{"label":"金属","emoji":"🥄"},{"label":"棉花","emoji":"🧵"},{"label":"纸","emoji":"📄"}],"correct":0,"explanation":"金属又硬又亮，所以勺子常用金属制成。","icon":"🥄"},{"topic":"材料","type":"select","scenario":"库马用一种又薄又轻、很容易撕破的材料包礼物。","question":"他最可能用了什么材料？","choices":[{"label":"纸","emoji":"📄"},{"label":"金属","emoji":"🥫"},{"label":"玻璃","emoji":"🥛"}],"correct":0,"explanation":"纸又薄又轻，而且容易撕破，所以常用来包装礼物。","icon":"🎁"},{"topic":"材料","type":"select","scenario":"美玲穿着一件摸起来很柔软舒服的衣服。","question":"这件衣服最可能是用什么材料做的？","choices":[{"label":"玻璃","emoji":"🥛"},{"label":"棉花","emoji":"🧵"},{"label":"金属","emoji":"🥫"}],"correct":1,"explanation":"棉花柔软舒适，所以常用来制作衣服。","icon":"👕"},{"topic":"材料","type":"select","scenario":"郑伟用一个透明、掉落会破碎的容器喝果汁。","question":"这个容器最可能是用什么材料做的？","choices":[{"label":"玻璃","emoji":"🥛"},{"label":"棉花","emoji":"🧵"},{"label":"木头","emoji":"🪵"}],"correct":0,"explanation":"玻璃是透明的，而且容易破碎，这与棉花或木头不同。","icon":"🥤"},{"topic":"材料","type":"select","scenario":"法里德坐在一张用树木制成的椅子上。","question":"这张椅子最可能是用什么材料做的？","choices":[{"label":"木头","emoji":"🪵"},{"label":"玻璃","emoji":"🥛"},{"label":"纸","emoji":"📄"}],"correct":0,"explanation":"木头来自树木，够坚固，可以用来制作椅子等家具。","icon":"🪑"}],
+    2:[{"topic":"动物栖息地","type":"sort","scenario":"苏菲亚正在按栖息地为动物分类。","question":"把这些动物分类成沙漠和北极！","bins":[{"name":"沙漠","emoji":"🏜️"},{"name":"北极","emoji":"❄️"}],"items":[{"name":"骆驼","emoji":"🐪","binIndex":0},{"name":"北极熊","emoji":"🐻‍❄️","binIndex":1},{"name":"蝎子","emoji":"🦂","binIndex":0},{"name":"企鹅","emoji":"🐧","binIndex":1}],"explanation":"沙漠又热又干，是骆驼和蝎子的家。北极冰天雪地，是北极熊和企鹅的家。","icon":"🐪"},{"topic":"动物栖息地","type":"sort","scenario":"伟杰正在把动物分类成海洋和森林。","question":"把这些动物分类成海洋和森林！","bins":[{"name":"海洋","emoji":"🌊"},{"name":"森林","emoji":"🌳"}],"items":[{"name":"鲨鱼","emoji":"🦈","binIndex":0},{"name":"猴子","emoji":"🐒","binIndex":1},{"name":"章鱼","emoji":"🐙","binIndex":0},{"name":"鹦鹉","emoji":"🦜","binIndex":1}],"explanation":"海洋充满咸水，是鲨鱼和章鱼的家。森林有很多树木，是猴子和鹦鹉的家。","icon":"🦈"},{"topic":"动物栖息地","type":"sort","scenario":"阿曼正在把动物分类成森林和沙漠。","question":"把这些动物分类成森林和沙漠！","bins":[{"name":"森林","emoji":"🌳"},{"name":"沙漠","emoji":"🏜️"}],"items":[{"name":"猴子","emoji":"🐒","binIndex":0},{"name":"骆驼","emoji":"🐪","binIndex":1},{"name":"巨嘴鸟","emoji":"🦜","binIndex":0},{"name":"蜥蜴","emoji":"🦎","binIndex":1}],"explanation":"森林有许多树木和水果，适合猴子和巨嘴鸟。沙漠又热又干，适合骆驼和蜥蜴。","icon":"🐒"},{"topic":"动物栖息地","type":"sort","scenario":"拉维正在把动物分类成北极和沙漠。","question":"把这些动物分类成北极和沙漠！","bins":[{"name":"北极","emoji":"❄️"},{"name":"沙漠","emoji":"🏜️"}],"items":[{"name":"北极熊","emoji":"🐻‍❄️","binIndex":0},{"name":"骆驼","emoji":"🐪","binIndex":1},{"name":"企鹅","emoji":"🐧","binIndex":0},{"name":"蛇","emoji":"🐍","binIndex":1}],"explanation":"北极冰天雪地，是北极熊和企鹅的家。沙漠又热又干，是骆驼和蛇的家。","icon":"🐻‍❄️"},{"topic":"动物栖息地","type":"sort","scenario":"法拉正在把动物分类成池塘和沙漠。","question":"把这些动物分类成池塘和沙漠！","bins":[{"name":"池塘","emoji":"🌊"},{"name":"沙漠","emoji":"🏜️"}],"items":[{"name":"青蛙","emoji":"🐸","binIndex":0},{"name":"骆驼","emoji":"🐪","binIndex":1},{"name":"鸭子","emoji":"🦆","binIndex":0},{"name":"蝎子","emoji":"🦂","binIndex":1}],"explanation":"池塘有水，是青蛙和鸭子生活的地方。沙漠又热又干，是骆驼和蝎子的家。","icon":"🐸"},{"topic":"植物","type":"sequence","scenario":"苏菲亚种下一颗种子，每个星期都去查看它的变化。","question":"点一点，把植物生命周期的各个阶段按正确顺序排列！","stages":[{"name":"种子","emoji":"🌰"},{"name":"幼苗","emoji":"🌱"},{"name":"成株","emoji":"🌿"},{"name":"开花","emoji":"🌸"}],"explanation":"植物的生命周期从种子开始，长成幼苗，再长成成株，最后能够开花。","icon":"🌰"},{"topic":"动物","type":"sequence","scenario":"卡文看着一只毛毛虫把自己包进茧里。","question":"点一点，把蝴蝶生命周期的各个阶段按正确顺序排列！","stages":[{"name":"卵","emoji":"🥚"},{"name":"毛毛虫","emoji":"🐛"},{"name":"茧","emoji":"🛖"},{"name":"蝴蝶","emoji":"🦋"}],"explanation":"蝴蝶从卵开始，变成毛毛虫，再变成茧，最后变成蝴蝶。","icon":"🦋"},{"topic":"动物","type":"sequence","scenario":"阿米拉看到池塘里有一些长着尾巴但没有腿的蝌蚪在游泳。","question":"点一点，把青蛙生命周期的各个阶段按正确顺序排列！","stages":[{"name":"卵","emoji":"🥚"},{"name":"蝌蚪","emoji":"🐡"},{"name":"幼蛙","emoji":"🐸"},{"name":"青蛙","emoji":"🐸"}],"explanation":"青蛙的生命周期从卵开始，孵化成蝌蚪，长出腿变成幼蛙，最后变成成蛙。","icon":"🐸"},{"topic":"动物","type":"sequence","scenario":"哈菲兹看到一只母鸡坐在蛋上，让蛋保持温暖。","question":"点一点，把鸡的生命周期的各个阶段按正确顺序排列！","stages":[{"name":"蛋","emoji":"🥚"},{"name":"小鸡","emoji":"🐤"},{"name":"母鸡","emoji":"🐔"}],"explanation":"鸡的生命周期从蛋开始，孵化成小鸡，最后长成母鸡。","icon":"🐔"},{"topic":"动物","type":"select","scenario":"丹尼斯了解到有些动物会经历卵、幼虫、蛹和成虫这几个阶段。","question":"哪种动物有这样的生命周期？","choices":[{"label":"蝴蝶","emoji":"🦋"},{"label":"猫","emoji":"🐱"},{"label":"牛","emoji":"🐄"}],"correct":0,"explanation":"蝴蝶会经历卵、幼虫（毛毛虫）、蛹和成虫这几个阶段。","icon":"🦋"},{"topic":"人体","type":"select","scenario":"苏菲亚曾经是个小婴儿，但现在她长高了，还会走路和说话。","question":"苏菲亚这段时间发生了什么变化？","choices":[{"label":"她长大了","emoji":"📏"},{"label":"她变小了","emoji":"📉"},{"label":"她变成了动物","emoji":"🐾"}],"correct":0,"explanation":"随着年龄增长，人的身体会长得更高更强壮。","icon":"👶"},{"topic":"人体","type":"select","scenario":"伟杰每天都吃均衡的饮食，包括米饭、蔬菜、鱼和水果。","question":"为什么均衡饮食对成长很重要？","choices":[{"label":"它能给身体提供成长所需的营养","emoji":"🥗"},{"label":"它会让身体变小","emoji":"📉"},{"label":"它会阻止身体成长","emoji":"🚫"}],"correct":0,"explanation":"均衡饮食能提供营养，帮助身体成长并保持健康。","icon":"🍚"},{"topic":"人体","type":"select","scenario":"法拉的小弟弟还不会走路，但法拉已经会走路和跑步了。","question":"为什么法拉能做比弟弟更多的事情？","choices":[{"label":"她年纪更大，成长得更多","emoji":"🎂"},{"label":"她吃了更多糖果","emoji":"🍬"},{"label":"她比弟弟小","emoji":"👶"}],"correct":0,"explanation":"随着孩子年龄增长，他们的身体和能力也会继续发展。","icon":"🚶"},{"topic":"人体","type":"sequence","scenario":"阿曼的老师给他看一些不同年龄阶段的人的照片。","question":"点一点，把人类成长的各个阶段按正确顺序排列！","stages":[{"name":"婴儿","emoji":"👶"},{"name":"儿童","emoji":"🧒"},{"name":"青少年","emoji":"🧑"},{"name":"成人","emoji":"🧑‍💼"}],"explanation":"人类会经历婴儿、儿童、青少年和成人这几个成长阶段。","icon":"👶"},{"topic":"人体","type":"select","scenario":"普里雅每年身高都会长高两厘米。","question":"是什么原因导致她的身高发生这种变化？","choices":[{"label":"成长","emoji":"📈"},{"label":"生病","emoji":"🤒"},{"label":"睡觉","emoji":"😴"}],"correct":0,"explanation":"成长是身体随时间自然变大的过程。","icon":"📏"},{"topic":"健康习惯","type":"select","scenario":"阿米拉咳嗽时会用纸巾捂住嘴巴。","question":"为什么这是一个健康的习惯？","choices":[{"label":"可以防止细菌传播","emoji":"🦠"},{"label":"可以让她咳得更大声","emoji":"🔊"},{"label":"可以让她感到饥饿","emoji":"😋"}],"correct":0,"explanation":"咳嗽时捂住嘴巴可以防止细菌传播给别人。","icon":"🤧"},{"topic":"健康习惯","type":"select","scenario":"法里德吃太多含糖食物，很少吃蔬菜。","question":"他的健康可能会发生什么？","choices":[{"label":"他可能会变得不健康","emoji":"🤒"},{"label":"他会立刻长高","emoji":"📈"},{"label":"他的牙齿会变得更坚固","emoji":"🦷"}],"correct":0,"explanation":"吃太多糖、太少蔬菜可能会损害健康。","icon":"🍬"},{"topic":"健康习惯","type":"select","scenario":"美玲骑脚踏车时会戴头盔。","question":"她为什么要戴头盔？","choices":[{"label":"为了保护头部不受伤","emoji":"🪖"},{"label":"为了骑得更快","emoji":"🏃"},{"label":"为了保持凉快","emoji":"🥶"}],"correct":0,"explanation":"头盔可以在骑车者跌倒或发生意外时保护头部。","icon":"🚴"},{"topic":"健康习惯","type":"select","scenario":"库马每天洗澡，并穿干净的衣服。","question":"为什么个人卫生很重要？","choices":[{"label":"可以远离细菌和疾病","emoji":"🧼"},{"label":"会让衣服破损","emoji":"👕"},{"label":"会让他感到疲累","emoji":"😴"}],"correct":0,"explanation":"保持清洁有助于去除细菌，预防生病。","icon":"🛁"},{"topic":"健康习惯","type":"select","scenario":"郑伟每天下午都会在户外玩一个小时。","question":"户外玩耍对他的健康有什么好处？","choices":[{"label":"能让身体保持活跃健康","emoji":"🏃"},{"label":"会让他变得虚弱","emoji":"😴"},{"label":"会阻止他成长","emoji":"🚫"}],"correct":0,"explanation":"户外玩耍和运动有助于让身体保持活跃、健康。","icon":"⚽"},{"topic":"材料","type":"select","scenario":"爱莎发现一条橡皮筋可以被拉伸，然后恢复原来的形状。","question":"这条橡皮筋具有什么特性？","choices":[{"label":"弹性","emoji":"➰"},{"label":"硬度","emoji":"🪨"},{"label":"透明度","emoji":"🪟"}],"correct":0,"explanation":"弹性是指材料被拉伸或挤压后能恢复原来形状的能力。","icon":"➰"},{"topic":"材料","type":"select","scenario":"丹尼斯透过一扇透明的玻璃窗看到外面的景色。","question":"是什么特性让他能透过玻璃看到东西？","choices":[{"label":"透明度","emoji":"🪟"},{"label":"弹性","emoji":"➰"},{"label":"柔软度","emoji":"🧽"}],"correct":0,"explanation":"像玻璃这样的透明材料可以让光线穿过，所以我们能透过它看东西。","icon":"🪟"},{"topic":"材料","type":"select","scenario":"拉维试着弯曲一把金属勺子，但它一直保持笔直。","question":"这把金属勺子具有什么特性？","choices":[{"label":"硬度","emoji":"🥄"},{"label":"柔软度","emoji":"🧽"},{"label":"弹性","emoji":"➰"}],"correct":0,"explanation":"像金属这样的硬材料不容易弯曲或改变形状。","icon":"🥄"},{"topic":"材料","type":"select","scenario":"法拉挤压一块柔软的海绵，它很容易改变形状。","question":"这块海绵具有什么特性？","choices":[{"label":"柔软度","emoji":"🧽"},{"label":"硬度","emoji":"🥄"},{"label":"透明度","emoji":"🪟"}],"correct":0,"explanation":"像海绵这样的柔软材料可以被挤压，并容易改变形状。","icon":"🧽"},{"topic":"材料","type":"select","scenario":"卡文发现他的雨衣不会让水渗透进去。","question":"这件雨衣的材料具有什么特性？","choices":[{"label":"防水","emoji":"☔"},{"label":"透明","emoji":"🪟"},{"label":"有弹性","emoji":"➰"}],"correct":0,"explanation":"防水材料不会让水渗透，可以让我们保持干爽。","icon":"☔"},{"topic":"冷与热","type":"sort","scenario":"阿米拉正在把东西分类成热和冷。","question":"把这些东西分类成热和冷！","bins":[{"name":"热","emoji":"🔥"},{"name":"冷","emoji":"❄️"}],"items":[{"name":"热茶","emoji":"☕","binIndex":0},{"name":"冰块","emoji":"🧊","binIndex":1},{"name":"热汤","emoji":"🍲","binIndex":0},{"name":"冰饮料","emoji":"🥤","binIndex":1}],"explanation":"像热茶和热汤这样的热东西可能会烫伤皮肤。像冰块和冰饮料这样的冷东西摸起来很凉。","icon":"☕"},{"topic":"冷与热","type":"select","scenario":"哈菲兹把一块冰放在手上，它慢慢地消失了。","question":"冰块变暖后会发生什么？","choices":[{"label":"它融化成水","emoji":"💧"},{"label":"它变成石头","emoji":"🪨"},{"label":"它像魔法一样消失","emoji":"✨"}],"correct":0,"explanation":"冰变暖后会融化，变成水。","icon":"🧊"},{"topic":"冷与热","type":"select","scenario":"苏菲亚把一碗热汤留在桌上，过了一会儿它变得温热了。","question":"随着时间的推移，这碗汤发生了什么变化？","choices":[{"label":"它变凉了","emoji":"📉"},{"label":"它变得更烫了","emoji":"📈"},{"label":"它变成了冰","emoji":"🧊"}],"correct":0,"explanation":"热的东西会随着时间流失热量，慢慢变凉。","icon":"🍲"},{"topic":"冷与热","type":"select","scenario":"伟杰在寒冷刮风的日子里穿了一件厚外套。","question":"他为什么要穿这件外套？","choices":[{"label":"为了保持身体温暖","emoji":"🧥"},{"label":"为了让身体变凉","emoji":"🥵"},{"label":"为了让身体变湿","emoji":"💦"}],"correct":0,"explanation":"厚外套能锁住热量，帮助我们在寒冷天气中保持温暖。","icon":"🧥"},{"topic":"冷与热","type":"select","scenario":"法拉把冰凉的饮料放在户外炎热的地方，过了一会儿它慢慢变温了。","question":"为什么这杯冰饮料会变温？","choices":[{"label":"它从周围环境中吸收了热量","emoji":"☀️"},{"label":"它失去了味道","emoji":"🎨"},{"label":"它变成了冰","emoji":"🧊"}],"correct":0,"explanation":"冷的物体会随着时间从较温暖的周围环境中吸收热量。","icon":"🥤"}],
+    3:[{"topic":"物质的状态","scenario":"阿里把橙汁倒进杯子里，它变成了杯子的形状。","question":"橙汁属于哪种物质状态？","choices":["固体","液体","气体"],"correct":1,"explanation":"液体会随着容器的形状而改变，就像杯子里的橙汁一样。","icon":"🧃"},{"topic":"物质的状态","scenario":"美玲手里拿着一块冰块，它一直保持着原来的形状。","question":"冰块属于哪种物质状态？","choices":["固体","液体","气体"],"correct":0,"explanation":"固体有固定的形状，不会改变，就像这块冰块一样。","icon":"🧊"},{"topic":"物质的状态","scenario":"库马看到一锅正在煮沸的水冒出水蒸气。","question":"水蒸气属于哪种物质状态？","choices":["固体","液体","气体"],"correct":2,"explanation":"水蒸气是水的气体状态，它会扩散开来，没有固定的形状。","icon":"💨"},{"topic":"物质的状态","scenario":"法拉把冰淇淋留在户外，它慢慢变成了液体。","question":"这种变化叫什么？","choices":["融化","凝固","蒸发"],"correct":0,"explanation":"融化是固体因受热而变成液体的过程。","icon":"🍦"},{"topic":"物质的状态","scenario":"丹尼斯把水放进冰箱，几个小时后它变硬了。","question":"这种变化叫什么？","choices":["凝固","融化","沸腾"],"correct":0,"explanation":"凝固是液体因低温而变成固体的过程。","icon":"🧊"},{"topic":"物质的状态","scenario":"阿米拉煮沸一锅水，发现它慢慢变成水蒸气消失了。","question":"这种变化叫什么？","choices":["蒸发","凝固","融化"],"correct":0,"explanation":"蒸发是液体因受热而变成气体的过程。","icon":"💨"},{"topic":"水循环","scenario":"哈菲兹发现炎热的一天，冰凉的玻璃杯外面出现了水珠。","question":"这个过程叫什么？","choices":["凝结","蒸发","降水"],"correct":0,"explanation":"凝结是指空气中的水蒸气变回液态水的过程。","icon":"💦"},{"topic":"水循环","scenario":"普里雅注意到在阳光明媚的日子里，地上的水坑渐渐消失了。","question":"水坑里的水去哪里了？","choices":["它蒸发到空气中了","它永远消失了","它变成了石头"],"correct":0,"explanation":"水受到阳光加热后会蒸发，变成水蒸气进入空气中。","icon":"☀️"},{"topic":"水循环","scenario":"苏菲亚在下雨前看到天空中出现了乌云。","question":"从云中落下的雨叫什么？","choices":["降水","蒸发","凝结"],"correct":0,"explanation":"降水是指从云中落下的雨、雪或冰雹等。","icon":"🌧️"},{"topic":"水循环","scenario":"伟杰了解到水会不断经历蒸发、凝结和降水这几个过程。","question":"这个不断重复的过程叫什么？","choices":["水循环","食物链","生命周期"],"correct":0,"explanation":"水循环是水在地球和天空之间不断循环流动的过程。","icon":"🔄"},{"topic":"水循环","scenario":"阿曼看到云在天空高处形成。","question":"云主要是由什么组成的？","choices":["微小的水滴","固体岩石","金属尘埃"],"correct":0,"explanation":"云是由凝结形成的微小水滴组成的。","icon":"☁️"},{"topic":"磁铁","type":"magnet","scenario":"拉维有一块磁铁，他想知道磁铁会吸引哪些物品。","question":"先点一点你认为磁铁会吸引的物品，然后测试看看！","objects":[{"name":"回形针","emoji":"📎","magnetic":true},{"name":"金属勺子","emoji":"🥄","magnetic":true},{"name":"塑料球","emoji":"⚽","magnetic":false},{"name":"铁钉","emoji":"🔩","magnetic":true},{"name":"木铅笔","emoji":"✏️","magnetic":false},{"name":"橡皮擦","emoji":"🧽","magnetic":false}],"explanation":"磁铁会吸引铁、钢等金属制成的物品，比如回形针、勺子和钉子。它不会吸引塑料、木头或橡胶。","icon":"🧲"},{"topic":"磁铁","scenario":"法丽达试着用磁铁吸起一把塑料勺子，但它没有移动。","question":"为什么磁铁不能吸引塑料勺子？","choices":["塑料不会被磁铁吸引","磁铁太弱了","勺子太重了"],"correct":0,"explanation":"磁铁只能吸引某些金属，不能吸引塑料或木头等材料。","icon":"🥄"},{"topic":"磁铁","scenario":"卡文把两块磁铁相同的磁极靠近，它们互相推开了。","question":"磁铁的同极相遇时会发生什么？","choices":["它们互相排斥","它们互相吸引","它们黏在一起"],"correct":0,"explanation":"磁铁的同极（N-N或S-S）相遇时会互相排斥，也就是互相推开。","icon":"🧲"},{"topic":"磁铁","scenario":"阿米拉把一块磁铁的N极靠近另一块磁铁的S极。","question":"异极相遇时会发生什么？","choices":["它们互相吸引","它们互相排斥","什么都不会发生"],"correct":0,"explanation":"磁铁的异极（N-S）相遇时会互相吸引，也就是互相靠近。","icon":"🧲"},{"topic":"磁铁","scenario":"丹尼斯用磁铁从一堆混合材料中挑出金属钉子。","question":"为什么磁铁对这项任务很有用？","choices":["它能吸引铁钉这样的金属物品","它能改变金属的颜色","它能把铁钉融化"],"correct":0,"explanation":"磁铁能吸引金属物品，因此很适合用来分类材料。","icon":"📌"},{"topic":"光","scenario":"法拉用手电筒照向一面镜子，光反弹了回来。","question":"这种光的反弹现象叫什么？","choices":["反射","吸收","折射"],"correct":0,"explanation":"反射是指光碰到镜子这样光滑的表面时反弹回来的现象。","icon":"🔦"},{"topic":"光","scenario":"郑伟站在阳光下，看到自己身后地上出现了一个黑色的形状。","question":"这个黑色的形状叫什么？","choices":["影子","反射","彩虹"],"correct":0,"explanation":"当物体挡住光线通过时，就会形成影子。","icon":"👤"},{"topic":"光","scenario":"苏菲亚试着透过一扇厚厚的木门看东西，但看不见。","question":"为什么光不能穿过这扇木门？","choices":["木头是不透明的材料","木头是透明的","木头会自己发光"],"correct":0,"explanation":"像木头这样不透明的材料不会让光线穿过。","icon":"🚪"},{"topic":"光","scenario":"阿曼透过一扇透明的玻璃窗清楚地看到了花园。","question":"为什么光可以穿过玻璃？","choices":["玻璃是透明的材料","玻璃是不透明的","玻璃会挡住所有的光"],"correct":0,"explanation":"像玻璃这样透明的材料能让光线轻易穿过。","icon":"🪟"},{"topic":"光","scenario":"库马注意到当太阳直射在他头顶上方时，他的影子变短了。","question":"是什么原因让影子的大小发生变化？","choices":["太阳的位置","他衬衫的颜色","他穿的鞋子种类"],"correct":0,"explanation":"光源的位置改变会影响影子的大小和形状。","icon":"🕐"},{"topic":"力","scenario":"阿米拉推着购物车让它向前移动。","question":"这个动作叫什么？","choices":["推力","拉力","拉伸力"],"correct":0,"explanation":"推力是把物体推离自己的力。","icon":"🛒"},{"topic":"力","scenario":"哈菲兹拉动一根绳子，把玩具船拉得更靠近自己。","question":"这个动作叫什么？","choices":["拉力","推力","扭力"],"correct":0,"explanation":"拉力是把物体拉向自己的力。","icon":"⛵"},{"topic":"力","scenario":"普里雅发现一个在草地上滚动的球，过了一会儿就停下来了。","question":"是什么力让球慢下来并停止？","choices":["摩擦力","磁力","单纯的重力"],"correct":0,"explanation":"摩擦力是物体表面之间产生的力，会让移动的物体减速。","icon":"⚽"},{"topic":"力","scenario":"伟杰把一个球扔出去，它笔直地落回地面。","question":"是什么力把球拉向地面？","choices":["重力","摩擦力","磁力"],"correct":0,"explanation":"重力是把物体拉向地球的力。","icon":"⚽"},{"topic":"材料","scenario":"拉维把一块木块和一根铁钉放进一桶水里。","question":"木块最可能会怎样？","choices":["浮起来","沉下去","消失不见"],"correct":0,"explanation":"木头相对于它的大小来说很轻，通常会浮在水面上。","icon":"🪵"},{"topic":"材料","scenario":"法丽达把一根很重的铁钉放进一桶水里。","question":"这根铁钉最可能会怎样？","choices":["沉下去","浮起来","变成气体"],"correct":0,"explanation":"铁相对于它的大小来说很重，通常会沉入水中。","icon":"🔩"},{"topic":"材料","scenario":"卡文测试不同的物体，看看哪些会浮起来，哪些会沉下去。","question":"决定物体是浮还是沉的主要因素是什么？","choices":["它的重量和大小","它的颜色","它的气味"],"correct":0,"explanation":"一个物体是浮还是沉，主要取决于它的重量和大小的比例。","icon":"🪣"},{"topic":"材料","scenario":"阿米拉把大小相同的一个塑料球和一个金属球放进水里。","question":"哪一个更可能浮起来？","choices":["塑料球","金属球","两个都会沉下去"],"correct":0,"explanation":"相同大小下，塑料通常比金属轻，所以更容易浮起来。","icon":"⚫"},{"topic":"材料","scenario":"丹尼斯发现一艘用金属制造的大船仍然能浮在海面上。","question":"为什么这艘沉重的金属船能浮在水面上？","choices":["它的形状把重量分散开来","金属总是会浮起来","海里没有水"],"correct":0,"explanation":"船宽大中空的形状把重量分散开来，所以尽管是金属做的，仍然能浮起来。","icon":"🚢"}],
+    4:[{"topic":"电","scenario":"阿曼把电池、电线和灯泡连接在一起，灯泡亮了起来。","question":"这条让电流通过的完整路径叫什么？","choices":["电路","磁铁","影子"],"correct":0,"explanation":"电路是让电流通过、点亮灯泡的完整路径。","icon":"💡"},{"topic":"电","scenario":"拉维从电路中拿掉一根电线，灯泡就不亮了。","question":"为什么灯泡不亮了？","choices":["电路不再完整了","电池变大了","灯泡变成了磁铁"],"correct":0,"explanation":"如果电路被切断或不完整，电流就无法通过，灯泡就不会亮。","icon":"🔌"},{"topic":"电","scenario":"法拉用一把金属勺子和一块橡皮擦来测试哪个能让电流通过。","question":"哪种材料是更好的电导体？","choices":["金属勺子","橡皮擦","两个都不是"],"correct":0,"explanation":"金属是良好的电导体，而橡胶则是绝缘体。","icon":"🥄"},{"topic":"电","scenario":"库马在触摸电线之前，先用塑料把电线包起来。","question":"为什么要用塑料包起来？","choices":["塑料是绝缘体，能防止触电","塑料能让电流变强","塑料能让电线变重"],"correct":0,"explanation":"塑料是绝缘体，意思是它不会让电流通过，可以保护我们的安全。","icon":"🔌"},{"topic":"电","scenario":"美玲离开房间前，关掉灯并拔掉风扇的插头。","question":"为什么这是一个好习惯？","choices":["可以节省电","可以让房间变冷","可以阻止太阳发光"],"correct":0,"explanation":"关掉不使用的电器有助于节省电力，减少浪费。","icon":"💡"},{"topic":"冷与热","scenario":"丹尼斯用温度计测量热汤的温度。","question":"温度计能测量什么？","choices":["温度","重量","长度"],"correct":0,"explanation":"温度计是用来测量物体冷热程度的工具。","icon":"🌡️"},{"topic":"冷与热","scenario":"普里雅把一把金属勺子和一把木勺子放进一杯热汤里。","question":"哪把勺子会更快变热？","choices":["金属勺子","木勺子","两把一样快"],"correct":0,"explanation":"金属是热的良导体，所以比木头更快变热。","icon":"🍲"},{"topic":"冷与热","scenario":"伟杰摸了摸放在热汤里的木勺柄，发现它仍然是凉的。","question":"为什么木柄仍然保持凉爽？","choices":["木头是热的不良导体","木头能完全隔绝热量","木头一直都是冷的"],"correct":0,"explanation":"木头是热的不良导体，也叫绝缘体，所以不会很快变热。","icon":"🥄"},{"topic":"光","scenario":"苏菲亚把一个物体放在灯和墙壁之间，墙上出现了一个黑影。","question":"是什么因素影响影子的大小？","choices":["物体与光源之间的距离","墙壁的颜色","物体的气味"],"correct":0,"explanation":"把物体移近或移远光源，会改变它影子的大小。","icon":"🔦"},{"topic":"光","scenario":"爱莎用手电筒斜着照向一面平整的镜子。","question":"光碰到镜子时会发生什么？","choices":["它以一定角度反射出去","它完全消失","它只变成了热量"],"correct":0,"explanation":"光会以一定的角度从镜子光滑的表面反射出去。","icon":"🪞"},{"topic":"光","scenario":"哈菲兹发现自己清晨的影子很长，而中午时影子很短。","question":"为什么他的影子在一天中会发生变化？","choices":["太阳在天空中的位置改变了","他的身高一直在变","地面的颜色改变了"],"correct":0,"explanation":"随着一天中太阳位置的改变，影子的长度也会改变。","icon":"👤"},{"topic":"力","scenario":"阿米拉发现在粗糙的地毯上推箱子，比在光滑的地板上更费力。","question":"为什么在地毯上推箱子更费力？","choices":["地毯上的摩擦力更大","地毯上的重力更小","地毯是一块磁铁"],"correct":0,"explanation":"粗糙的表面会产生更大的摩擦力，让物体更难滑动。","icon":"📦"},{"topic":"力","scenario":"卡文快速地搓手，双手开始感到温暖。","question":"是什么力让他的手感到温暖？","choices":["摩擦力","重力","磁力"],"correct":0,"explanation":"双手之间的摩擦力产生了热量，使双手感到温暖。","icon":"👐"},{"topic":"力","scenario":"法里德把球高高地扔向空中，最后球又落回地面。","question":"是什么力把球拉回地面？","choices":["重力","摩擦力","磁力"],"correct":0,"explanation":"重力把所有物体都拉向地球，所以球最后会落回地面。","icon":"⚾"},{"topic":"力","scenario":"郑伟发现给脚踏车的轮子上油后，比没上油时骑得更顺畅。","question":"为什么上油会有帮助？","choices":["它减少了活动部件之间的摩擦力","它增加了重力","它增加了重量"],"correct":0,"explanation":"油能减少活动部件之间的摩擦力，让轮子转动得更顺畅。","icon":"🚲"},{"topic":"物质的状态","scenario":"阿里看到水壶里的水沸腾，变成了水蒸气。","question":"是什么原因让水变成水蒸气？","choices":["加热水","冷却水","冷冻水"],"correct":0,"explanation":"加热液体会使它蒸发，变成像水蒸气这样的气体。","icon":"☕"},{"topic":"物质的状态","scenario":"美玲把一盘水放进冰箱冷冻一整晚。","question":"这些水会变成哪种物质状态？","choices":["固体","气体","仍然是液体"],"correct":0,"explanation":"把水冷却到冰点以下，会使它从液体变成固体（冰）。","icon":"🧊"},{"topic":"物质的状态","scenario":"库马发现冷玻璃窗上的水蒸气变成了水珠。","question":"这种气体变成液体的过程叫什么？","choices":["凝结","蒸发","融化"],"correct":0,"explanation":"凝结是指像水蒸气这样的气体变成液体的过程。","icon":"🪟"},{"topic":"物质的状态","scenario":"法拉观察到桌上温暖的冰块正在变成水。","question":"这是哪种物质状态的变化？","choices":["固体变液体","液体变气体","气体变固体"],"correct":0,"explanation":"融化是固体因受热而变成液体状态的过程。","icon":"🍦"},{"topic":"食物链","scenario":"丹尼斯了解到草被蚱蜢吃掉，蚱蜢又被青蛙吃掉。","question":"我们把这种取食关系叫做什么？","choices":["食物链","水循环","生命周期"],"correct":0,"explanation":"食物链展示了能量如何通过取食关系从一种生物传递到另一种生物。","icon":"🦗"},{"topic":"食物链","scenario":"普里雅了解到植物利用阳光自己制造食物。","question":"在食物链中，植物被称为什么？","choices":["生产者","消费者","分解者"],"correct":0,"explanation":"植物被称为生产者，因为它们能自己生产（制造）食物。","icon":"🌿"},{"topic":"食物链","scenario":"苏菲亚了解到兔子靠吃植物来生存。","question":"我们把吃植物的动物叫做什么？","choices":["草食动物","肉食动物","生产者"],"correct":0,"explanation":"草食动物是指只吃植物的动物。","icon":"🐰"},{"topic":"食物链","scenario":"伟杰了解到狮子靠吃其他动物来生存。","question":"我们把吃其他动物的动物叫做什么？","choices":["肉食动物","草食动物","生产者"],"correct":0,"explanation":"肉食动物是指只吃其他动物的动物。","icon":"🦁"},{"topic":"食物链","scenario":"阿曼了解到有一种动物既吃植物也吃其他动物。","question":"我们把这种动物叫做什么？","choices":["杂食动物","草食动物","生产者"],"correct":0,"explanation":"杂食动物是指既吃植物又吃其他动物的动物。","icon":"🐻"},{"topic":"材料","scenario":"拉维发现橡胶轮胎被挤压后能弹回原来的形状。","question":"是什么特性让轮胎能这样？","choices":["弹性","硬度","透明度"],"correct":0,"explanation":"像橡胶这样有弹性的材料可以被拉伸或挤压，然后恢复原来的形状。","icon":"🛞"},{"topic":"材料","scenario":"法丽达比较了雨伞的外层材料和浴巾的材料。","question":"哪种材料更可能是防水的？","choices":["雨伞的材料","浴巾","两者一样"],"correct":0,"explanation":"雨伞是用防水材料制成的，用来保持人不被淋湿，这与吸水的毛巾不同。","icon":"☔"},{"topic":"材料","scenario":"卡文发现他的冬季外套比薄棉衬衫更能保暖。","question":"为什么外套能让他更暖和？","choices":["它比薄棉布更能锁住热量","它比衬衫更重","它的颜色更鲜艳"],"correct":0,"explanation":"较厚的材料，比如外套，能更好地锁住体温，让穿着的人更暖和。","icon":"🧥"},{"topic":"电","scenario":"阿米拉用开关来打开和关闭一盏灯。","question":"开关对电路起什么作用？","choices":["接通或切断电路","改变灯光的颜色","让灯泡变大"],"correct":0,"explanation":"开关能打开或关闭电路，控制电流的通断。","icon":"🔘"},{"topic":"力","scenario":"哈菲兹发现玩具车在光滑的瓷砖地板上比在粗糙的地毯上滑得更远。","question":"为什么玩具车在瓷砖地板上滑得更远？","choices":["瓷砖地板上的摩擦力更小","瓷砖地板上的重力更大","玩具车变轻了"],"correct":0,"explanation":"光滑的表面产生的摩擦力较小，物体更容易移动，滑行得更远。","icon":"🚗"},{"topic":"食物链","scenario":"美玲了解到老鹰吃蛇，蛇吃老鼠，老鼠吃谷物。","question":"在这条食物链中，哪个是生产者？","choices":["谷物","老鼠","老鹰"],"correct":0,"explanation":"谷物是生产者，因为它是利用阳光自己制造食物的植物。","icon":"🦅"}],
+    5:[{"topic":"能量","scenario":"阿里把台灯插上电源，房间就亮了起来。","question":"这里是什么能量转变成了光能？","choices":["电能","声能","食物中的化学能"],"correct":0,"explanation":"插座里的电能在台灯中转变成了光能。","icon":"💡"},{"topic":"能量","scenario":"拉维在田野里跑步前吃了一根香蕉。","question":"食物中的什么能量帮助他跑步？","choices":["化学能转变成运动能","光能转变成声能","热能转变成电能"],"correct":0,"explanation":"食物中储存的化学能，在我们活动时会转变成运动（动）能。","icon":"🍌"},{"topic":"能量","scenario":"法拉快速地搓手，双手感到温暖。","question":"这里发生了什么能量转变？","choices":["运动能转变成热能","光能转变成声能","热能转变成电能"],"correct":0,"explanation":"搓手时的运动（动）能，通过摩擦转变成了热能。","icon":"👐"},{"topic":"能量","scenario":"库马在阳光下用太阳能板给计算器充电。","question":"太阳能板中发生了什么能量转变？","choices":["光能转变成电能","声能转变成热能","电能转变成化学能"],"correct":0,"explanation":"太阳能板把来自太阳的光能转变成电能。","icon":"☀️"},{"topic":"能量","scenario":"美玲敲打一面鼓，发出了很大的声音。","question":"她敲鼓时发生了什么能量转变？","choices":["运动能转变成声能","热能转变成光能","化学能转变成电能"],"correct":0,"explanation":"敲鼓的运动（动）能转变成了我们能听到的声能。","icon":"🥁"},{"topic":"食物链","scenario":"丹尼斯画了一张图，显示草、蚱蜢、青蛙和蛇都相互连接在一起。","question":"当许多条食物链连接在一起时，这叫做什么？","choices":["食物网","水循环","生命周期"],"correct":0,"explanation":"食物网是由生态系统中好几条食物链相互连接、重叠而形成的。","icon":"🐍"},{"topic":"食物链","scenario":"普里雅了解到蘑菇会把死去的植物和动物分解，变成土壤中的养分。","question":"蘑菇在食物链中扮演什么角色？","choices":["分解者","生产者","肉食动物"],"correct":0,"explanation":"像蘑菇和细菌这样的分解者，会分解死去的生物，把养分归还给土壤。","icon":"🍄"},{"topic":"食物链","scenario":"苏菲亚了解到如果田里的草全部消失，蚱蜢就会没有食物。","question":"那些以蚱蜢为食的动物最可能会怎样？","choices":["它们也会缺乏食物","它们会长得更大","它们会变成生产者"],"correct":0,"explanation":"如果食物链中的一环消失，依赖它的动物也会受到影响。","icon":"🦗"},{"topic":"食物链","scenario":"伟杰了解到来自太阳的能量先传给植物，再传给吃植物的动物。","question":"食物链中大部分能量最初来自哪里？","choices":["太阳","泥土","空气"],"correct":0,"explanation":"太阳是几乎所有食物链最初的能量来源，从植物开始传递。","icon":"☀️"},{"topic":"适应","scenario":"阿曼了解到骆驼可以在驼峰里储存脂肪作为能量。","question":"驼峰是怎样帮助骆驼生存的？","choices":["能帮助骆驼在很长时间没有食物的情况下生存","能帮助骆驼飞行","能帮助骆驼在水下呼吸"],"correct":0,"explanation":"骆驼的驼峰储存脂肪，在食物稀少时为它提供能量。","icon":"🐪"},{"topic":"适应","scenario":"卡文了解到北极熊长着厚厚的白色毛发。","question":"这些毛发是怎样帮助北极熊在北极生存的？","choices":["能让它保暖，并帮助它融入雪地","能帮助它在水下呼吸","能帮助它在风中飞行"],"correct":0,"explanation":"厚厚的白色毛发能让北极熊保暖，并让它在雪地中不容易被发现。","icon":"🐻‍❄️"},{"topic":"适应","scenario":"法里德了解到仙人掌的茎很粗，叶子很少。","question":"这些特征是怎样帮助仙人掌在沙漠中生存的？","choices":["能帮助它储存水分并减少水分流失","能帮助仙人掌飞行","能帮助仙人掌捕食昆虫"],"correct":0,"explanation":"仙人掌用粗茎储存水分，叶子少可以减少水分的流失。","icon":"🌵"},{"topic":"适应","scenario":"郑伟了解到鸭子有蹼状的脚。","question":"蹼状的脚是怎样帮助鸭子的？","choices":["能帮助它在水中更容易地游泳","能帮助它爬树","能帮助它在地下挖洞"],"correct":0,"explanation":"蹼状的脚就像船桨一样，能帮助鸭子有效地在水中游泳。","icon":"🦆"},{"topic":"水循环","scenario":"阿米拉研究水是如何从海洋蒸发、形成云朵，再以雨的形式落下的。","question":"推动水循环的主要能量来源是什么？","choices":["太阳","月亮","单纯的风"],"correct":0,"explanation":"太阳的热量使水蒸发，为整个水循环提供动力。","icon":"🌊"},{"topic":"水循环","scenario":"哈菲兹了解到雨水流入河流，最终又流回大海。","question":"这种水流回大海的过程叫什么？","choices":["径流","凝结","蒸发"],"correct":0,"explanation":"径流是指水沿着地面流动，最终流回河流、湖泊和大海。","icon":"🏞️"},{"topic":"水循环","scenario":"普里雅注意到清晨湖边出现了薄雾。","question":"这种薄雾最可能是通过什么过程形成的？","choices":["冷空气中的水蒸气凝结","固态冰的蒸发","冻结的水融化"],"correct":0,"explanation":"薄雾是空气中的水蒸气在冷空气中凝结成微小水滴形成的。","icon":"🌫️"},{"topic":"太阳系","scenario":"苏菲亚了解到地球是几颗围绕太阳运行的行星之一。","question":"行星围绕太阳运行的路径叫什么？","choices":["轨道","影子","电路"],"correct":0,"explanation":"轨道是行星围绕太阳运行时所经过的弯曲路径。","icon":"🪐"},{"topic":"太阳系","scenario":"伟杰了解到地球每24小时会自转一圈。","question":"这种自转会造成什么现象？","choices":["昼夜","仅仅是季节","水循环"],"correct":0,"explanation":"地球绕自身轴自转，造成了白天和黑夜。","icon":"🌓"},{"topic":"太阳系","scenario":"阿曼了解到水星、金星、地球和火星比其他行星更靠近太阳。","question":"这四颗靠近太阳的行星被称为什么？","choices":["内行星","外行星","矮行星"],"correct":0,"explanation":"水星、金星、地球和火星被称为内行星，因为它们的轨道最靠近太阳。","icon":"☿️"},{"topic":"太阳系","scenario":"拉维了解到月亮本身不会发光。","question":"为什么我们在夜晚能看到月亮发亮？","choices":["它反射了太阳的光","它自己会发光","它从星星那里借来光"],"correct":0,"explanation":"月亮反射太阳的光，这就是我们能在夜晚看到它发亮的原因。","icon":"🌕"},{"topic":"太阳系","scenario":"法拉了解到太阳比地球大得多，能自己发出光和热。","question":"太阳是哪种天体？","choices":["恒星","行星","卫星"],"correct":0,"explanation":"太阳是一颗能自己产生光和热的恒星。","icon":"☀️"},{"topic":"力","scenario":"库马用杠杆更轻松地抬起一块重石头。","question":"杠杆是什么的例子？","choices":["简单机械","磁铁","电路"],"correct":0,"explanation":"杠杆是一种简单机械，能帮助我们更省力地抬起或移动重物。","icon":"🏋️"},{"topic":"力","scenario":"美玲把一个重箱子沿着斜坡滚上去，而不是直接把它抬起来。","question":"这个斜坡是哪种简单机械的例子？","choices":["斜面","滑轮","轮子"],"correct":0,"explanation":"斜坡是一种斜面，是一种能让物体更容易被移到高处的简单机械。","icon":"📦"},{"topic":"力","scenario":"丹尼斯用滑轮系统把一桶水从井里拉上来。","question":"滑轮是怎样帮助他提水的？","choices":["它能让提起重物变得更容易","它能让水桶变得更重","它能消除重力"],"correct":0,"explanation":"滑轮是一种简单机械，能通过改变力的方向，让提起重物变得更容易。","icon":"🪣"},{"topic":"适应","scenario":"普里雅了解到变色龙能改变皮肤颜色，与周围环境融为一体。","question":"这种适应能力是怎样帮助变色龙的？","choices":["能帮助它躲避天敌","能帮助它飞行","能帮助它在水下呼吸"],"correct":0,"explanation":"改变颜色能帮助变色龙进行伪装，避免被天敌发现。","icon":"🦎"},{"topic":"适应","scenario":"苏菲亚了解到候鸟在冬天来临时会飞往较温暖的地方。","question":"这些候鸟为什么要迁徙？","choices":["为了寻找食物和更温暖的天气","为了寻找新的颜色","只是为了筑新巢"],"correct":0,"explanation":"鸟类迁徙是为了在天气变冷时寻找食物和更适宜的生活条件。","icon":"🐦"},{"topic":"能量","scenario":"伟杰注意到风车的叶片在转动，并产生了电力。","question":"风车中发生了什么能量转变？","choices":["风的运动能转变成电能","声能转变成热能","光能转变成化学能"],"correct":0,"explanation":"风车把风的运动（动）能转变成了电能。","icon":"🌬️"},{"topic":"食物链","scenario":"阿曼了解到池塘里的藻类被小鱼吃掉，小鱼又被大鱼吃掉。","question":"藻类在这条食物链中扮演什么角色？","choices":["生产者","消费者","分解者"],"correct":0,"explanation":"藻类利用阳光自己制造食物，所以是这条食物链中的生产者。","icon":"🐟"},{"topic":"太阳系","scenario":"卡文了解到土星周围有由冰和岩石组成的美丽光环。","question":"这里描述的是哪颗行星？","choices":["土星","地球","水星"],"correct":0,"explanation":"土星以其由冰和岩石颗粒组成的巨大、明显的光环而闻名。","icon":"🪐"},{"topic":"水循环","scenario":"法丽达了解到植物会通过叶子把水蒸气释放到空气中。","question":"这个过程叫什么？","choices":["蒸腾作用","凝结","降水"],"correct":0,"explanation":"蒸腾作用是植物把水蒸气释放到空气中的过程，是水循环的一部分。","icon":"🌿"}],
+    6:[{"topic":"太阳系","scenario":"阿里了解到地球绕太阳运行一圈大约需要365天。","question":"我们把这次绕太阳的旅程叫做什么？","choices":["一年","一天","一个月"],"correct":0,"explanation":"地球绕太阳运行一整圈大约需要365天，我们称之为一年。","icon":"🌍"},{"topic":"太阳系","scenario":"美玲了解到地球在绕太阳运行时，自身的轴是倾斜的。","question":"这种倾斜主要造成了什么现象？","choices":["季节","昼夜","水循环"],"correct":0,"explanation":"地球自转轴的倾斜，使地球不同地区接收到的阳光多少不同，从而形成了季节。","icon":"🌗"},{"topic":"太阳系","scenario":"库马了解到木星是太阳系中最大的行星。","question":"哪颗行星最大？","choices":["木星","地球","火星"],"correct":0,"explanation":"木星是我们太阳系中最大的行星。","icon":"🪐"},{"topic":"太阳系","scenario":"法拉了解到水星是离太阳最近的行星。","question":"哪颗行星离太阳最近？","choices":["水星","金星","地球"],"correct":0,"explanation":"水星是我们太阳系中离太阳最近的行星。","icon":"☿️"},{"topic":"太阳系","scenario":"丹尼斯了解到日食发生时，月亮会经过太阳和地球之间。","question":"日食发生时，阳光会发生什么变化？","choices":["月亮挡住了部分照射到地球的阳光","太阳永远消失了","地球停止了自转"],"correct":0,"explanation":"日食发生时，月亮会挡住太阳照射到地球某些地区的光线。","icon":"🌑"},{"topic":"可再生能源","scenario":"阿米拉了解到太阳能板利用阳光来发电。","question":"为什么太阳能被称为可再生能源？","choices":["阳光不会用完，而且会自然得到补充","它只能使用一次","它来自燃烧煤炭"],"correct":0,"explanation":"像阳光这样的可再生能源会自然地得到补充，不会用完。","icon":"☀️"},{"topic":"可再生能源","scenario":"哈菲兹了解到风力发电机利用流动的空气来发电。","question":"风属于哪种类型的能源？","choices":["可再生能源","不可再生能源","不是能源"],"correct":0,"explanation":"风是可再生能源，因为它是自然存在的，不会用完。","icon":"🌬️"},{"topic":"可再生能源","scenario":"普里雅了解到石油和煤炭需要经过数百万年才能形成，不能很快被替代。","question":"我们把这类能源叫做什么？","choices":["不可再生能源","可再生能源","太阳能源"],"correct":0,"explanation":"像煤炭和石油这样的不可再生能源，需要很长时间才能形成，可能会被用完。","icon":"⛽"},{"topic":"可再生能源","scenario":"苏菲亚了解到水力发电利用水坝中流动的水来发电。","question":"为什么水力发电被认为是可再生的？","choices":["河流中的水会自然地被雨水补充","水是不可再生的能源","它需要使用煤炭才能运作"],"correct":0,"explanation":"由于水循环会不断补充河流中的水，水力发电是一种可再生能源。","icon":"💦"},{"topic":"可再生能源","scenario":"伟杰比较了燃烧煤炭发电和使用太阳能板发电。","question":"使用太阳能板而不是煤炭发电有什么好处？","choices":["太阳能板不会产生有害的污染","太阳能板使用更多煤炭","太阳能板只在晚上发挥作用"],"correct":0,"explanation":"太阳能板发电不会释放有害的污染物，这与燃烧煤炭不同。","icon":"🏭"},{"topic":"环境保护","scenario":"阿曼把垃圾分成纸张、塑料和玻璃，然后再丢弃。","question":"这种做法叫什么？","choices":["回收利用","污染环境","浪费资源"],"correct":0,"explanation":"回收利用是指把纸张、塑料、玻璃等材料分类并重新利用，而不是直接丢弃。","icon":"♻️"},{"topic":"环境保护","scenario":"拉维发现他家附近的一条河因为工厂废水而变脏了。","question":"这条河发生了什么？","choices":["它被污染了","它变干净了","它蒸发了"],"correct":0,"explanation":"污染是指有害物质被排放到环境中，比如工厂废水排入河流。","icon":"🏭"},{"topic":"环境保护","scenario":"卡文的学校每年都在校园里种更多的树。","question":"种更多的树对环境有什么帮助？","choices":["树能帮助净化空气并提供氧气","树会让空气变得更脏","树会用光所有的水"],"correct":0,"explanation":"树木能吸收二氧化碳并释放氧气，有助于保持空气清新。","icon":"🌳"},{"topic":"环境保护","scenario":"法丽达刷牙时会关掉水龙头，而不是让水一直流着。","question":"她这样做是在实践什么？","choices":["节约用水","污染水源","浪费用水"],"correct":0,"explanation":"不用水时关掉水龙头，有助于节约用水，减少浪费。","icon":"🚰"},{"topic":"环境保护","scenario":"郑伟一家不使用电器时都会关灯并拔掉插头。","question":"他们在实践什么？","choices":["节约能源","浪费能源","污染能源"],"correct":0,"explanation":"关掉不使用的电器有助于节约能源，减少浪费。","icon":"🔌"},{"topic":"科学探究","scenario":"阿米拉想知道植物在更多阳光下是否会长得更高。","question":"在测试她的想法之前，她应该先做什么？","choices":["做出预测（假设）","写出最终结果","扔掉她的植物"],"correct":0,"explanation":"在测试一个想法之前，科学家会先做出一个叫做假设的预测。","icon":"🌻"},{"topic":"科学探究","scenario":"丹尼斯用几个一样的花盆，测试不同水量对植物生长的影响。","question":"为什么他要使用相同的花盆和相同种类的植物？","choices":["为了让测试公平，只改变一个因素","为了让测试花更长时间","为了使用比需要更多的植物"],"correct":0,"explanation":"公平的测试每次只改变一个因素，其他条件保持不变。","icon":"🪴"},{"topic":"科学探究","scenario":"普里雅在实验的每一天都把观察结果记录在表格里。","question":"为什么仔细记录观察结果很重要？","choices":["可以获得准确的数据来得出结论","可以让实验变得更长","可以让其他科学家感到困惑"],"correct":0,"explanation":"准确的记录能帮助科学家分析数据，并得出正确的结论。","icon":"📋"},{"topic":"科学探究","scenario":"苏菲亚把她的实验重复做了三次，来检查结果。","question":"为什么重复实验很重要？","choices":["可以确保结果是可靠的","可以浪费更多材料","可以让实验变得更难"],"correct":0,"explanation":"重复实验有助于确认结果是可靠的，而不仅仅是偶然发生的。","icon":"🔁"},{"topic":"科学探究","scenario":"伟杰比较了他实验的所有结果之后，得出了一个结论。","question":"科学探究中的结论是什么？","choices":["对结果所显示内容的总结","没有证据支持的随意猜测","实验中使用的材料"],"correct":0,"explanation":"结论是根据证据，对实验结果所显示内容做出的总结。","icon":"📝"},{"topic":"适应","scenario":"阿曼了解到啄木鸟有坚硬而尖锐的喙。","question":"这种喙是怎样帮助啄木鸟生存的？","choices":["能帮助它啄开木头寻找昆虫","能帮助它在水下游泳","能帮助它飞得更快"],"correct":0,"explanation":"啄木鸟坚硬尖锐的喙能帮助它啄开木头，找到里面的昆虫吃。","icon":"🐦"},{"topic":"适应","scenario":"拉维了解到鱼有鳃而不是肺。","question":"鳃是怎样帮助鱼在水中生存的？","choices":["能让鱼从水中获取氧气","能帮助鱼像人类一样呼吸空气","能帮助鱼看得更清楚"],"correct":0,"explanation":"鳃能让鱼从溶解在水中的氧气中获取氧气，从而在水下呼吸。","icon":"🐟"},{"topic":"适应","scenario":"卡文了解到长颈鹿有很长的脖子。","question":"长脖子是怎样帮助长颈鹿生存的？","choices":["能帮助长颈鹿够到高高树上的叶子","能帮助长颈鹿游得更快","能帮助长颈鹿挖洞穴"],"correct":0,"explanation":"长长的脖子能让长颈鹿够到其他动物够不到的高处树叶。","icon":"🦒"},{"topic":"能量","scenario":"法丽达了解到能量不能被创造或消灭，只能从一种形式转变成另一种形式。","question":"这个观念叫做什么？","choices":["能量守恒","能量的消灭","能量的创造"],"correct":0,"explanation":"能量守恒定律指出，能量可以改变形式，但既不会被创造，也不会被消灭。","icon":"🔋"},{"topic":"能量","scenario":"郑伟发现一辆移动的玩具车因为摩擦力最终会慢下来并停止。","question":"损失的运动能会变成什么？","choices":["它转变成了热能","它完全消失了","它变成了光能"],"correct":0,"explanation":"因摩擦而损失的运动能会转变成热能，这符合能量守恒的原理。","icon":"🚗"},{"topic":"环境保护","scenario":"法拉的社区设立了一个计划，来保护森林里的濒危动物。","question":"为什么保护濒危动物很重要？","choices":["能防止它们永远消失","能让它们繁殖得太快","只是为了把它们当作食物"],"correct":0,"explanation":"保护濒危动物有助于防止它们灭绝，并保持生态系统的平衡。","icon":"🐘"},{"topic":"环境保护","scenario":"哈菲兹了解到砍伐太多树木会导致水土流失和动物栖息地的丧失。","question":"这种大规模砍伐树木的行为叫做什么？","choices":["森林砍伐","植树造林","环境保护"],"correct":0,"explanation":"森林砍伐是指大规模砍伐树木，这可能会对环境和野生动物造成伤害。","icon":"🪓"},{"topic":"可再生能源","scenario":"阿曼比较了风力发电机和燃煤发电厂发电的方式。","question":"哪一种能源不会随着时间用完？","choices":["风力发电机","燃煤发电厂","两者都会同样快地用完"],"correct":0,"explanation":"风是不会用完的可再生资源，而煤炭是有限的。","icon":"💨"},{"topic":"太阳系","scenario":"普里雅了解到恒星不像行星，它们通过核反应自己产生光。","question":"恒星和行星之间的主要区别是什么？","choices":["恒星能自己发光，行星不能","行星总是比恒星大","恒星围绕行星运行"],"correct":0,"explanation":"恒星能自己产生光和热，而行星只能反射恒星发出的光。","icon":"⭐"},{"topic":"科学探究","scenario":"苏菲亚用放大镜和尺子仔细观察并测量一片叶子。","question":"为什么科学家在探究过程中要使用这样的工具？","choices":["能让观察更准确","能让叶子长得更快","能改变叶子的颜色"],"correct":0,"explanation":"使用合适的工具能帮助科学家做出更准确、更可靠的观察。","icon":"🔍"}]
+  }
+};
+
 /* ---------------- RINGGIT SHOP DATA ---------------- */
 const MONEY = [{"label": "10 sen", "value": 0.1, "type": "coin"}, {"label": "20 sen", "value": 0.2, "type": "coin"}, {"label": "50 sen", "value": 0.5, "type": "coin"}, {"label": "RM1", "value": 1.0, "type": "note"}, {"label": "RM2", "value": 2.0, "type": "note"}, {"label": "RM5", "value": 5.0, "type": "note"}, {"label": "RM10", "value": 10.0, "type": "note"}, {"label": "RM20", "value": 20.0, "type": "note"}];
 
@@ -2384,7 +2623,14 @@ let state = {
   ringgitChangeGiven:[], ringgitAttempts:0, ringgitResolved:false, ringgitPendingScore:0,
   ringgitSellerQueue:[], ringgitSellerQueueDifficulty:null,
   ringgitBuyerScore:0, ringgitSellerScore:0,
-  ringgitSellerStartTime:0, ringgitSellerTimerInterval:null
+  ringgitSellerStartTime:0, ringgitSellerTimerInterval:null,
+  // science detective state
+  scienceLang:"en", scienceYear:1, scienceQuestions:[], scienceIndex:0,
+  scienceAttempts:0, scienceResolved:false, scienceSelectedIdx:null,
+  scienceCorrectCount:0, scienceWrongCount:0, scienceScore:0, scienceTotalStars:0,
+  scienceMagnetSelected:[], scienceMagnetTested:false,
+  scienceNeedsItems:[], scienceNeedsCorrectGiven:0, scienceNeedsWrongGiven:0, scienceNeedsTotal:0,
+  scienceSortAssignments:[], scienceSequenceBank:[], scienceSequencePlaced:[]
 };
 
 /* ---------------- NAV ---------------- */
@@ -2403,6 +2649,9 @@ function goTo(name){
   if(name==="story-instructions") renderStoryInstructions();
   if(name==="ringgit-role"){ state.mode="ringgit"; }
   if(name==="ringgit-instructions") renderRinggitInstructions();
+  if(name==="science-language"){ state.mode="science"; }
+  if(name==="science-year") renderScienceYearGrid();
+  if(name==="science-instructions") renderScienceInstructions();
 }
 
 function renderLanguageGrid(){
@@ -3406,6 +3655,533 @@ function showRinggitResults(score){
 
   goTo("results");
   if(ratio>=0.6) launchConfetti(40);
+}
+
+/* ---------------- SCIENCE DETECTIVE ---------------- */
+const SCIENCE_TOPIC_ICONS = {
+  "Living & Non-living":"🌍", "生物与非生物":"🌍",
+  "Plants":"🌱", "植物":"🌱",
+  "Animals":"🐾", "动物":"🐾",
+  "Human Body":"👂", "人体":"👂",
+  "Healthy Habits":"🍎", "健康习惯":"🍎",
+  "Materials":"🧵", "材料":"🧵",
+  "Animal Habitats":"🏞️", "动物栖息地":"🏞️",
+  "Hot & Cold":"🌡️", "冷与热":"🌡️",
+  "States of Matter":"🧊", "物质的状态":"🧊",
+  "Water Cycle":"💧", "水循环":"💧",
+  "Magnets":"🧲", "磁铁":"🧲",
+  "Light":"💡", "光":"💡",
+  "Force":"🏋️", "力":"🏋️",
+  "Electricity":"⚡", "电":"⚡",
+  "Food Chain":"🦋", "食物链":"🦋",
+  "Energy":"🔋", "能量":"🔋",
+  "Adaptation":"🦎", "适应":"🦎",
+  "Solar System":"🪐", "太阳系":"🪐",
+  "Renewable Energy":"♻️", "可再生能源":"♻️",
+  "Environmental Conservation":"🌳", "环境保护":"🌳",
+  "Scientific Investigation":"🔬", "科学探究":"🔬"
+};
+
+const SCIENCE_UI_TEXT = {
+  en: {
+    langName:"English", flag:"🇬🇧",
+    yearHeading:"Choose your year",
+    instrTitle:"How to play",
+    instrBody:"Read the science scenario, then answer the question. You have 2 tries per question — first try is worth 10 marks, second try is worth 5 marks. After that, we'll show you the answer and explain why!",
+    startBtn:"Let's Play!",
+    topicPrefix:"Topic: "
+  },
+  zh: {
+    langName:"简体中文", flag:"🇨🇳",
+    yearHeading:"选择你的年级",
+    instrTitle:"游戏玩法",
+    instrBody:"先阅读科学情境，然后回答问题。每题有两次机会——第一次答对得10分，第二次答对得5分。之后，我们会告诉你正确答案并解释原因！",
+    startBtn:"开始游戏！",
+    topicPrefix:"主题："
+  }
+};
+
+function pickScienceLang(lang){
+  state.scienceLang = lang;
+  goTo("science-year");
+}
+
+function renderScienceYearGrid(){
+  const t = SCIENCE_UI_TEXT[state.scienceLang];
+  document.getElementById("science-year-heading").textContent = t.yearHeading;
+  const grid = document.getElementById("science-year-grid");
+  grid.innerHTML = "";
+  const yearLabels = state.scienceLang === "zh"
+    ? ["一年级","二年级","三年级","四年级","五年级","六年级"]
+    : ["Year 1","Year 2","Year 3","Year 4","Year 5","Year 6"];
+  for(let y=1; y<=6; y++){
+    const div = document.createElement("div");
+    div.className = "choice-card";
+    div.innerHTML = '<span class="emoji">🔬</span>' + yearLabels[y-1];
+    div.onclick = ()=> pickScienceYear(y);
+    grid.appendChild(div);
+  }
+}
+
+function pickScienceYear(year){
+  state.scienceYear = year;
+  goTo("science-instructions");
+}
+
+function renderScienceInstructions(){
+  const t = SCIENCE_UI_TEXT[state.scienceLang];
+  document.getElementById("science-instr-title").textContent = t.instrTitle;
+  document.getElementById("science-instr-text").textContent = t.instrBody;
+  document.getElementById("btn-start-science").textContent = "⭐ " + t.startBtn;
+}
+
+function startScienceGame(){
+  const pool = SCIENCE_BANK[state.scienceLang][state.scienceYear];
+  const chosen = shuffle(pool).slice(0, Math.min(10, pool.length));
+  state.scienceQuestions = chosen;
+  state.scienceIndex = 0;
+  state.scienceCorrectCount = 0;
+  state.scienceWrongCount = 0;
+  state.scienceScore = 0;
+  state.scienceTotalStars = 0;
+  goTo("science-game");
+  loadScienceQuestion();
+}
+
+function loadScienceQuestion(){
+  const t = SCIENCE_UI_TEXT[state.scienceLang];
+  const q = state.scienceQuestions[state.scienceIndex];
+  state.scienceAttempts = 0;
+  state.scienceResolved = false;
+  state.scienceSelectedIdx = null;
+
+  document.getElementById("science-counter").textContent = "Q " + (state.scienceIndex+1) + "/" + state.scienceQuestions.length;
+  document.getElementById("science-progress-fill").style.width = ((state.scienceIndex)/state.scienceQuestions.length*100)+"%";
+  document.getElementById("science-score-pill").textContent = "🏅 " + state.scienceScore + "/100";
+  document.getElementById("science-topic").textContent = t.topicPrefix + q.topic;
+  const iconEl = document.getElementById("science-topic-icon");
+  iconEl.textContent = q.icon || SCIENCE_TOPIC_ICONS[q.topic] || "🔬";
+  iconEl.style.animation = "none";
+  void iconEl.offsetWidth;
+  iconEl.style.animation = "fadeIn 0.5s ease";
+  document.getElementById("science-scenario").textContent = q.scenario;
+  document.getElementById("science-question").textContent = q.question;
+  document.getElementById("science-feedback-line").textContent = "";
+  document.getElementById("science-feedback-line").className = "feedback-line";
+  document.getElementById("btn-science-next").style.display = "none";
+
+  const type = q.type || "mcq";
+  document.getElementById("science-choices").style.display = type === "mcq" ? "" : "none";
+  document.getElementById("science-magnet-wrap").style.display = type === "magnet" ? "" : "none";
+  document.getElementById("science-needs-wrap").style.display = type === "needs" ? "" : "none";
+  document.getElementById("science-select-wrap").style.display = type === "select" ? "" : "none";
+  document.getElementById("science-sort-wrap").style.display = type === "sort" ? "" : "none";
+  document.getElementById("science-sequence-wrap").style.display = type === "sequence" ? "" : "none";
+
+  if(type === "mcq"){
+    renderScienceChoices();
+  } else if(type === "magnet"){
+    renderMagnetGame(q);
+  } else if(type === "needs"){
+    renderNeedsGame(q);
+  } else if(type === "select"){
+    renderSelectGame(q);
+  } else if(type === "sort"){
+    renderSortGame(q);
+  } else if(type === "sequence"){
+    renderSequenceGame(q);
+  }
+}
+
+function renderScienceChoices(){
+  const q = state.scienceQuestions[state.scienceIndex];
+  const wrap = document.getElementById("science-choices");
+  wrap.innerHTML = "";
+  const letters = ["A","B","C"];
+  q.choices.forEach((choiceText, idx)=>{
+    const btn = document.createElement("button");
+    btn.className = "science-choice";
+    btn.textContent = letters[idx] + ". " + choiceText;
+    btn.onclick = ()=> selectScienceChoice(idx);
+    wrap.appendChild(btn);
+  });
+}
+
+/* ---------------- SCIENCE DETECTIVE: MAGNET PULL MINI-GAME ---------------- */
+function renderMagnetGame(q){
+  state.scienceMagnetSelected = [];
+  state.scienceMagnetTested = false;
+  document.getElementById("btn-magnet-test").style.display = "";
+  document.getElementById("btn-magnet-test").disabled = false;
+  const wrap = document.getElementById("science-magnet-objects");
+  wrap.innerHTML = "";
+  q.objects.forEach((obj, idx)=>{
+    const card = document.createElement("div");
+    card.className = "product-card magnet-tile";
+    card.innerHTML = '<span class="emoji">'+obj.emoji+'</span><span class="pname">'+obj.name+'</span>';
+    card.onclick = ()=> toggleMagnetSelect(idx);
+    wrap.appendChild(card);
+  });
+}
+
+function toggleMagnetSelect(idx){
+  if(state.scienceMagnetTested) return;
+  const pos = state.scienceMagnetSelected.indexOf(idx);
+  if(pos === -1) state.scienceMagnetSelected.push(idx);
+  else state.scienceMagnetSelected.splice(pos, 1);
+  const tiles = document.getElementById("science-magnet-objects").children;
+  Array.from(tiles).forEach((tile,i)=> tile.classList.toggle("selected", state.scienceMagnetSelected.includes(i)));
+}
+
+function testMagnet(){
+  if(state.scienceMagnetTested) return;
+  state.scienceMagnetTested = true;
+  const q = state.scienceQuestions[state.scienceIndex];
+  const tiles = document.getElementById("science-magnet-objects").children;
+  let correctCount = 0;
+  q.objects.forEach((obj, idx)=>{
+    const tile = tiles[idx];
+    const wasSelected = state.scienceMagnetSelected.includes(idx);
+    if(obj.magnetic){
+      tile.classList.add("pulled");
+    } else if(wasSelected){
+      tile.classList.add("no-effect");
+    }
+    if(wasSelected === obj.magnetic) correctCount++;
+  });
+  document.getElementById("btn-magnet-test").style.display = "none";
+  const marksEarned = Math.round(10 * correctCount / q.objects.length);
+  finalizeScienceInteractive(marksEarned, correctCount === q.objects.length);
+}
+
+/* ---------------- SCIENCE DETECTIVE: LIVING THINGS' NEEDS MINI-GAME ---------------- */
+function renderNeedsGame(q){
+  state.scienceNeedsCorrectGiven = 0;
+  state.scienceNeedsWrongGiven = 0;
+  state.scienceNeedsTotal = q.needs.length;
+  const charEl = document.getElementById("science-needs-character");
+  charEl.textContent = q.character.emoji;
+  charEl.className = "";
+  const items = shuffle(
+    q.needs.map(n=>Object.assign({}, n, {isNeed:true}))
+     .concat(q.distractors.map(d=>Object.assign({}, d, {isNeed:false})))
+  );
+  state.scienceNeedsItems = items;
+  const wrap = document.getElementById("science-needs-items");
+  wrap.innerHTML = "";
+  items.forEach((item, idx)=>{
+    const card = document.createElement("div");
+    card.className = "product-card needs-tile";
+    card.innerHTML = '<span class="emoji">'+item.emoji+'</span><span class="pname">'+item.name+'</span>';
+    card.onclick = ()=> tapNeedsItem(idx);
+    wrap.appendChild(card);
+  });
+}
+
+function tapNeedsItem(idx){
+  if(state.scienceResolved) return;
+  const item = state.scienceNeedsItems[idx];
+  const tile = document.getElementById("science-needs-items").children[idx];
+  if(tile.classList.contains("used-correct") || tile.classList.contains("used-wrong")) return;
+  const charEl = document.getElementById("science-needs-character");
+  if(item.isNeed){
+    tile.classList.add("used-correct");
+    state.scienceNeedsCorrectGiven++;
+    charEl.classList.remove("grow-sad");
+    charEl.classList.add("grow-happy");
+    setTimeout(()=>charEl.classList.remove("grow-happy"), 400);
+  } else {
+    tile.classList.add("used-wrong");
+    state.scienceNeedsWrongGiven++;
+    charEl.classList.remove("grow-happy");
+    charEl.classList.add("grow-sad");
+    setTimeout(()=>charEl.classList.remove("grow-sad"), 400);
+  }
+}
+
+function finishNeedsGame(){
+  if(state.scienceResolved) return;
+  const marksEarned = Math.max(0, Math.round(10 * state.scienceNeedsCorrectGiven / state.scienceNeedsTotal) - state.scienceNeedsWrongGiven*2);
+  const isPerfect = state.scienceNeedsCorrectGiven === state.scienceNeedsTotal && state.scienceNeedsWrongGiven === 0;
+  Array.from(document.getElementById("science-needs-items").children).forEach(t=> t.style.pointerEvents = "none");
+  finalizeScienceInteractive(marksEarned, isPerfect);
+}
+
+function finalizeScienceInteractive(marksEarned, isPerfect){
+  const t = UI_TEXT[state.scienceLang];
+  const q = state.scienceQuestions[state.scienceIndex];
+  const feedback = document.getElementById("science-feedback-line");
+  state.scienceScore += marksEarned;
+  document.getElementById("science-score-pill").textContent = "🏅 " + state.scienceScore + "/100";
+  if(isPerfect){
+    state.scienceCorrectCount++;
+    document.getElementById("mascot-science").classList.add("happy");
+    launchConfetti();
+    feedback.className = "feedback-line ok";
+    feedback.innerHTML = "✅ " + t.correctMsgs[Math.floor(Math.random()*t.correctMsgs.length)] + " +" + marksEarned + " " + t.marksWord + "<br><span class=\"science-explain\">" + q.explanation + "</span>";
+  } else {
+    state.scienceWrongCount++;
+    feedback.className = marksEarned > 0 ? "feedback-line ok" : "feedback-line no";
+    feedback.innerHTML = (marksEarned > 0 ? "🤔 You got some right! " : "❌ ") + "+" + marksEarned + " " + t.marksWord + "<br><span class=\"science-explain\">" + q.explanation + "</span>";
+  }
+  resolveScienceQuestion();
+}
+
+
+/* ---------------- SCIENCE DETECTIVE: SELECT MINI-GAME (icon-based single choice) ---------------- */
+function renderSelectGame(q){
+  const wrap = document.getElementById("science-select-choices");
+  wrap.innerHTML = "";
+  q.choices.forEach((choice, idx)=>{
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.style.minHeight = "84px";
+    card.innerHTML = '<span class="emoji">'+choice.emoji+'</span><span class="pname">'+choice.label+'</span>';
+    card.onclick = ()=> selectSelectChoice(idx);
+    wrap.appendChild(card);
+  });
+}
+
+function selectSelectChoice(idx){
+  if(state.scienceResolved) return;
+  const q = state.scienceQuestions[state.scienceIndex];
+  const tiles = document.getElementById("science-select-choices").children;
+  const isCorrect = idx === q.correct;
+  tiles[idx].classList.add(isCorrect ? "sort-correct" : "sort-wrong");
+  if(!isCorrect) tiles[q.correct].classList.add("sort-correct");
+  Array.from(tiles).forEach(t=> t.onclick = null);
+  finalizeScienceInteractive(isCorrect ? 10 : 0, isCorrect);
+}
+
+/* ---------------- SCIENCE DETECTIVE: SORT MINI-GAME (2-bin classification) ---------------- */
+function renderSortGame(q){
+  state.scienceSortAssignments = new Array(q.items.length).fill(null);
+  const binsEl = document.getElementById("science-sort-bins");
+  binsEl.innerHTML = "";
+  q.bins.forEach(bin=>{
+    const div = document.createElement("div");
+    div.className = "sort-bin";
+    div.innerHTML = '<span class="emoji">'+bin.emoji+'</span>'+bin.name;
+    binsEl.appendChild(div);
+  });
+  const wrap = document.getElementById("science-sort-items");
+  wrap.innerHTML = "";
+  q.items.forEach((item, idx)=>{
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.innerHTML = '<span class="emoji">'+item.emoji+'</span><span class="pname">'+item.name+'</span>';
+    card.onclick = ()=> tapSortItem(idx);
+    wrap.appendChild(card);
+  });
+  document.getElementById("btn-sort-submit").disabled = false;
+  document.getElementById("btn-sort-submit").style.display = "";
+}
+
+function tapSortItem(idx){
+  if(state.scienceResolved) return;
+  const current = state.scienceSortAssignments[idx];
+  const next = current === null ? 0 : (current === 0 ? 1 : 0);
+  state.scienceSortAssignments[idx] = next;
+  const tile = document.getElementById("science-sort-items").children[idx];
+  tile.classList.remove("bin-a","bin-b");
+  tile.classList.add(next === 0 ? "bin-a" : "bin-b");
+}
+
+function submitSortGame(){
+  if(state.scienceResolved) return;
+  const q = state.scienceQuestions[state.scienceIndex];
+  const tiles = document.getElementById("science-sort-items").children;
+  let correctCount = 0;
+  q.items.forEach((item, idx)=>{
+    const given = state.scienceSortAssignments[idx];
+    const isCorrect = given === item.binIndex;
+    tiles[idx].classList.add(isCorrect ? "sort-correct" : "sort-wrong");
+    if(isCorrect) correctCount++;
+  });
+  document.getElementById("btn-sort-submit").style.display = "none";
+  const marksEarned = Math.round(10 * correctCount / q.items.length);
+  finalizeScienceInteractive(marksEarned, correctCount === q.items.length);
+}
+
+/* ---------------- SCIENCE DETECTIVE: SEQUENCE MINI-GAME (life cycle / ordering) ---------------- */
+function renderSequenceGame(q){
+  state.scienceSequenceBank = shuffle(q.stages.map((s,i)=>Object.assign({}, s, {origIdx:i, used:false})));
+  state.scienceSequencePlaced = [];
+  renderSequenceTarget();
+  renderSequenceBank();
+  document.getElementById("btn-sequence-submit").disabled = false;
+  document.getElementById("btn-sequence-submit").style.display = "";
+  document.getElementById("btn-sequence-clear").disabled = false;
+}
+
+function renderSequenceTarget(){
+  const target = document.getElementById("science-sequence-target");
+  target.innerHTML = "";
+  state.scienceSequencePlaced.forEach((stage, i)=>{
+    const tile = document.createElement("button");
+    tile.className = "bank-tile";
+    tile.textContent = stage.emoji + " " + stage.name;
+    tile.onclick = ()=> removeSequenceTile(i);
+    target.appendChild(tile);
+  });
+}
+
+function renderSequenceBank(){
+  const bankEl = document.getElementById("science-sequence-bank");
+  bankEl.innerHTML = "";
+  state.scienceSequenceBank.forEach(stage=>{
+    const tile = document.createElement("button");
+    tile.className = "bank-tile" + (stage.used ? " used" : "");
+    tile.textContent = stage.emoji + " " + stage.name;
+    tile.disabled = stage.used;
+    tile.onclick = ()=> placeSequenceTile(stage.origIdx);
+    bankEl.appendChild(tile);
+  });
+}
+
+function placeSequenceTile(origIdx){
+  if(state.scienceResolved) return;
+  const stage = state.scienceSequenceBank.find(s=>s.origIdx === origIdx);
+  if(!stage || stage.used) return;
+  stage.used = true;
+  state.scienceSequencePlaced.push(stage);
+  renderSequenceTarget();
+  renderSequenceBank();
+}
+
+function removeSequenceTile(placedIdx){
+  if(state.scienceResolved) return;
+  const removed = state.scienceSequencePlaced[placedIdx];
+  state.scienceSequencePlaced.splice(placedIdx, 1);
+  const stage = state.scienceSequenceBank.find(s=>s.origIdx === removed.origIdx);
+  if(stage) stage.used = false;
+  renderSequenceTarget();
+  renderSequenceBank();
+}
+
+function clearSequenceGame(){
+  if(state.scienceResolved) return;
+  state.scienceSequenceBank.forEach(s=> s.used = false);
+  state.scienceSequencePlaced = [];
+  renderSequenceTarget();
+  renderSequenceBank();
+}
+
+function submitSequenceGame(){
+  if(state.scienceResolved) return;
+  const q = state.scienceQuestions[state.scienceIndex];
+  if(state.scienceSequencePlaced.length !== q.stages.length){
+    const feedback = document.getElementById("science-feedback-line");
+    feedback.className = "feedback-line no";
+    feedback.textContent = "🔍 Place all the stages first!";
+    return;
+  }
+  const isCorrect = state.scienceSequencePlaced.every((stage,i)=> stage.origIdx === i);
+  document.getElementById("btn-sequence-submit").style.display = "none";
+  document.getElementById("btn-sequence-clear").disabled = true;
+  finalizeScienceInteractive(isCorrect ? 10 : 0, isCorrect);
+}
+
+function selectScienceChoice(idx){
+  if(state.scienceResolved) return;
+  const t = UI_TEXT[state.scienceLang];
+  const q = state.scienceQuestions[state.scienceIndex];
+  const feedback = document.getElementById("science-feedback-line");
+  const choiceButtons = document.getElementById("science-choices").children;
+
+  if(idx === q.correct){
+    const marksEarned = state.scienceAttempts === 0 ? 10 : 5;
+    choiceButtons[idx].classList.add("correct");
+    choiceButtons[idx].disabled = true;
+    state.scienceCorrectCount++;
+    state.scienceScore += marksEarned;
+    state.scienceTotalStars++;
+    document.getElementById("science-score-pill").textContent = "🏅 " + state.scienceScore + "/100";
+    feedback.className = "feedback-line ok";
+    feedback.innerHTML = "✅ " + t.correctMsgs[Math.floor(Math.random()*t.correctMsgs.length)] + " +" + marksEarned + " " + t.marksWord + "<br><span class=\"science-explain\">" + q.explanation + "</span>";
+    document.getElementById("mascot-science").classList.add("happy");
+    launchConfetti();
+    resolveScienceQuestion();
+  } else {
+    choiceButtons[idx].classList.add("wrong");
+    choiceButtons[idx].disabled = true;
+    state.scienceAttempts++;
+    document.getElementById("mascot-science").classList.add("sad");
+    setTimeout(()=>document.getElementById("mascot-science").classList.remove("sad"), 500);
+    if(state.scienceAttempts >= 2){
+      const letters = ["A","B","C"];
+      choiceButtons[q.correct].classList.add("correct");
+      feedback.className = "feedback-line no";
+      feedback.innerHTML = "💡 " + letters[q.correct] + ". " + q.choices[q.correct] + " (0 " + t.marksWord + ")<br><span class=\"science-explain\">" + q.explanation + "</span>";
+      state.scienceWrongCount++;
+      resolveScienceQuestion();
+    } else {
+      feedback.className = "feedback-line no";
+      feedback.textContent = "❌ " + t.wrongMsg + " (1 try left)";
+    }
+  }
+}
+
+function resolveScienceQuestion(){
+  state.scienceResolved = true;
+  Array.from(document.getElementById("science-choices").children).forEach(btn=>btn.disabled = true);
+  document.getElementById("btn-science-next").style.display = "";
+}
+
+function nextScienceQuestion(){
+  document.getElementById("mascot-science").classList.remove("happy","sad");
+  state.scienceIndex++;
+  if(state.scienceIndex >= state.scienceQuestions.length){
+    showScienceResults();
+  } else {
+    loadScienceQuestion();
+  }
+}
+
+function showScienceResults(){
+  const t = UI_TEXT[state.scienceLang];
+  const score = state.scienceScore;
+  const attempted = state.scienceCorrectCount + state.scienceWrongCount;
+  const maxPossible = attempted * 10;
+  const ratio = maxPossible ? score/maxPossible : 0;
+  const starsEarned = Math.round(ratio * 10);
+  let gradeKey;
+  if(attempted===0) gradeKey="F";
+  else if(ratio>=0.9) gradeKey="A+";
+  else if(ratio>=0.75) gradeKey="A";
+  else if(ratio>=0.6) gradeKey="B";
+  else if(ratio>=0.4) gradeKey="C";
+  else if(ratio>0) gradeKey="D";
+  else gradeKey="F";
+  const g = t.grades[gradeKey];
+  document.getElementById("grade-emoji").textContent = g.emoji;
+  document.getElementById("grade-label").textContent = g.label;
+  document.getElementById("grade-msg").textContent = g.msg;
+  document.getElementById("stat-score").textContent = score + "/" + maxPossible;
+  document.getElementById("stat-correct").textContent = state.scienceCorrectCount;
+  document.getElementById("stat-wrong").textContent = state.scienceWrongCount;
+  document.getElementById("stat-correct-label").textContent = "CORRECT";
+  document.getElementById("stat-wrong-label").textContent = "INCORRECT";
+  document.getElementById("stars-row").textContent = "⭐".repeat(starsEarned) + "☆".repeat(Math.max(0,10-starsEarned));
+
+  const btn1 = document.getElementById("btn-result-1");
+  const btn2 = document.getElementById("btn-result-2");
+  const btn3 = document.getElementById("btn-result-3");
+  btn1.textContent = "🔁 Play Again";
+  btn1.onclick = startScienceGame;
+  btn2.textContent = "🌐 Change Year";
+  btn2.onclick = ()=>goTo("science-year");
+  btn3.onclick = ()=>goTo("welcome");
+
+  goTo("results");
+  if(ratio>=0.6) launchConfetti(40);
+}
+
+function quitScienceGame(){
+  openQuitModal(state.scienceLang, ()=>{
+    Array.from(document.getElementById("science-choices").children).forEach(btn=>btn.disabled = true);
+    showScienceResults();
+  });
 }
 
 /* ---------------- GAME LOGIC ---------------- */
