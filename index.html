@@ -254,6 +254,12 @@
   #science-needs-character{ transition: transform 0.4s ease; }
   #science-needs-character.grow-happy{ transform:scale(1.15); }
   #science-needs-character.grow-sad{ transform:scale(0.9) rotate(-4deg); }
+  .math-answer-input{
+    font-family:'Baloo 2',cursive; font-weight:800; font-size:28px; text-align:center;
+    width:180px; max-width:80%; padding:12px 10px; border-radius:16px;
+    border:3px solid #C7CEFF; background:#FAFBFF; color:var(--plum);
+  }
+  .math-answer-input:focus{ outline:none; border-color:var(--sun); }
   .sort-bins-row{ display:flex; gap:12px; justify-content:center; margin:12px 0; }
   .sort-bin{
     flex:1; max-width:160px; text-align:center; font-family:'Baloo 2',cursive; font-weight:800;
@@ -435,9 +441,16 @@
       </div>
       <div class="mascot-wrap"><span class="mascot" id="mascot-vocab">🐼</span></div>
       <div class="speech" id="vocab-speech">Tap a word, then tap its match!</div>
-      <div class="vocab-grid">
+      <div class="vocab-grid" id="vocab-grid-wrap">
         <div class="vocab-col" id="vocab-col-left"></div>
         <div class="vocab-col" id="vocab-col-right"></div>
+      </div>
+      <div id="vocab-review-wrap" style="display:none;">
+        <div class="hint-line" id="vocab-review-title">🎉 Great job! Take a moment to review these words before you continue.</div>
+        <div class="receipt-list" id="vocab-review-list"></div>
+        <div class="btn-row">
+          <button class="btn green" id="btn-vocab-continue" onclick="showVocabResults()">Continue ▶</button>
+        </div>
       </div>
     </div>
   </section>
@@ -701,32 +714,84 @@
         </div>
       </div>
 
-      <div id="science-select-wrap" style="display:none;">
-        <div class="science-choices" id="science-select-options"></div>
-      </div>
-
-      <div id="science-sort-wrap" style="display:none;">
-        <div class="sort-bins-row" id="science-sort-bins"></div>
-        <div class="hint-line">Tap an item to place it, tap again to switch bins!</div>
-        <div class="product-grid" id="science-sort-items"></div>
-        <div class="btn-row">
-          <button class="btn sun" id="btn-sort-submit" onclick="submitSortGame()">Submit ✓</button>
-        </div>
-      </div>
-
-      <div id="science-sequence-wrap" style="display:none;">
-        <div class="sentence-target" id="science-sequence-target"></div>
-        <div class="hint-line">Tap the stages in the correct order!</div>
-        <div class="word-bank" id="science-sequence-bank"></div>
-        <div class="btn-row">
-          <button class="btn sun" id="btn-sequence-submit" onclick="submitSequenceGame()">Submit ✓</button>
-          <button class="btn secondary" id="btn-sequence-clear" onclick="clearSequenceGame()">Clear ↺</button>
-        </div>
-      </div>
-
       <div class="feedback-line" id="science-feedback-line"></div>
       <div class="btn-row">
         <button class="btn green" id="btn-science-next" onclick="nextScienceQuestion()" style="display:none;">Next ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATH: LANGUAGE SELECT -->
+  <section class="screen" id="screen-math-language">
+    <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;">Choose your language</h2>
+      <p class="tagline">Pick the language you want to play in.</p>
+      <div class="choice-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="choice-card" onclick="pickMathLang('en')"><span class="emoji">🇬🇧</span>English</div>
+        <div class="choice-card" onclick="pickMathLang('zh')"><span class="emoji">🇨🇳</span>简体中文</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATH: YEAR SELECT -->
+  <section class="screen" id="screen-math-year">
+    <button class="icon-btn home-btn" onclick="goTo('math-language')" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;" id="math-year-heading">Choose your year</h2>
+      <div class="choice-grid" id="math-year-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    </div>
+  </section>
+
+  <!-- MATH: INSTRUCTIONS -->
+  <section class="screen" id="screen-math-instructions">
+    <button class="icon-btn home-btn" onclick="goTo('math-year')" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;" id="math-instr-title">How to play</h2>
+      <p class="tagline" id="math-instr-text"></p>
+      <p class="tagline" id="math-instr-note" style="font-size:12px; color:#8b84b8;"></p>
+      <div class="btn-row">
+        <button class="btn green" id="btn-start-math" onclick="startMathGame()">⭐ Let's Play!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATH: GAMEPLAY -->
+  <section class="screen" id="screen-math-game">
+    <button class="icon-btn home-btn" onclick="quitMathGame()" aria-label="Stop and exit">🏠</button>
+    <div class="card">
+      <div class="top-bar">
+        <span class="pill" id="math-counter">Q 1/10</span>
+        <div class="progress-track"><div class="progress-fill" id="math-progress-fill" style="width:0%"></div></div>
+        <span class="pill stars-earned" id="math-score-pill">🏅 0/100</span>
+      </div>
+      <div class="mascot-wrap"><span class="mascot" id="mascot-math">🐼</span></div>
+
+      <div id="math-loading-wrap" style="display:none; text-align:center;">
+        <div class="speech" id="math-loading-text">🤔 Pip is thinking of a question...</div>
+      </div>
+
+      <div id="math-error-wrap" style="display:none; text-align:center;">
+        <div class="science-explain" id="math-error-text" style="text-align:center;"></div>
+        <div class="btn-row">
+          <button class="btn sun" onclick="requestMathQuestion()">🔄 Try Again</button>
+        </div>
+      </div>
+
+      <div id="math-question-wrap" style="display:none;">
+        <div class="science-scenario" id="math-scenario"></div>
+        <div class="science-question" id="math-question"></div>
+        <div style="text-align:center; margin:14px 0;">
+          <input type="number" id="math-answer-input" class="math-answer-input" placeholder="?" inputmode="decimal" onkeydown="if(event.key==='Enter') checkMathAnswer();">
+        </div>
+        <div class="feedback-line" id="math-feedback-line"></div>
+        <div class="btn-row">
+          <button class="btn sun" id="btn-math-check" onclick="checkMathAnswer()">Check ✓</button>
+          <button class="btn green" id="btn-math-next" onclick="nextMathQuestion()" style="display:none;">Next ▶</button>
+        </div>
       </div>
     </div>
   </section>
@@ -784,6 +849,8 @@ const UI_TEXT = {
     vocabCorrectMsgs:["Great match!","Nice one!","You got it!","Perfect!","Well matched!"],
     vocabMismatchMsg:"Not quite — try again!", vocabStart:"Let's Play!",
     vocabCorrectLbl:"MATCHED", vocabWrongLbl:"NEEDED RETRY", changeLangs:"Change Languages",
+    vocabReviewTitle:"🎉 Great job! Take a moment to review these words before you continue.",
+    vocabContinueBtn:"Continue ▶",
     storyInstrTitle:"How to play", storyInstrBody:"Read the story and tap a word from the word bank below to fill in the next blank. Tap a filled blank to remove it. You have 2 tries per story!",
     storyStart:"Let's Play!", storyFillAll:"Fill in all five blanks first!",
     quitConfirm:"Stop playing now? Your score so far will be saved.",
@@ -812,6 +879,8 @@ const UI_TEXT = {
     vocabCorrectMsgs:["Padanan tepat!","Bagus!","Betul!","Cantik!","Padanan hebat!"],
     vocabMismatchMsg:"Belum tepat — cuba lagi!", vocabStart:"Jom Main!",
     vocabCorrectLbl:"DIPADANKAN", vocabWrongLbl:"PERLU ULANG", changeLangs:"Tukar Bahasa",
+    vocabReviewTitle:"🎉 Syabas! Luangkan masa untuk mengulang kaji perkataan ini sebelum anda teruskan.",
+    vocabContinueBtn:"Teruskan ▶",
     storyInstrTitle:"Cara bermain", storyInstrBody:"Baca cerita itu dan ketik satu perkataan daripada bank perkataan di bawah untuk mengisi tempat kosong seterusnya. Ketik tempat kosong yang telah diisi untuk membuangnya. Anda ada 2 percubaan setiap cerita!",
     storyStart:"Jom Main!", storyFillAll:"Isi kelima-lima tempat kosong dahulu!",
     quitConfirm:"Berhenti bermain sekarang? Markah anda setakat ini akan disimpan.",
@@ -840,6 +909,8 @@ const UI_TEXT = {
     vocabCorrectMsgs:["配对成功！","真棒！","太好了！","完美！","配对正确！"],
     vocabMismatchMsg:"不太对，再试一次！", vocabStart:"开始游戏！",
     vocabCorrectLbl:"配对成功", vocabWrongLbl:"需要重试", changeLangs:"更改语言",
+    vocabReviewTitle:"🎉 做得好！继续之前，先花点时间复习这些词语吧。",
+    vocabContinueBtn:"继续 ▶",
     storyInstrTitle:"游戏玩法", storyInstrBody:"阅读故事,然后点击下面词语库中的词语,填入下一个空格。点击已填的空格可以将它移除。每个故事有两次机会!",
     storyStart:"开始游戏!", storyFillAll:"请先填满全部五个空格!",
     quitConfirm:"现在要停止游戏吗?你目前的分数会被保存。",
@@ -2630,7 +2701,11 @@ let state = {
   scienceCorrectCount:0, scienceWrongCount:0, scienceScore:0, scienceTotalStars:0,
   scienceMagnetSelected:[], scienceMagnetTested:false,
   scienceNeedsItems:[], scienceNeedsCorrectGiven:0, scienceNeedsWrongGiven:0, scienceNeedsTotal:0,
-  scienceSortAssignments:[], scienceSequenceBank:[], scienceSequencePlaced:[]
+  scienceSortAssignments:[], scienceSequenceBank:[], scienceSequencePlaced:[],
+  // math word problems state
+  mathLang:"en", mathYear:1, mathIndex:0, mathTotalQuestions:10,
+  mathCurrentQuestion:null, mathAttempts:0, mathResolved:false,
+  mathCorrectCount:0, mathWrongCount:0, mathScore:0, mathTotalStars:0
 };
 
 /* ---------------- NAV ---------------- */
@@ -2652,6 +2727,9 @@ function goTo(name){
   if(name==="science-language"){ state.mode="science"; }
   if(name==="science-year") renderScienceYearGrid();
   if(name==="science-instructions") renderScienceInstructions();
+  if(name==="math-language"){ state.mode="math"; }
+  if(name==="math-year") renderMathYearGrid();
+  if(name==="math-instructions") renderMathInstructions();
 }
 
 function renderLanguageGrid(){
@@ -2748,6 +2826,8 @@ function startVocabGame(){
   state.vocabRetried = 0;
   state.vocabMarksPerPair = Math.round((100/pool.length) * 10) / 10; // 10 marks each pair
   goTo("vocab-game");
+  document.getElementById("vocab-grid-wrap").style.display = "";
+  document.getElementById("vocab-review-wrap").style.display = "none";
   renderVocabBoard();
   updateVocabTopBar();
   document.getElementById("vocab-speech").textContent = UI_TEXT[state.baseLang].vocabHint;
@@ -2758,6 +2838,19 @@ function updateVocabTopBar(){
   document.getElementById("vocab-progress-fill").style.width = (state.matchedCount/10*100)+"%";
   document.getElementById("vocab-score-pill").textContent = "🏅 " + state.vocabScore + "/100";
 }
+
+const VOCAB_PAIR_COLORS = [
+  {bg:"#FFE9EC", border:"#F2718B"},
+  {bg:"#FFF3D6", border:"#E8A33D"},
+  {bg:"#EAFCF2", border:"#2A9E63"},
+  {bg:"#EAF4FF", border:"#4F9DDE"},
+  {bg:"#F3EAFF", border:"#9B6BD6"},
+  {bg:"#FFE9D6", border:"#E8763D"},
+  {bg:"#E6FFF6", border:"#2AB6A0"},
+  {bg:"#FFEAF8", border:"#D661C0"},
+  {bg:"#F0FFE0", border:"#7AC93C"},
+  {bg:"#E9ECFF", border:"#6C7BFF"}
+];
 
 function renderVocabBoard(){
   const leftCol = document.getElementById("vocab-col-left");
@@ -2771,6 +2864,12 @@ function renderVocabBoard(){
     el.textContent = tile.word;
     el.disabled = tile.matched;
     el.onclick = ()=> selectVocabTile("left", idx);
+    if(tile.matched){
+      const c = VOCAB_PAIR_COLORS[tile.pairId % VOCAB_PAIR_COLORS.length];
+      el.style.background = c.bg;
+      el.style.borderColor = c.border;
+      el.style.boxShadow = "0 3px 0 " + c.border;
+    }
     leftCol.appendChild(el);
   });
   state.rightTiles.forEach((tile, idx)=>{
@@ -2780,6 +2879,12 @@ function renderVocabBoard(){
     el.textContent = tile.word;
     el.disabled = tile.matched;
     el.onclick = ()=> selectVocabTile("right", idx);
+    if(tile.matched){
+      const c = VOCAB_PAIR_COLORS[tile.pairId % VOCAB_PAIR_COLORS.length];
+      el.style.background = c.bg;
+      el.style.borderColor = c.border;
+      el.style.boxShadow = "0 3px 0 " + c.border;
+    }
     rightCol.appendChild(el);
   });
 }
@@ -2822,7 +2927,7 @@ function selectVocabTile(side, idx){
     renderVocabBoard();
     updateVocabTopBar();
     if(state.matchedCount>=10){
-      setTimeout(showVocabResults, 900);
+      setTimeout(showVocabReview, 900);
     } else {
       launchConfetti(10);
     }
@@ -2840,6 +2945,31 @@ function selectVocabTile(side, idx){
     if(leftEl) leftEl.classList.add("mismatch");
     if(rightEl) rightEl.classList.add("mismatch");
   }
+}
+
+function showVocabReview(){
+  const t = UI_TEXT[state.baseLang];
+  document.getElementById("vocab-grid-wrap").style.display = "none";
+  document.getElementById("vocab-review-wrap").style.display = "";
+  document.getElementById("vocab-review-title").textContent = t.vocabReviewTitle;
+  document.getElementById("btn-vocab-continue").textContent = t.vocabContinueBtn;
+  const listEl = document.getElementById("vocab-review-list");
+  listEl.innerHTML = "";
+  state.vocabPairs.forEach((pair, pairId)=>{
+    const c = VOCAB_PAIR_COLORS[pairId % VOCAB_PAIR_COLORS.length];
+    const row = document.createElement("div");
+    row.className = "rline";
+    row.style.background = c.bg;
+    row.style.borderColor = c.border;
+    row.style.borderBottom = "2px solid " + c.border;
+    row.style.borderRadius = "10px";
+    row.style.padding = "8px 12px";
+    row.style.marginBottom = "6px";
+    row.innerHTML = "<span>" + pair[state.baseLang] + "</span><span>" + pair[state.targetLang] + "</span>";
+    listEl.appendChild(row);
+  });
+  document.getElementById("vocab-speech").textContent = t.vocabCorrectMsgs[Math.floor(Math.random()*t.vocabCorrectMsgs.length)];
+  launchConfetti(20);
 }
 
 function showVocabResults(){
@@ -4181,6 +4311,240 @@ function quitScienceGame(){
   openQuitModal(state.scienceLang, ()=>{
     Array.from(document.getElementById("science-choices").children).forEach(btn=>btn.disabled = true);
     showScienceResults();
+  });
+}
+
+/* ---------------- MATH WORD PROBLEMS ---------------- */
+function pickMathLang(lang){
+  state.mathLang = lang;
+  goTo("math-year");
+}
+
+function renderMathYearGrid(){
+  const isZh = state.mathLang === "zh";
+  document.getElementById("math-year-heading").textContent = isZh ? "选择你的年级" : "Choose your year";
+  const grid = document.getElementById("math-year-grid");
+  grid.innerHTML = "";
+  const yearLabels = isZh
+    ? ["一年级","二年级","三年级","四年级","五年级","六年级"]
+    : ["Year 1","Year 2","Year 3","Year 4","Year 5","Year 6"];
+  for(let y=1; y<=6; y++){
+    const div = document.createElement("div");
+    div.className = "choice-card";
+    div.innerHTML = '<span class="emoji">🧮</span>' + yearLabels[y-1];
+    div.onclick = ()=> pickMathYear(y);
+    grid.appendChild(div);
+  }
+}
+
+function pickMathYear(year){
+  state.mathYear = year;
+  goTo("math-instructions");
+}
+
+function renderMathInstructions(){
+  const isZh = state.mathLang === "zh";
+  document.getElementById("math-instr-title").textContent = isZh ? "游戏玩法" : "How to play";
+  document.getElementById("math-instr-text").textContent = isZh
+    ? "Pip 会为你实时想出一道全新的数学应用题！仔细阅读题目，输入你的答案，然后点击检查。每题有两次机会。"
+    : "Pip will think up a brand-new math word problem for you in real time! Read carefully, type your answer, then check. You get 2 tries per question.";
+  document.getElementById("math-instr-note").textContent = isZh
+    ? "💡 这个功能需要在 Claude.ai 里打开才能实时生成题目。"
+    : "💡 This feature needs to be running inside Claude.ai to generate live questions.";
+  document.getElementById("btn-start-math").textContent = isZh ? "⭐ 开始游戏！" : "⭐ Let's Play!";
+}
+
+function startMathGame(){
+  state.mathIndex = 0;
+  state.mathCorrectCount = 0;
+  state.mathWrongCount = 0;
+  state.mathScore = 0;
+  state.mathTotalStars = 0;
+  goTo("math-game");
+  requestMathQuestion();
+}
+
+async function callClaudeForMathQuestion(year, lang){
+  const promptEn = "You are a Malaysian primary school math teacher creating a KSSR-aligned math word problem for a Year " + year + " student. " +
+    "Create ONE short, fun, age-appropriate word problem. Use a Malaysian context (local names, Ringgit currency, familiar settings) where relevant. " +
+    "Vary the topic across addition, subtraction, multiplication, division, money, fractions, time, or measurement, picking one suited to Year " + year + " difficulty. " +
+    "Respond with ONLY a raw JSON object and nothing else (no markdown, no code fences, no text outside the JSON), in exactly this format: " +
+    "{\"scenario\":\"1-2 sentence setup\",\"question\":\"the question being asked\",\"answer\":<number>,\"explanation\":\"a short 1-2 sentence explanation of how to solve it\"}. " +
+    "The \"answer\" field must be a plain number (integer or decimal), not a string.";
+
+  const promptZh = "你是一名马来西亚小学数学老师，正在为" + year + "年级学生出一道符合KSSR课程的数学应用题。" +
+    "请创作一道简短、有趣、适合该年级程度的应用题，可以使用马来西亚的情境（本地人名、令吉货币、熟悉的场景）。" +
+    "题目类型可包括：加法、减法、乘法、除法、金钱、分数、时间或测量，请挑选一个适合" + year + "年级难度的类型。" +
+    "请只回复一个纯JSON对象，不要有其他文字（不要markdown、不要代码框、不要额外说明），格式如下：" +
+    "{\"scenario\":\"一两句话的情境设定\",\"question\":\"要回答的问题\",\"answer\":<数字>,\"explanation\":\"一两句简短解释如何解题\"}。" +
+    "\"answer\" 字段必须是纯数字（整数或小数），不能是字符串。";
+
+  const prompt = lang === "zh" ? promptZh : promptEn;
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 500,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+
+  if(!response.ok){
+    throw new Error("API request failed: " + response.status);
+  }
+
+  const data = await response.json();
+  const text = data.content.map(c=>c.text||"").join("");
+  const clean = text.replace(/```json|```/g,"").trim();
+  const parsed = JSON.parse(clean);
+
+  if(typeof parsed.answer !== "number" || !parsed.scenario || !parsed.question){
+    throw new Error("Malformed response");
+  }
+  return parsed;
+}
+
+async function requestMathQuestion(){
+  const isZh = state.mathLang === "zh";
+  state.mathAttempts = 0;
+  state.mathResolved = false;
+  state.mathCurrentQuestion = null;
+
+  document.getElementById("math-counter").textContent = "Q " + (state.mathIndex+1) + "/" + state.mathTotalQuestions;
+  document.getElementById("math-progress-fill").style.width = ((state.mathIndex)/state.mathTotalQuestions*100)+"%";
+  document.getElementById("math-score-pill").textContent = "🏅 " + state.mathScore + "/100";
+  document.getElementById("math-feedback-line").textContent = "";
+  document.getElementById("math-feedback-line").className = "feedback-line";
+  document.getElementById("btn-math-next").style.display = "none";
+  document.getElementById("math-answer-input").value = "";
+
+  document.getElementById("math-question-wrap").style.display = "none";
+  document.getElementById("math-error-wrap").style.display = "none";
+  document.getElementById("math-loading-wrap").style.display = "";
+  document.getElementById("math-loading-text").textContent = isZh ? "🤔 Pip 正在想一道题目..." : "🤔 Pip is thinking of a question...";
+
+  try{
+    const q = await callClaudeForMathQuestion(state.mathYear, state.mathLang);
+    state.mathCurrentQuestion = q;
+    document.getElementById("math-loading-wrap").style.display = "none";
+    document.getElementById("math-question-wrap").style.display = "";
+    document.getElementById("math-scenario").textContent = q.scenario;
+    document.getElementById("math-question").textContent = q.question;
+    document.getElementById("btn-math-check").disabled = false;
+    document.getElementById("math-answer-input").disabled = false;
+    document.getElementById("math-answer-input").focus();
+  } catch(err){
+    document.getElementById("math-loading-wrap").style.display = "none";
+    document.getElementById("math-error-wrap").style.display = "";
+    document.getElementById("math-error-text").textContent = isZh
+      ? "😅 Pip 暂时想不出题目。请确认这个游戏是在 Claude.ai 里打开的，然后再试一次！"
+      : "😅 Pip couldn't come up with a question right now. Make sure this is open inside Claude.ai, then try again!";
+  }
+}
+
+function checkMathAnswer(){
+  if(state.mathResolved || !state.mathCurrentQuestion) return;
+  const t = UI_TEXT[state.mathLang];
+  const q = state.mathCurrentQuestion;
+  const feedback = document.getElementById("math-feedback-line");
+  const inputEl = document.getElementById("math-answer-input");
+  const userVal = parseFloat(inputEl.value);
+
+  if(inputEl.value.trim() === "" || isNaN(userVal)){
+    feedback.className = "feedback-line no";
+    feedback.textContent = state.mathLang === "zh" ? "请先输入你的答案！" : "Type your answer first!";
+    return;
+  }
+
+  const isCorrect = Math.abs(userVal - q.answer) < 0.001;
+
+  if(isCorrect){
+    const marksEarned = state.mathAttempts === 0 ? 10 : 5;
+    state.mathCorrectCount++;
+    state.mathScore += marksEarned;
+    document.getElementById("math-score-pill").textContent = "🏅 " + state.mathScore + "/100";
+    feedback.className = "feedback-line ok";
+    feedback.innerHTML = "✅ " + t.correctMsgs[Math.floor(Math.random()*t.correctMsgs.length)] + " +" + marksEarned + " " + t.marksWord + "<br><span class=\"science-explain\">" + q.explanation + "</span>";
+    document.getElementById("mascot-math").classList.add("happy");
+    launchConfetti();
+    resolveMathQuestion();
+  } else {
+    state.mathAttempts++;
+    document.getElementById("mascot-math").classList.add("sad");
+    setTimeout(()=>document.getElementById("mascot-math").classList.remove("sad"), 500);
+    if(state.mathAttempts >= 2){
+      feedback.className = "feedback-line no";
+      feedback.innerHTML = "💡 " + (state.mathLang==="zh" ? "正确答案是 " : "The correct answer is ") + q.answer + " (0 " + t.marksWord + ")<br><span class=\"science-explain\">" + q.explanation + "</span>";
+      state.mathWrongCount++;
+      resolveMathQuestion();
+    } else {
+      feedback.className = "feedback-line no";
+      feedback.textContent = "❌ " + t.wrongMsg + " (1 " + (state.mathLang==="zh" ? "次机会" : "try left") + ")";
+    }
+  }
+}
+
+function resolveMathQuestion(){
+  state.mathResolved = true;
+  document.getElementById("btn-math-check").disabled = true;
+  document.getElementById("math-answer-input").disabled = true;
+  document.getElementById("btn-math-next").style.display = "";
+}
+
+function nextMathQuestion(){
+  document.getElementById("mascot-math").classList.remove("happy","sad");
+  state.mathIndex++;
+  if(state.mathIndex >= state.mathTotalQuestions){
+    showMathResults();
+  } else {
+    requestMathQuestion();
+  }
+}
+
+function showMathResults(){
+  const t = UI_TEXT[state.mathLang];
+  const score = state.mathScore;
+  const attempted = state.mathCorrectCount + state.mathWrongCount;
+  const maxPossible = attempted * 10;
+  const ratio = maxPossible ? score/maxPossible : 0;
+  const starsEarned = Math.round(ratio * 10);
+  let gradeKey;
+  if(attempted===0) gradeKey="F";
+  else if(ratio>=0.9) gradeKey="A+";
+  else if(ratio>=0.75) gradeKey="A";
+  else if(ratio>=0.6) gradeKey="B";
+  else if(ratio>=0.4) gradeKey="C";
+  else if(ratio>0) gradeKey="D";
+  else gradeKey="F";
+  const g = t.grades[gradeKey];
+  document.getElementById("grade-emoji").textContent = g.emoji;
+  document.getElementById("grade-label").textContent = g.label;
+  document.getElementById("grade-msg").textContent = g.msg;
+  document.getElementById("stat-score").textContent = score + "/" + maxPossible;
+  document.getElementById("stat-correct").textContent = state.mathCorrectCount;
+  document.getElementById("stat-wrong").textContent = state.mathWrongCount;
+  document.getElementById("stat-correct-label").textContent = "CORRECT";
+  document.getElementById("stat-wrong-label").textContent = "INCORRECT";
+  document.getElementById("stars-row").textContent = "⭐".repeat(starsEarned) + "☆".repeat(Math.max(0,10-starsEarned));
+
+  const btn1 = document.getElementById("btn-result-1");
+  const btn2 = document.getElementById("btn-result-2");
+  const btn3 = document.getElementById("btn-result-3");
+  btn1.textContent = "🔁 Play Again";
+  btn1.onclick = startMathGame;
+  btn2.textContent = "🌐 Change Year";
+  btn2.onclick = ()=>goTo("math-year");
+  btn3.onclick = ()=>goTo("welcome");
+
+  goTo("results");
+  if(ratio>=0.6) launchConfetti(40);
+}
+
+function quitMathGame(){
+  openQuitModal(state.mathLang, ()=>{
+    showMathResults();
   });
 }
 
