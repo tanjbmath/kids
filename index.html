@@ -136,6 +136,7 @@
   .vocab-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px;}
   .vocab-col{display:flex; flex-direction:column; gap:10px;}
   .vocab-tile{
+	position:relative; min-height:56px;
     font-family:'Baloo 2',cursive; font-weight:700; font-size:16px;
     background:var(--white); border:2.5px solid #C7CEFF; border-radius:14px;
     padding:14px 10px; cursor:pointer; box-shadow:0 3px 0 #C7CEFF; text-align:center;
@@ -146,6 +147,31 @@
   .vocab-tile.selected{border-color:#6C7BFF; background:#EEF0FF; box-shadow:0 3px 0 #6C7BFF;}
   .vocab-tile.matched{background:#EAFCF2; border-color:var(--leaf); box-shadow:0 3px 0 #2A9E63; opacity:0.75; cursor:default; pointer-events:none;}
   .vocab-tile.mismatch{animation:shake .4s ease; border-color:var(--coral); background:#FFEEEC;}
+  .lang-hint-icon{
+  margin-left:6px;
+  font-size:12px;
+  cursor:pointer;
+  opacity:.75;
+}
+
+.lang-tooltip{
+  position:absolute;
+  top:-38px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#2B2250;
+  color:#fff;
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:13px;
+  white-space:nowrap;
+  display:none;
+  z-index:999;
+}
+
+.lang-tooltip.show{
+  display:block;
+}
   .hint-line{text-align:center; font-weight:700; color:#8b84b8; font-size:14px; margin-top:4px;}
   .feedback-line{text-align:center; font-weight:800; min-height:24px; margin-top:8px; font-size:16px;}
   .feedback-line.ok{color:var(--leaf);}
@@ -2893,6 +2919,29 @@ function renderVocabInstructions(){
 }
 
 /* ---------------- VOCAB MATCH: GAME LOGIC ---------------- */
+function getHintWord(pair){
+
+  const langs = ["en","ms","zh"];
+
+  const hintLang = langs.find(
+    l => l !== state.baseLang && l !== state.targetLang
+  );
+
+  return pair[hintLang];
+}
+
+function toggleTooltip(id){
+
+  document.querySelectorAll(".lang-tooltip.show")
+    .forEach(t => {
+      if(t.id !== id){
+        t.classList.remove("show");
+      }
+    });
+
+  document.getElementById(id)
+    .classList.toggle("show");
+}
 function startVocabGame(){
   const pool = shuffle(WORD_BANK).slice(0, 10);
   state.vocabPairs = pool;
@@ -2942,7 +2991,23 @@ function renderVocabBoard(){
     const el = document.createElement("button");
     el.className = "vocab-tile" + (tile.matched ? " matched":"") +
       (state.selection && state.selection.side==="left" && state.selection.idx===idx ? " selected":"");
-    el.textContent = tile.word;
+    const hintWord =
+  getHintWord(
+    state.vocabPairs[tile.pairId]
+  );
+
+const tooltipId = "tipL_" + idx;
+
+el.innerHTML = `
+  <span>${tile.word}</span>
+  <span class="lang-hint-icon"
+        onclick="event.stopPropagation();toggleTooltip('${tooltipId}')">
+        🌐
+  </span>
+  <div class="lang-tooltip" id="${tooltipId}">
+    ${hintWord}
+  </div>
+`;
     el.disabled = tile.matched;
     el.onclick = ()=> selectVocabTile("left", idx);
     if(tile.matched){
