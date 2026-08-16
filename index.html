@@ -3052,14 +3052,17 @@ el.innerHTML = `
     const el = document.createElement("button");
     el.className = "vocab-tile" + (tile.matched ? " matched":"") +
       (state.selection && state.selection.side==="right" && state.selection.idx===idx ? " selected":"");
-    el.innerHTML = `
+    const pair = state.vocabPairs[tile.pairId];
+	el.innerHTML = `
   <span>${tile.word}</span>
-  <span class="lang-hint-icon"
-        onclick="event.stopPropagation();
-                 speakHintWord(state.vocabPairs[tile.pairId])">
-    🔊
-  </span>
+  <span class="lang-hint-icon">🔊</span>
 `;
+el.querySelector('.lang-hint-icon')
+  .addEventListener('click', function(e){
+    e.stopPropagation();
+    speakHintWord(pair);
+  });
+	
     el.disabled = tile.matched;
     el.onclick = ()=> selectVocabTile("right", idx);
     if(tile.matched){
