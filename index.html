@@ -153,6 +153,9 @@
   cursor:pointer;
   opacity:.75;
 }
+.lang-hint-icon:hover{
+  opacity:1;
+}
 
 .lang-tooltip{
   position:absolute;
@@ -2942,6 +2945,33 @@ function toggleTooltip(id){
   document.getElementById(id)
     .classList.toggle("show");
 }
+function speakHintWord(pair){
+
+  const langs = ["en","ms","zh"];
+
+  const hintLang = langs.find(
+    l => l !== state.baseLang &&
+         l !== state.targetLang
+  );
+
+  const text = pair[hintLang];
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+  if(hintLang === "en"){
+    utterance.lang = "en-US";
+  }
+  else if(hintLang === "ms"){
+    utterance.lang = "ms-MY";
+  }
+  else if(hintLang === "zh"){
+    utterance.lang = "zh-CN";
+  }
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
 function startVocabGame(){
   const pool = shuffle(WORD_BANK).slice(0, 10);
   state.vocabPairs = pool;
@@ -3022,7 +3052,14 @@ el.innerHTML = `
     const el = document.createElement("button");
     el.className = "vocab-tile" + (tile.matched ? " matched":"") +
       (state.selection && state.selection.side==="right" && state.selection.idx===idx ? " selected":"");
-    el.textContent = tile.word;
+    el.innerHTML = `
+  <span>${tile.word}</span>
+  <span class="lang-hint-icon"
+        onclick="event.stopPropagation();
+                 speakHintWord(state.vocabPairs[tile.pairId])">
+    🔊
+  </span>
+`;
     el.disabled = tile.matched;
     el.onclick = ()=> selectVocabTile("right", idx);
     if(tile.matched){
