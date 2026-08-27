@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>Words Game Adventure</title>
+<title>Sentence Builder Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -37,6 +37,46 @@
   .screen{display:none; animation:fadeIn .45s ease;}
   .screen.active{display:block;}
   @keyframes fadeIn{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
+
+  /* Home screen: animated sky */
+  .home-sky{position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0;}
+  .home-sky .sun-glow{
+    position:absolute; top:-60px; right:-40px; width:200px; height:200px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,210,63,0.9) 0%, rgba(255,210,63,0.35) 55%, rgba(255,210,63,0) 75%);
+    animation:sunPulse 5s ease-in-out infinite;
+  }
+  @keyframes sunPulse{0%,100%{transform:scale(1); opacity:0.9;} 50%{transform:scale(1.12); opacity:1;}}
+  .home-sky .cloud-shape{
+    position:absolute; left:0; background:#fff; opacity:0.85; border-radius:100px;
+    box-shadow:0 6px 14px rgba(43,34,80,0.08);
+    animation-name:driftCloud; animation-timing-function:linear; animation-iteration-count:infinite;
+  }
+  .home-sky .cloud-shape:before, .home-sky .cloud-shape:after{
+    content:""; position:absolute; background:#fff; border-radius:50%;
+  }
+  .home-sky .cloud-shape:before{ width:55%; height:150%; top:-60%; left:12%; }
+  .home-sky .cloud-shape:after{ width:65%; height:170%; top:-70%; right:10%; }
+  @keyframes driftCloud{
+    from{ transform:translateX(-32vw); }
+    to{ transform:translateX(132vw); }
+  }
+  .home-sky .bird{
+    position:absolute; font-size:20px; left:0;
+    animation-name:driftBird; animation-timing-function:ease-in-out; animation-iteration-count:infinite;
+  }
+  @keyframes driftBird{
+    0%{ transform:translateX(-10vw) translateY(0); }
+    50%{ transform:translateX(60vw) translateY(-14px); }
+    100%{ transform:translateX(130vw) translateY(0); }
+  }
+  .home-sky .sparkle{
+    position:absolute; border-radius:50%; background:#fff; opacity:0;
+    animation-name:twinkle; animation-timing-function:ease-in-out; animation-iteration-count:infinite;
+  }
+  @keyframes twinkle{0%,100%{opacity:0; transform:scale(0.6);} 50%{opacity:0.9; transform:scale(1);}}
+  @media (prefers-reduced-motion: reduce){
+    .home-sky .cloud-shape, .home-sky .bird, .home-sky .sun-glow, .home-sky .sparkle{ animation:none; }
+  }
 
   .card{
     background:var(--white);
@@ -303,13 +343,28 @@
 
   <!-- WELCOME -->
   <section class="screen active" id="screen-welcome">
+    <div class="home-sky" aria-hidden="true">
+      <span class="sun-glow"></span>
+      <span class="cloud-shape" style="width:90px; height:34px; top:6%; opacity:0.9; animation-duration:34s; animation-delay:-6s;"></span>
+      <span class="cloud-shape" style="width:140px; height:48px; top:16%; opacity:0.7; animation-duration:52s; animation-delay:-20s;"></span>
+      <span class="cloud-shape" style="width:70px; height:26px; top:32%; opacity:0.9; animation-duration:26s; animation-delay:-2s;"></span>
+      <span class="cloud-shape" style="width:160px; height:54px; top:2%; opacity:0.55; animation-duration:65s; animation-delay:-38s;"></span>
+      <span class="cloud-shape" style="width:60px; height:22px; top:24%; opacity:0.85; animation-duration:22s; animation-delay:-12s;"></span>
+      <span class="cloud-shape" style="width:110px; height:38px; top:40%; opacity:0.5; animation-duration:48s; animation-delay:-28s;"></span>
+      <span class="bird" style="top:12%; animation-duration:16s; animation-delay:-3s;">🐦</span>
+      <span class="bird" style="top:20%; animation-duration:20s; animation-delay:-11s; font-size:16px;">🐦</span>
+      <span class="sparkle" style="width:6px; height:6px; top:10%; left:20%; animation-duration:3s; animation-delay:0s;"></span>
+      <span class="sparkle" style="width:4px; height:4px; top:15%; left:70%; animation-duration:4s; animation-delay:-1.5s;"></span>
+      <span class="sparkle" style="width:5px; height:5px; top:8%; left:45%; animation-duration:3.5s; animation-delay:-2.2s;"></span>
+      <span class="sparkle" style="width:4px; height:4px; top:26%; left:85%; animation-duration:4.5s; animation-delay:-0.8s;"></span>
+    </div>
     <div class="card big-center">
       <div class="mascot-wrap"><span class="mascot" id="mascot-welcome">🐼</span></div>
-      <h1 class="title">Words Game<br><span class="accent">Adventure</span></h1>
+      <h1 class="title">Sentence Builder<br><span class="accent">Adventure</span></h1>
       <p class="tagline">Pip the Panda has four games for you today!</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr; margin-top:20px;">
         <div class="choice-card" onclick="goTo('language')">
-          <span class="emoji">📝</span>Words<br>Game
+          <span class="emoji">📝</span>Sentence<br>Builder
         </div>
         <div class="choice-card" onclick="goTo('vocab-base')">
           <span class="emoji">🔤</span>Word<br>Match
@@ -1643,7 +1698,57 @@ const WORD_BANK = [
 {topic:"Actions", en:"bake", ms:"membakar", zh:"烘烤"},
 {topic:"Actions", en:"send", ms:"menghantar", zh:"发送"},
 {topic:"Actions", en:"call", ms:"menelefon", zh:"打电话"},
-{topic:"Actions", en:"thank", ms:"berterima kasih", zh:"感谢"}
+{topic:"Actions", en:"thank", ms:"berterima kasih", zh:"感谢"},
+{topic:"Kitchen", en:"teapot", ms:"teko", zh:"茶壶"},
+{topic:"Household Items", en:"blanket", ms:"selimut", zh:"毯子"},
+{topic:"Household Items", en:"pillow", ms:"bantal", zh:"枕头"},
+{topic:"Household Items", en:"curtain", ms:"langsir", zh:"窗帘"},
+{topic:"Household Items", en:"mattress", ms:"tilam", zh:"床垫"},
+{topic:"Cleanliness", en:"mop", ms:"mop", zh:"拖把"},
+{topic:"Cleanliness", en:"bucket", ms:"baldi", zh:"桶"},
+{topic:"Tools", en:"ladder", ms:"tangga", zh:"梯子"},
+{topic:"Tools", en:"hammer", ms:"tukul", zh:"锤子"},
+{topic:"Tools", en:"screwdriver", ms:"pemutar skru", zh:"螺丝刀"},
+{topic:"Tools", en:"nail", ms:"paku", zh:"钉子"},
+{topic:"Tools", en:"saw", ms:"gergaji", zh:"锯子"},
+{topic:"Tools", en:"toolbox", ms:"kotak alat", zh:"工具箱"},
+{topic:"Tools", en:"wrench", ms:"sepana", zh:"扳手"},
+{topic:"Classroom Items", en:"calculator", ms:"kalkulator", zh:"计算器"},
+{topic:"Classroom Items", en:"lunchbox", ms:"kotak makanan", zh:"饭盒"},
+{topic:"Classroom Items", en:"whiteboard", ms:"papan putih", zh:"白板"},
+{topic:"Classroom Items", en:"chalk", ms:"kapur", zh:"粉笔"},
+{topic:"Classroom Items", en:"globe", ms:"glob", zh:"地球仪"},
+{topic:"Classroom Items", en:"calendar", ms:"kalendar", zh:"日历"},
+{topic:"Classroom Items", en:"microscope", ms:"mikroskop", zh:"显微镜"},
+{topic:"Space", en:"telescope", ms:"teleskop", zh:"望远镜"},
+{topic:"Travel", en:"compass", ms:"kompas", zh:"指南针"},
+{topic:"Travel", en:"envelope", ms:"sampul surat", zh:"信封"},
+{topic:"Travel", en:"stamp", ms:"setem", zh:"邮票"},
+{topic:"Travel", en:"postcard", ms:"poskad", zh:"明信片"},
+{topic:"Travel", en:"suitcase", ms:"beg pakaian", zh:"行李箱"},
+{topic:"Travel", en:"passport", ms:"pasport", zh:"护照"},
+{topic:"Travel", en:"ticket", ms:"tiket", zh:"票"},
+{topic:"Travel", en:"map", ms:"peta", zh:"地图"},
+{topic:"Places", en:"flag", ms:"bendera", zh:"旗帜"},
+{topic:"Sports Equipment", en:"trophy", ms:"trofi", zh:"奖杯"},
+{topic:"Sports Equipment", en:"medal", ms:"pingat", zh:"奖牌"},
+{topic:"Objects", en:"crown", ms:"mahkota", zh:"皇冠"},
+{topic:"Places", en:"castle", ms:"istana", zh:"城堡"},
+{topic:"Places", en:"bridge", ms:"jambatan", zh:"桥"},
+{topic:"Nature", en:"island", ms:"pulau", zh:"岛"},
+{topic:"Nature", en:"waterfall", ms:"air terjun", zh:"瀑布"},
+{topic:"Nature", en:"volcano", ms:"gunung berapi", zh:"火山"},
+{topic:"Nature", en:"desert", ms:"gurun", zh:"沙漠"},
+{topic:"Nature", en:"valley", ms:"lembah", zh:"山谷"},
+{topic:"Nature", en:"cave", ms:"gua", zh:"洞穴"},
+{topic:"Nature", en:"jungle", ms:"hutan", zh:"丛林"},
+{topic:"Nature", en:"iceberg", ms:"aisberg", zh:"冰山"},
+{topic:"Nature", en:"glacier", ms:"glasier", zh:"冰川"},
+{topic:"Nature", en:"avalanche", ms:"runtuhan salji", zh:"雪崩"},
+{topic:"Weather", en:"tornado", ms:"puting beliung", zh:"龙卷风"},
+{topic:"Weather", en:"earthquake", ms:"gempa bumi", zh:"地震"},
+{topic:"Weather", en:"tsunami", ms:"tsunami", zh:"海啸"},
+{topic:"Weather", en:"hurricane", ms:"taufan", zh:"飓风"}
 ];
 
 /* ---------------- STORY BLANKS DATA ----------------
