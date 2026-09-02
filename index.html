@@ -492,6 +492,7 @@
       </div>
       <div class="mascot-wrap"><span class="mascot" id="mascot-vocab">🐼</span></div>
       <div class="speech" id="vocab-speech">Tap a word, then tap its match!</div>
+      <div id="vocab-bonus-banner" class="hint-line" style="display:none; text-align:center; background:#FFF3D6; border:2px dashed #E8A33D; border-radius:14px; padding:8px 12px; margin-bottom:10px; font-weight:800; color:#8a5a12;"></div>
       <div class="vocab-grid" id="vocab-grid-wrap">
         <div class="vocab-col" id="vocab-col-left"></div>
         <div class="vocab-col" id="vocab-col-right"></div>
@@ -500,7 +501,7 @@
         <div class="hint-line" id="vocab-review-title">🎉 Great job! Take a moment to review these words before you continue.</div>
         <div class="receipt-list" id="vocab-review-list"></div>
         <div class="btn-row">
-          <button class="btn green" id="btn-vocab-continue" onclick="showVocabResults()">Continue ▶</button>
+          <button class="btn green" id="btn-vocab-continue" onclick="vocabContinueAfterReview()">Continue ▶</button>
         </div>
       </div>
     </div>
@@ -802,6 +803,10 @@ const UI_TEXT = {
     vocabCorrectLbl:"MATCHED", vocabWrongLbl:"NEEDED RETRY", changeLangs:"Change Languages",
     vocabReviewTitle:"🎉 Great job! Take a moment to review these words before you continue.",
     vocabContinueBtn:"Continue ▶",
+    vocabBonusBtn:"🌟 Start Bonus Round ▶",
+    vocabBonusBanner:"🌟 Bonus Round! Match again — no hints this time!",
+    vocabBonusSpeech:"No hints this time — you've got this!",
+    vocabBonusReviewTitle:"🌟 Amazing! You matched everything without any hints!",
     storyInstrTitle:"How to play", storyInstrBody:"Read the story and tap a word from the word bank below to fill in the next blank. Tap a filled blank to remove it. You have 2 tries per story!",
     storyStart:"Let's Play!", storyFillAll:"Fill in all five blanks first!",
     quitConfirm:"Stop playing now? Your score so far will be saved.",
@@ -832,6 +837,10 @@ const UI_TEXT = {
     vocabCorrectLbl:"DIPADANKAN", vocabWrongLbl:"PERLU ULANG", changeLangs:"Tukar Bahasa",
     vocabReviewTitle:"🎉 Syabas! Luangkan masa untuk mengulang kaji perkataan ini sebelum anda teruskan.",
     vocabContinueBtn:"Teruskan ▶",
+    vocabBonusBtn:"🌟 Mula Pusingan Bonus ▶",
+    vocabBonusBanner:"🌟 Pusingan Bonus! Padankan semula — tiada petunjuk kali ini!",
+    vocabBonusSpeech:"Tiada petunjuk kali ini — anda pasti boleh!",
+    vocabBonusReviewTitle:"🌟 Hebat! Anda padankan semuanya tanpa sebarang petunjuk!",
     storyInstrTitle:"Cara bermain", storyInstrBody:"Baca cerita itu dan ketik satu perkataan daripada bank perkataan di bawah untuk mengisi tempat kosong seterusnya. Ketik tempat kosong yang telah diisi untuk membuangnya. Anda ada 2 percubaan setiap cerita!",
     storyStart:"Jom Main!", storyFillAll:"Isi kelima-lima tempat kosong dahulu!",
     quitConfirm:"Berhenti bermain sekarang? Markah anda setakat ini akan disimpan.",
@@ -862,6 +871,10 @@ const UI_TEXT = {
     vocabCorrectLbl:"配对成功", vocabWrongLbl:"需要重试", changeLangs:"更改语言",
     vocabReviewTitle:"🎉 做得好！继续之前，先花点时间复习这些词语吧。",
     vocabContinueBtn:"继续 ▶",
+    vocabBonusBtn:"🌟 开始奖励回合 ▶",
+    vocabBonusBanner:"🌟 奖励回合！再配对一次——这次没有提示！",
+    vocabBonusSpeech:"这次没有提示——你一定可以的！",
+    vocabBonusReviewTitle:"🌟 太厉害了！你在没有任何提示的情况下完成了配对！",
     storyInstrTitle:"游戏玩法", storyInstrBody:"阅读故事,然后点击下面词语库中的词语,填入下一个空格。点击已填的空格可以将它移除。每个故事有两次机会!",
     storyStart:"开始游戏!", storyFillAll:"请先填满全部五个空格!",
     quitConfirm:"现在要停止游戏吗?你目前的分数会被保存。",
@@ -1905,7 +1918,7 @@ const STORY_BANK = {
       hint:"Think about words that describe what the bicycle looks or feels like."
     },
     {
-      id:"ENG010", title:"Our Green Community Day", standard:2, difficulty:3,
+      id:"ENG010", title:"Our Green Community Day", standard:1, difficulty:3,
       theme:"Community", grammar_focus:"Adjective",
       learning_objective:"Choose suitable adjectives to describe a community event.",
       story:"Last Saturday, the whole neighbourhood joined a ____1____ clean-up event near the park. The volunteers wore ____2____ gloves and carried large bags. Puan Salmah brought a ____3____ poster explaining how to recycle properly. The children found many ____4____ bottles scattered along the road. By evening, everyone felt ____5____ about keeping their community clean and green.",
@@ -1937,7 +1950,7 @@ const STORY_BANK = {
       hint:"Look for small words that connect the sentence's meaning."
     },
     {
-      id:"ENG012", title:"Keeping Our Classroom Clean", standard:2, difficulty:3,
+      id:"ENG012", title:"Keeping Our Classroom Clean", standard:1, difficulty:3,
       theme:"Cleanliness", grammar_focus:"Preposition",
       learning_objective:"Use prepositions correctly to describe cleaning actions.",
       story:"Every Friday, Class 2 Bestari cleans their classroom together. Mei places the books neatly ____1____ the shelf. Ali sweeps the dust ____2____ the corners of the room. Farah wipes the whiteboard ____3____ a clean cloth. The monitor puts the rubbish ____4____ the bin outside. Afterwards, everyone washes their hands ____5____ going back to class.",
@@ -1953,7 +1966,7 @@ const STORY_BANK = {
       hint:"Look for small words that show place or time."
     },
     {
-      id:"ENG013", title:"Fun at the School Carnival", standard:1, difficulty:2,
+      id:"ENG013", title:"Fun at the School Carnival", standard:2, difficulty:2,
       theme:"Festivals", grammar_focus:"Pronoun",
       learning_objective:"Identify subject pronouns that replace naming nouns.",
       story:"Today is the school carnival, and Sofia is very excited. ____1____ runs to the game booths with her friends. Her friend Wong brought some snacks, and ____2____ shares them with everyone. The school band sets up their instruments, and ____3____ play a cheerful tune. Sofia wins a small kite, and ____4____ flies high in the wind. At the end of the day, Sofia and her friends say, \"____5____ had a wonderful carnival together!\"",
@@ -2001,7 +2014,7 @@ const STORY_BANK = {
       hint:"Look for words that tell how or how often something happens."
     },
     {
-      id:"ENG016", title:"A Rainy Day Adventure", standard:2, difficulty:3,
+      id:"ENG016", title:"A Rainy Day Adventure", standard:1, difficulty:3,
       theme:"Weather", grammar_focus:"Adverb",
       learning_objective:"Identify adverbs describing how something happens.",
       story:"This morning, the rain fell ____1____ over the whole town. Aiman waited ____2____ at the window for the rain to stop. Suddenly, the thunder roared ____3____ and startled his little brother. Aiman ____4____ closed the window to keep the rain out. By the afternoon, the sky ____5____ turned clear and bright again.",
@@ -2017,7 +2030,7 @@ const STORY_BANK = {
       hint:"Look for words that tell how something happens."
     },
     {
-      id:"ENG017", title:"Helping a New Classmate", standard:1, difficulty:2,
+      id:"ENG017", title:"Helping a New Classmate", standard:2, difficulty:2,
       theme:"Kindness", grammar_focus:"Conjunction",
       learning_objective:"Identify conjunctions that join words or ideas.",
       story:"Today, a new student named Priya joined the class. She looked shy ____1____ nervous on her first day. Priya wanted to join the game, ____2____ she did not know the rules yet. She could choose to play hopscotch ____3____ skipping rope. Amir explained the rules slowly, ____4____ Priya understood them quickly. Priya felt happy ____5____ she had made a new friend.",
@@ -2049,7 +2062,7 @@ const STORY_BANK = {
       hint:"Look for small words that connect two ideas or reasons."
     },
     {
-      id:"ENG019", title:"Our Little Vegetable Garden", standard:1, difficulty:2,
+      id:"ENG019", title:"Our Little Vegetable Garden", standard:2, difficulty:2,
       theme:"Garden", grammar_focus:"Interjection",
       learning_objective:"Identify interjections that show strong feelings or reactions.",
       story:"Mrs. Tan's class started a small vegetable garden behind the school. \"____1____! Look at these tiny seeds,\" said Aisyah happily. \"____2____! I found a worm in the soil,\" shouted Kumar. After watering the plants every day, tiny green shoots appeared. \"____3____! Our plants are growing so fast,\" cheered the class. \"____4____! It's finally time to harvest,\" said the teacher. \"____5____! This tastes delicious,\" said Aisyah with a big smile.",
@@ -2131,7 +2144,7 @@ const STORY_BANK = {
       hint:"Fikirkan kata yang menerangkan sifat sesuatu benda."
     },
     {
-      id:"BM004", title:"Hari Membersihkan Rumah", standard:2, difficulty:3,
+      id:"BM004", title:"Hari Membersihkan Rumah", standard:1, difficulty:3,
       theme:"Rumah", grammar_focus:"Kata Sendi Nama",
       learning_objective:"Menggunakan kata sendi nama dengan betul dalam ayat.",
       story:"Setiap hari Sabtu, Hafiz membantu keluarganya membersihkan rumah. Dia meletakkan kasutnya ____1____ rak kasut dengan kemas. Kakaknya berjalan ____2____ taman untuk menyapu daun-daun kering. Ibu mereka mengambil pinggan bersih ____3____ almari untuk makan malam. Hafiz kemudian melipat baju ____4____ ayahnya sambil berbual. Selepas itu, mereka menyediakan teh ____5____ semua ahli keluarga.",
@@ -2195,7 +2208,7 @@ const STORY_BANK = {
       hint:"Fikirkan kata yang menerangkan rupa atau rasa sesuatu."
     },
     {
-      id:"BM008", title:"Jurnal Alam untuk Kelas", standard:2, difficulty:3,
+      id:"BM008", title:"Jurnal Alam untuk Kelas", standard:1, difficulty:3,
       theme:"Alam Semula Jadi", grammar_focus:"Kata Sendi Nama",
       learning_objective:"Menggunakan kata sendi nama dengan betul dalam ayat.",
       story:"Untuk projek sains, Hana dan rakan-rakan sekelasnya menulis jurnal alam. Setiap pagi, Hana memerhati burung ____1____ tingkap biliknya. Semasa rehat, dia mengutip daun ____2____ halaman sekolah. Kawannya, Kavin, mengambil gambar awan ____3____ tabletnya. Kemudian, mereka pergi ____4____ perpustakaan untuk berbincang. Guru mereka menyemak jurnal itu ____5____ setiap hari Jumaat.",
@@ -2211,7 +2224,7 @@ const STORY_BANK = {
       hint:"Cari kata kecil yang menunjukkan tempat, arah, atau waktu."
     },
     {
-      id:"BM009", title:"Basikal Baharu Danish", standard:1, difficulty:2,
+      id:"BM009", title:"Basikal Baharu Danish", standard:2, difficulty:2,
       theme:"Pengangkutan", grammar_focus:"Kata Tanya",
       learning_objective:"Mengenal pasti kata tanya yang sesuai dalam soalan.",
       story:"Danish mendapat basikal baharu untuk hari lahirnya. Ibunya bertanya, \"____1____ warna basikal ini?\" Danish menjawab, \"Warnanya biru.\" Kakaknya bertanya, \"____2____ awak dapat basikal ini?\" Danish berkata, \"Semasa hari lahir saya semalam.\" Rakannya bertanya, \"____3____ awak menunggang basikal ke sekolah setiap hari?\" Danish menjawab, \"Ya, setiap pagi.\" Ayahnya bertanya, \"____4____ basikal ini disimpan?\" Danish berkata, \"Di ruang tamu.\" Adiknya bertanya, \"____5____ yang membeli basikal ini?\" Danish tersenyum dan berkata, \"Ayah dan ibu saya.\"",
@@ -2243,7 +2256,7 @@ const STORY_BANK = {
       hint:"Cari kata yang digunakan untuk memulakan soalan."
     },
     {
-      id:"BM011", title:"Berjalan Sihat bersama Ayah", standard:1, difficulty:2,
+      id:"BM011", title:"Berjalan Sihat bersama Ayah", standard:2, difficulty:2,
       theme:"Kesihatan", grammar_focus:"Kata Bilangan",
       learning_objective:"Mengenal pasti kata bilangan dalam ayat mudah.",
       story:"Farid suka berjalan kaki bersama ayahnya setiap minggu. Dalam seminggu ada ____1____ hari, tetapi Farid hanya berjalan pada hari Isnin, Rabu, dan Jumaat sahaja, iaitu sebanyak ____2____ hari. Semasa berjalan, Farid menggunakan ____3____ kaki untuk melangkah ke hadapan. Dia juga menggenggam tangan ayahnya dengan salah satu daripada ____4____ tangannya. Selepas penat berjalan, Farid mengira jarinya yang berjumlah ____5____ jari pada satu tangan sambil berehat.",
@@ -2307,7 +2320,7 @@ const STORY_BANK = {
       hint:"Cari kata pendek yang menunjukkan perasaan seseorang."
     },
     {
-      id:"BM015", title:"Berlatih untuk Konsert Sekolah", standard:1, difficulty:2,
+      id:"BM015", title:"Berlatih untuk Konsert Sekolah", standard:2, difficulty:2,
       theme:"Hobi", grammar_focus:"Kata Perintah",
       learning_objective:"Mengenal pasti kata perintah dalam ayat arahan.",
       story:"Ellie berlatih menari setiap hari selepas sekolah untuk konsert. \"____1____ regangkan badan dahulu sebelum menari,\" kata kakaknya. \"____2____ gerakkan tangan awak dengan perlahan,\" kata ibunya. Adik Ellie merakam video tarian itu menggunakan tablet. Ellie berkata kepada adiknya, \"____3____ gerakkan tablet itu terlalu banyak.\" \"____4____ kita berehat sebentar sebelum makan malam,\" kata ayahnya. Sebelum tidur, Ellie berkata kepada dirinya sendiri, \"____5____ kita berlatih lagi esok supaya lebih baik.\"",
@@ -2323,7 +2336,7 @@ const STORY_BANK = {
       hint:"Cari kata yang digunakan untuk memberi arahan atau ajakan."
     },
     {
-      id:"BM016", title:"Petualangan Hari Hujan", standard:2, difficulty:4,
+      id:"BM016", title:"Petualangan Hari Hujan", standard:1, difficulty:4,
       theme:"Cuaca", grammar_focus:"Kata Bantu",
       learning_objective:"Mengenal pasti kata bantu dalam ayat mengenai cuaca.",
       story:"Pagi ini, hujan ____1____ turun dengan lebat di seluruh bandar. Aiman ____2____ menunggu di tingkap sehingga hujan berhenti. Tiba-tiba, guruh berbunyi kuat dan Aiman ____3____ menutup telinganya. Dia ____4____ menutup tingkap supaya hujan tidak masuk. Menjelang petang, langit ____5____ menjadi cerah dan terang semula.",
@@ -2355,7 +2368,7 @@ const STORY_BANK = {
       hint:"Cari kata yang menguatkan maksud kata adjektif dalam ayat."
     },
     {
-      id:"BM018", title:"Menunggang Basikal dengan Selamat", standard:2, difficulty:4,
+      id:"BM018", title:"Menunggang Basikal dengan Selamat", standard:1, difficulty:4,
       theme:"Keselamatan", grammar_focus:"Kata Penegas",
       learning_objective:"Mengenal pasti kata penegas yang menegaskan maksud ayat.",
       story:"Zheng Wei ____1____ memakai topi keledar setiap kali menunggang basikal ke sekolah. Dia ____2____ memeriksa brek sebelum keluar dari rumah. Zheng Wei ____3____ berhenti di lampu isyarat sehingga bertukar hijau. Dia berhati-hati ____4____ berhampiran pintu pagar sekolah kerana ramai murid berjalan. Rakan-rakannya ____5____ mengikut nasihat keselamatan Zheng Wei setiap hari.",
@@ -2371,7 +2384,7 @@ const STORY_BANK = {
       hint:"Cari kata yang menegaskan maksud dalam ayat."
     },
     {
-      id:"BM019", title:"Kebun Sayur Kecil Kami", standard:1, difficulty:2,
+      id:"BM019", title:"Kebun Sayur Kecil Kami", standard:2, difficulty:2,
       theme:"Kebun", grammar_focus:"Kata Nafi",
       learning_objective:"Mengenal pasti kata nafi yang menunjukkan penafian dalam ayat.",
       story:"Kelas Puan Tan menanam kebun sayur kecil di belakang sekolah. Aisyah berkata, \"Benih ini ____1____ besar lagi, tetapi ia akan membesar tidak lama lagi.\" Kumar menjumpai seekor cacing dalam tanah dan berkata, \"Cacing ini ____2____ berbahaya.\" Cikgu berkata, \"Ini ____3____ mustahil jika kita rajin menyiram air.\" Apabila tomato bertukar merah, cikgu berkata, \"Sayur ini ____4____ perlu dibeli lagi kerana kita menanamnya sendiri.\" Selepas memasak sayur itu bersama, Aisyah berkata, \"Ini ____5____ makanan yang membosankan, malah sangat sedap!\"",
@@ -2453,7 +2466,7 @@ const STORY_BANK = {
       hint:"想一想可以用来描述事物的词语。"
     },
     {
-      id:"ZH004", title:"打扫的日子", standard:2, difficulty:3,
+      id:"ZH004", title:"打扫的日子", standard:1, difficulty:3,
       theme:"家", grammar_focus:"介词",
       learning_objective:"正确使用介词表示位置或对象。",
       story:"每个星期六,哈菲都会帮忙家人打扫房子。他把鞋子整齐地放____1____鞋架上。姐姐走____2____花园去打扫落叶。妈妈____3____橱柜里拿出干净的盘子准备晚餐。哈菲然后____4____爸爸一起把衣服叠好。打扫后,他们____5____大家准备了一壶热茶。",
@@ -2581,7 +2594,7 @@ const STORY_BANK = {
       hint:"找出描述动作是怎样进行的词语。"
     },
     {
-      id:"ZH012", title:"保持教室清洁", standard:2, difficulty:3,
+      id:"ZH012", title:"保持教室清洁", standard:1, difficulty:3,
       theme:"清洁", grammar_focus:"副词",
       learning_objective:"正确使用副词描述打扫的动作。",
       story:"每个星期五,二年级的同学们一起打扫教室。美玲____1____地把书本放整齐。阿里____2____地扫地,直到地板干净为止。华拉____3____地擦黑板。班长____4____地把垃圾拿到外面的垃圾桶。之后,大家____5____地洗手,准备上课。",
@@ -2597,7 +2610,7 @@ const STORY_BANK = {
       hint:"找出描述动作方式的词语。"
     },
     {
-      id:"ZH013", title:"学校嘉年华的乐趣", standard:1, difficulty:2,
+      id:"ZH013", title:"学校嘉年华的乐趣", standard:2, difficulty:2,
       theme:"学校嘉年华", grammar_focus:"连词",
       learning_objective:"认识连词连接句子中的想法。",
       story:"今天是学校嘉年华,苏菲亚感到非常兴奋。她想玩游戏摊位,____1____她还没有零用钱了。她可以选择买冰淇淋,____2____买一瓶冷饮。朋友慢慢地讲解游戏规则,____3____苏菲亚很快就明白了。苏菲亚感到开心,____4____她认识了很多新朋友。她还想留到最后,____5____舞台表演还没有开始。",
@@ -2645,7 +2658,7 @@ const STORY_BANK = {
       hint:"找出与数字一起使用,搭配名词的词语。"
     },
     {
-      id:"ZH016", title:"下雨天的冒险", standard:2, difficulty:3,
+      id:"ZH016", title:"下雨天的冒险", standard:1, difficulty:3,
       theme:"天气", grammar_focus:"量词",
       learning_objective:"正确使用量词描述天气现象。",
       story:"今天早上,一____1____大雨笼罩了整座城市。阿米恩在窗边等了一____2____小时,希望雨能停。突然,一____3____响雷把弟弟吓了一跳。阿米恩连忙关上一____4____窗户,不让雨水打进来。到了下午,天空出现了一____5____彩虹,大家都很开心。",
@@ -2661,7 +2674,7 @@ const STORY_BANK = {
       hint:"找出与数字一起使用,搭配名词的词语。"
     },
     {
-      id:"ZH017", title:"帮助新同学", standard:1, difficulty:2,
+      id:"ZH017", title:"帮助新同学", standard:2, difficulty:2,
       theme:"善良", grammar_focus:"疑问词",
       learning_objective:"认识疑问词在句子中提问的用法。",
       story:"今天班上来了一位新同学,名叫普里雅。老师问大家:\"____1____愿意帮助普里雅认识学校?\"阿米尔举手说:\"我愿意!\"普里雅小声问阿米尔:\"这是____2____地方?\"阿米尔说:\"这是图书馆。\"普里雅又问:\"我们____3____去操场?\"阿米尔说:\"下课后就去。\"普里雅问:\"操场在____4____?\"阿米尔说:\"在教室后面。\"普里雅笑着问:\"你____5____这么友善?\"阿米尔说:\"因为我喜欢交朋友。\"",
@@ -2693,7 +2706,7 @@ const STORY_BANK = {
       hint:"找出用来提问的词语。"
     },
     {
-      id:"ZH019", title:"我们的小菜园", standard:1, difficulty:2,
+      id:"ZH019", title:"我们的小菜园", standard:2, difficulty:2,
       theme:"花园", grammar_focus:"叹词",
       learning_objective:"认识叹词表达强烈的感情。",
       story:"陈老师的班级在学校后面种了一个小菜园。\"____1____!这些种子好小啊,\"爱莎高兴地说。同学们一起种了番茄、辣椒和菠菜。\"____2____!我在土里发现了一条蚯蚓,\"库马叫道。每天浇水后,绿色的嫩芽渐渐长出来了。\"____3____!我们的植物长得好快,\"同学们欢呼道。番茄变红的那天,大家都很兴奋。\"____4____!终于可以收成了,\"老师说。最后,大家一起煮了这些蔬菜。\"____5____!味道真好吃,\"爱莎笑着说。",
@@ -2794,6 +2807,8 @@ let state = {
   vocabPairs:[], leftTiles:[], rightTiles:[],
   selection:null, wrongCounts:{}, matchedCount:0,
   vocabScore:0, vocabWrong:0, vocabFirstTry:0, vocabRetried:0, vocabMarksPerPair:10,
+  vocabTotalPossible:100, vocabHintsDisabled:false, vocabBonusEligible:false,
+  vocabBonusActive:false, vocabBonusDone:false,
   // story blanks state
   storyLang:"en", storyLevel:1, storyQuestions:[], storyIndex:0,
   storyPlaced:[], storyBank:[], storyAttempts:0,
@@ -2977,9 +2992,15 @@ function startVocabGame(){
   state.vocabFirstTry = 0;
   state.vocabRetried = 0;
   state.vocabMarksPerPair = Math.round((100/pool.length) * 10) / 10; // 10 marks each pair
+  state.vocabTotalPossible = Math.round(pool.length * state.vocabMarksPerPair);
+  state.vocabHintsDisabled = false;
+  state.vocabBonusEligible = false;
+  state.vocabBonusActive = false;
+  state.vocabBonusDone = false;
   goTo("vocab-game");
   document.getElementById("vocab-grid-wrap").style.display = "";
   document.getElementById("vocab-review-wrap").style.display = "none";
+  document.getElementById("vocab-bonus-banner").style.display = "none";
   renderVocabBoard();
   updateVocabTopBar();
   document.getElementById("vocab-speech").textContent = UI_TEXT[state.baseLang].vocabHint;
@@ -3013,22 +3034,21 @@ function renderVocabBoard(){
     const el = document.createElement("button");
     el.className = "vocab-tile" + (tile.matched ? " matched":"") +
       (state.selection && state.selection.side==="left" && state.selection.idx===idx ? " selected":"");
-    const hintWord =
-  getHintWord(
-    state.vocabPairs[tile.pairId]
-  );
-
-const tooltipId = "tipL_" + idx;
-
-el.innerHTML = `
-  <span>${tile.word}</span>
+    const tooltipId = "tipL_" + idx;
+    let hintHtml = "";
+    if(!state.vocabHintsDisabled){
+      const hintWord = getHintWord(state.vocabPairs[tile.pairId]);
+      hintHtml = `
   <span class="lang-hint-icon"
         onclick="event.stopPropagation();toggleTooltip('${tooltipId}')">
         🌐
   </span>
   <div class="lang-tooltip" id="${tooltipId}">
     ${hintWord}
-  </div>
+  </div>`;
+    }
+el.innerHTML = `
+  <span>${tile.word}</span>${hintHtml}
 `;
     el.disabled = tile.matched;
     el.onclick = ()=> selectVocabTile("left", idx);
@@ -3046,14 +3066,15 @@ el.innerHTML = `
       (state.selection && state.selection.side==="right" && state.selection.idx===idx ? " selected":"");
     const pair = state.vocabPairs[tile.pairId];
 	el.innerHTML = `
-  <span>${tile.word}</span>
-  <span class="lang-hint-icon">🔊</span>
+  <span>${tile.word}</span>${state.vocabHintsDisabled ? "" : '<span class="lang-hint-icon">🔊</span>'}
 `;
-el.querySelector('.lang-hint-icon')
-  .addEventListener('click', function(e){
-    e.stopPropagation();
-    speakHintWord(pair);
-  });
+if(!state.vocabHintsDisabled){
+  el.querySelector('.lang-hint-icon')
+    .addEventListener('click', function(e){
+      e.stopPropagation();
+      speakHintWord(pair);
+    });
+}
 	
     el.disabled = tile.matched;
     el.onclick = ()=> selectVocabTile("right", idx);
@@ -3104,7 +3125,13 @@ function selectVocabTile(side, idx){
     setTimeout(()=>document.getElementById("mascot-vocab").classList.remove("happy"), 650);
     renderVocabBoard();
     updateVocabTopBar();
-    if(state.matchedCount>=10){
+    if(state.matchedCount>=state.vocabPairs.length){
+      if(!state.vocabBonusActive){
+        state.vocabBonusEligible = state.vocabScore > 90;
+      } else {
+        state.vocabBonusDone = true;
+        state.vocabBonusActive = false;
+      }
       setTimeout(showVocabReview, 900);
     } else {
       launchConfetti(10);
@@ -3129,8 +3156,10 @@ function showVocabReview(){
   const t = UI_TEXT[state.baseLang];
   document.getElementById("vocab-grid-wrap").style.display = "none";
   document.getElementById("vocab-review-wrap").style.display = "";
-  document.getElementById("vocab-review-title").textContent = t.vocabReviewTitle;
-  document.getElementById("btn-vocab-continue").textContent = t.vocabContinueBtn;
+  document.getElementById("vocab-review-title").textContent =
+    state.vocabBonusDone ? t.vocabBonusReviewTitle : t.vocabReviewTitle;
+  document.getElementById("btn-vocab-continue").textContent =
+    (!state.vocabBonusDone && state.vocabBonusEligible) ? t.vocabBonusBtn : t.vocabContinueBtn;
   const listEl = document.getElementById("vocab-review-list");
   listEl.innerHTML = "";
   state.vocabPairs.forEach((pair, pairId)=>{
@@ -3150,10 +3179,41 @@ function showVocabReview(){
   launchConfetti(20);
 }
 
+function vocabContinueAfterReview(){
+  if(state.vocabBonusEligible && !state.vocabBonusDone && !state.vocabBonusActive){
+    startVocabBonusRound();
+  } else {
+    showVocabResults();
+  }
+}
+
+function startVocabBonusRound(){
+  const t = UI_TEXT[state.baseLang];
+  state.vocabBonusActive = true;
+  state.vocabHintsDisabled = true;
+  state.leftTiles = shuffle(state.vocabPairs.map((w,i)=>({pairId:i, word:w[state.baseLang], matched:false})));
+  state.rightTiles = shuffle(state.vocabPairs.map((w,i)=>({pairId:i, word:w[state.targetLang], matched:false})));
+  state.selection = null;
+  state.wrongCounts = {};
+  state.matchedCount = 0;
+  state.vocabTotalPossible += Math.round(state.vocabPairs.length * state.vocabMarksPerPair);
+  document.getElementById("vocab-grid-wrap").style.display = "";
+  document.getElementById("vocab-review-wrap").style.display = "none";
+  const banner = document.getElementById("vocab-bonus-banner");
+  banner.style.display = "";
+  banner.textContent = t.vocabBonusBanner;
+  renderVocabBoard();
+  updateVocabTopBar();
+  document.getElementById("vocab-speech").textContent = t.vocabBonusSpeech;
+  document.getElementById("mascot-vocab").classList.add("happy");
+  setTimeout(()=>document.getElementById("mascot-vocab").classList.remove("happy"), 900);
+}
+
 function showVocabResults(){
   const t = UI_TEXT[state.baseLang];
+  document.getElementById("vocab-bonus-banner").style.display = "none";
   const score = state.vocabScore;
-  const total = Math.round(state.matchedCount * state.vocabMarksPerPair); // pairs completed so far (handles early exit)
+  const total = state.vocabTotalPossible || Math.round(state.matchedCount * state.vocabMarksPerPair);
   const ratio = total ? score/total : 0;
   const starsEarned = Math.round(ratio * 10);
   let gradeKey;
