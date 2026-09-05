@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>Sentence Builder Adventure</title>
+<title>Word Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -360,7 +360,7 @@
     </div>
     <div class="card big-center">
       <div class="mascot-wrap"><span class="mascot" id="mascot-welcome">🐼</span></div>
-      <h1 class="title">Sentence Builder<br><span class="accent">Adventure</span></h1>
+      <h1 class="title">Word<br><span class="accent">Adventure</span></h1>
       <p class="tagline">Pip the Panda has four games for you today!</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr; margin-top:20px;">
         <div class="choice-card" onclick="goTo('language')">
@@ -1761,7 +1761,57 @@ const WORD_BANK = [
 {topic:"Weather", en:"tornado", ms:"puting beliung", zh:"龙卷风"},
 {topic:"Weather", en:"earthquake", ms:"gempa bumi", zh:"地震"},
 {topic:"Weather", en:"tsunami", ms:"tsunami", zh:"海啸"},
-{topic:"Weather", en:"hurricane", ms:"taufan", zh:"飓风"}
+{topic:"Weather", en:"hurricane", ms:"taufan", zh:"飓风"},
+{topic:"Body", en:"knee", ms:"lutut", zh:"膝盖"},
+{topic:"Body", en:"elbow", ms:"siku", zh:"手肘"},
+{topic:"Body", en:"shoulder", ms:"bahu", zh:"肩膀"},
+{topic:"Body", en:"finger", ms:"jari", zh:"手指"},
+{topic:"Body", en:"toe", ms:"jari kaki", zh:"脚趾"},
+{topic:"Body", en:"neck", ms:"leher", zh:"脖子"},
+{topic:"Body", en:"chin", ms:"dagu", zh:"下巴"},
+{topic:"Body", en:"eyebrow", ms:"kening", zh:"眉毛"},
+{topic:"Occupations", en:"pilot", ms:"juruterbang", zh:"飞行员"},
+{topic:"Occupations", en:"dentist", ms:"doktor gigi", zh:"牙医"},
+{topic:"Occupations", en:"mechanic", ms:"mekanik", zh:"机械师"},
+{topic:"Occupations", en:"librarian", ms:"pustakawan", zh:"图书管理员"},
+{topic:"Occupations", en:"electrician", ms:"juruelektrik", zh:"电工"},
+{topic:"Occupations", en:"plumber", ms:"tukang paip", zh:"水管工"},
+{topic:"Occupations", en:"waiter", ms:"pelayan", zh:"服务员"},
+{topic:"Occupations", en:"tailor", ms:"tukang jahit", zh:"裁缝"},
+{topic:"Transport", en:"ship", ms:"kapal", zh:"轮船"},
+{topic:"Transport", en:"submarine", ms:"kapal selam", zh:"潜水艇"},
+{topic:"Transport", en:"helicopter", ms:"helikopter", zh:"直升机"},
+{topic:"Transport", en:"tractor", ms:"traktor", zh:"拖拉机"},
+{topic:"Transport", en:"scooter", ms:"skuter", zh:"小型摩托车"},
+{topic:"Transport", en:"ambulance", ms:"ambulans", zh:"救护车"},
+{topic:"Places", en:"library", ms:"perpustakaan", zh:"图书馆"},
+{topic:"Places", en:"bank", ms:"bank", zh:"银行"},
+{topic:"Places", en:"temple", ms:"kuil", zh:"庙宇"},
+{topic:"Places", en:"farm", ms:"ladang", zh:"农场"},
+{topic:"Places", en:"factory", ms:"kilang", zh:"工厂"},
+{topic:"Sports", en:"badminton", ms:"badminton", zh:"羽毛球"},
+{topic:"Sports", en:"hockey", ms:"hoki", zh:"曲棍球"},
+{topic:"Sports", en:"tennis", ms:"tenis", zh:"网球"},
+{topic:"Sports", en:"cycling", ms:"berbasikal", zh:"骑自行车"},
+{topic:"Weather", en:"breeze", ms:"bayu", zh:"微风"},
+{topic:"Weather", en:"humid", ms:"lembap", zh:"潮湿"},
+{topic:"Weather", en:"frost", ms:"fros", zh:"霜"},
+{topic:"Food", en:"sandwich", ms:"sandwic", zh:"三明治"},
+{topic:"Food", en:"burger", ms:"burger", zh:"汉堡"},
+{topic:"Food", en:"pizza", ms:"piza", zh:"比萨"},
+{topic:"Food", en:"sausage", ms:"sosej", zh:"香肠"},
+{topic:"Food", en:"pasta", ms:"pasta", zh:"意大利面"},
+{topic:"Food", en:"salad", ms:"salad", zh:"沙拉"},
+{topic:"Drinks", en:"coffee", ms:"kopi", zh:"咖啡"},
+{topic:"Household Items", en:"fan", ms:"kipas", zh:"风扇"},
+{topic:"Clothes", en:"jacket", ms:"jaket", zh:"夹克"},
+{topic:"Clothes", en:"scarf", ms:"selendang", zh:"围巾"},
+{topic:"Clothes", en:"glove", ms:"sarung tangan", zh:"手套"},
+{topic:"Clothes", en:"belt", ms:"tali pinggang", zh:"皮带"},
+{topic:"Clothes", en:"skirt", ms:"skirt", zh:"裙子"},
+{topic:"Shapes", en:"heart", ms:"hati", zh:"心形"},
+{topic:"Directions", en:"north", ms:"utara", zh:"北"},
+{topic:"Directions", en:"south", ms:"selatan", zh:"南"}
 ];
 
 /* ---------------- STORY BLANKS DATA ----------------
@@ -2979,6 +3029,28 @@ function speakHintWord(pair){
   speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
 }
+
+function speakTileWord(pair){
+
+  const lang = state.targetLang;
+  const text = pair[lang];
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+  if(lang === "en"){
+    utterance.lang = "en-US";
+  }
+  else if(lang === "ms"){
+    utterance.lang = "ms-MY";
+  }
+  else if(lang === "zh"){
+    utterance.lang = "zh-CN";
+  }
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
 function startVocabGame(){
   const pool = shuffle(WORD_BANK).slice(0, 10);
   state.vocabPairs = pool;
@@ -3066,10 +3138,15 @@ el.innerHTML = `
       (state.selection && state.selection.side==="right" && state.selection.idx===idx ? " selected":"");
     const pair = state.vocabPairs[tile.pairId];
 	el.innerHTML = `
-  <span>${tile.word}</span>${state.vocabHintsDisabled ? "" : '<span class="lang-hint-icon">🔊</span>'}
+  <span>${tile.word}</span>${state.vocabHintsDisabled ? "" : '<span class="lang-hint-icon tile-audio-icon" title="Play this word">🔈</span><span class="lang-hint-icon hint-audio-icon" title="Play hint word">🔊</span>'}
 `;
 if(!state.vocabHintsDisabled){
-  el.querySelector('.lang-hint-icon')
+  el.querySelector('.tile-audio-icon')
+    .addEventListener('click', function(e){
+      e.stopPropagation();
+      speakTileWord(pair);
+    });
+  el.querySelector('.hint-audio-icon')
     .addEventListener('click', function(e){
       e.stopPropagation();
       speakHintWord(pair);
