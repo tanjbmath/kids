@@ -326,6 +326,12 @@
   .home-link{position:fixed; top:14px; left:14px; z-index:5;}
   .home-btn{position:fixed; top:14px; left:14px; z-index:5;}
   .icon-btn{background:var(--white); border:none; border-radius:50%; width:46px; height:46px; box-shadow:0 4px 0 rgba(43,34,80,0.15); font-size:20px; cursor:pointer;}
+  .sound-toggle-btn{
+    position:fixed; top:14px; right:14px; z-index:50;
+    background:var(--white); border:none; border-radius:50%; width:46px; height:46px;
+    box-shadow:0 4px 0 rgba(43,34,80,0.15); font-size:20px; cursor:pointer;
+  }
+  .sound-toggle-btn:active{ transform:translateY(2px); }
 
   /* Quit confirmation modal */
   .modal-overlay{
@@ -339,6 +345,7 @@
 </style>
 </head>
 <body>
+<button class="sound-toggle-btn" onclick="toggleSound()" aria-label="Toggle sound">🔊</button>
 <div class="app" id="app">
 
   <!-- WELCOME -->
@@ -2985,8 +2992,100 @@ let state = {
   // math word problems state
   mathLang:"en", mathYear:1, mathIndex:0, mathTotalQuestions:10,
   mathCurrentQuestion:null, mathAttempts:0, mathResolved:false,
-  mathCorrectCount:0, mathWrongCount:0, mathScore:0, mathTotalStars:0
+  mathCorrectCount:0, mathWrongCount:0, mathScore:0, mathTotalStars:0,
+  // sound settings
+  soundOn:true
 };
+
+/* ---------------- SOUND EFFECTS ---------------- */
+let audioCtx = null;
+function getAudioCtx(){
+  if(!audioCtx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    audioCtx = new AC();
+  }
+  if(audioCtx.state === "suspended") audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freq, startTime, duration, type, gainPeak){
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type || "sine";
+  osc.frequency.setValueAtTime(freq, startTime);
+  gain.gain.setValueAtTime(0.0001, startTime);
+  gain.gain.exponentialRampToValueAtTime(gainPeak || 0.18, startTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.02);
+}
+
+function playTapSound(){
+  if(!state.soundOn) return;
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  playTone(520, ctx.currentTime, 0.08, "sine", 0.12);
+}
+
+function playCorrectSound(){
+  if(!state.soundOn) return;
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const t = ctx.currentTime;
+  playTone(523.25, t, 0.14, "triangle", 0.18);      // C5
+  playTone(659.25, t + 0.09, 0.14, "triangle", 0.18); // E5
+  playTone(783.99, t + 0.18, 0.22, "triangle", 0.2);  // G5
+}
+
+function playWrongSound(){
+  if(!state.soundOn) return;
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const t = ctx.currentTime;
+  playTone(220, t, 0.16, "sawtooth", 0.14);
+  playTone(174.61, t + 0.12, 0.2, "sawtooth", 0.14);
+}
+
+function playMatchSound(){
+  if(!state.soundOn) return;
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const t = ctx.currentTime;
+  playTone(659.25, t, 0.1, "sine", 0.16);
+  playTone(987.77, t + 0.08, 0.16, "sine", 0.18);
+}
+
+function playFanfare(){
+  if(!state.soundOn) return;
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const t = ctx.currentTime;
+  const notes = [523.25, 587.33, 659.25, 783.99, 987.77];
+  notes.forEach((f, i)=> playTone(f, t + i*0.11, 0.2, "triangle", 0.2));
+  playTone(1046.5, t + notes.length*0.11, 0.4, "triangle", 0.24);
+}
+
+function playCoinSound(){
+  if(!state.soundOn) return;
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const t = ctx.currentTime;
+  playTone(988, t, 0.08, "square", 0.1);
+  playTone(1319, t + 0.06, 0.14, "square", 0.12);
+}
+
+function toggleSound(){
+  state.soundOn = !state.soundOn;
+  document.querySelectorAll(".sound-toggle-btn").forEach(btn=>{
+    btn.textContent = state.soundOn ? "🔊" : "🔇";
+  });
+  if(state.soundOn) playTapSound();
+}
 
 /* ---------------- NAV ---------------- */
 function goTo(name){
@@ -3281,6 +3380,7 @@ function selectVocabTile(side, idx){
 
   if(!state.selection){
     state.selection = {side, idx};
+    playTapSound();
     renderVocabBoard();
     return;
   }
@@ -3309,6 +3409,7 @@ function selectVocabTile(side, idx){
     state.selection = null;
     document.getElementById("vocab-speech").textContent = t.vocabCorrectMsgs[Math.floor(Math.random()*t.vocabCorrectMsgs.length)];
     document.getElementById("mascot-vocab").classList.add("happy");
+    playMatchSound();
     setTimeout(()=>document.getElementById("mascot-vocab").classList.remove("happy"), 650);
     renderVocabBoard();
     updateVocabTopBar();
@@ -3328,6 +3429,7 @@ function selectVocabTile(side, idx){
     state.wrongCounts[rightTile.pairId] = (state.wrongCounts[rightTile.pairId] || 0) + 1;
     document.getElementById("vocab-speech").textContent = t.vocabMismatchMsg;
     document.getElementById("mascot-vocab").classList.add("sad");
+    playWrongSound();
     setTimeout(()=>document.getElementById("mascot-vocab").classList.remove("sad"), 500);
     // flash mismatch styling briefly on both tiles
     state.selection = null;
@@ -3432,7 +3534,7 @@ function showVocabResults(){
   btn3.onclick = ()=>goTo("welcome");
 
   goTo("results");
-  if(ratio>=0.6) launchConfetti(40);
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
 
 /* ---------------- STORY BLANKS: NAV/RENDER ---------------- */
@@ -3543,6 +3645,7 @@ function placeStoryTile(id){
   if(emptyIdx === -1) return;
   tile.used = true;
   state.storyPlaced[emptyIdx] = {word:tile.word, id:tile.id};
+  playTapSound();
   renderStoryText();
   renderStoryBank();
 }
@@ -3596,12 +3699,14 @@ function checkStoryAnswer(){
     state.storyTotalStars++;
     document.getElementById("story-score-pill").textContent = "🏅 " + state.storyScore + "/100";
     document.getElementById("mascot-story").classList.add("happy");
+    playCorrectSound();
     launchConfetti();
     document.getElementById("btn-story-check").disabled = true;
     setTimeout(nextStoryQuestion, 1800);
   } else {
     state.storyAttempts++;
     document.getElementById("mascot-story").classList.add("sad");
+    playWrongSound();
     setTimeout(()=>document.getElementById("mascot-story").classList.remove("sad"), 500);
     if(state.storyAttempts >= 2){
       let explainHtml = "";
@@ -3667,7 +3772,7 @@ function showStoryResults(){
   btn3.onclick = ()=>goTo("welcome");
 
   goTo("results");
-  if(ratio>=0.6) launchConfetti(40);
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
 
 /* ---------------- RINGGIT SHOP: HELPERS ---------------- */
@@ -3829,6 +3934,7 @@ function toggleProduct(idx){
   const pos = state.ringgitCart.indexOf(idx);
   if(pos === -1) state.ringgitCart.push(idx);
   else state.ringgitCart.splice(pos,1);
+  playTapSound();
   renderBuyerGame();
 }
 
@@ -3869,6 +3975,7 @@ function submitBuyerRound(){
   feedback.className = "feedback-line ok";
   feedback.textContent = msg;
   document.getElementById("mascot-ringgit-buyer").classList.add("happy");
+  playCoinSound();
   launchConfetti();
   resolveRinggitBuyer(score);
 }
@@ -4053,6 +4160,7 @@ function updateChangeSummary(){
 function addChangeTile(idx){
   if(state.ringgitResolved) return;
   state.ringgitChangeGiven.push(MONEY[idx]);
+  playCoinSound();
   updateChangeSummary();
 }
 function undoChangeTile(){
@@ -4073,6 +4181,7 @@ function submitSellerChange(){
 
   if(givenCents !== correctChangeCents){
     state.ringgitAttempts++;
+    playWrongSound();
     if(state.ringgitAttempts >= 3){
       const correctBreakdown = breakdownMoney(correctChangeCents/100);
       const breakdownStr = correctBreakdown.map(d=>d.label).join(" + ") || "No change needed";
@@ -4111,6 +4220,7 @@ function submitSellerChange(){
   feedback.className = "feedback-line ok";
   feedback.textContent = msg;
   document.getElementById("mascot-ringgit-seller").classList.add("happy");
+  playCoinSound();
   launchConfetti();
   resolveRinggitSeller(score);
 }
@@ -4169,7 +4279,7 @@ function showTwoPlayerResults(){
   btn3.onclick = ()=>goTo("welcome");
 
   goTo("results");
-  if(ratio>=0.6) launchConfetti(40);
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
 
 /* ---------------- RINGGIT SHOP: RESULTS ---------------- */
@@ -4209,7 +4319,7 @@ function showRinggitResults(score){
   btn3.onclick = ()=>goTo("welcome");
 
   goTo("results");
-  if(ratio>=0.6) launchConfetti(40);
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
 
 /* ---------------- MATH WORD PROBLEMS ---------------- */
@@ -4366,11 +4476,13 @@ function checkMathAnswer(){
     feedback.className = "feedback-line ok";
     feedback.innerHTML = "✅ " + t.correctMsgs[Math.floor(Math.random()*t.correctMsgs.length)] + " +" + marksEarned + " " + t.marksWord + "<br><span class=\"science-explain\">" + q.explanation + "</span>";
     document.getElementById("mascot-math").classList.add("happy");
+    playCorrectSound();
     launchConfetti();
     resolveMathQuestion();
   } else {
     state.mathAttempts++;
     document.getElementById("mascot-math").classList.add("sad");
+    playWrongSound();
     setTimeout(()=>document.getElementById("mascot-math").classList.remove("sad"), 500);
     if(state.mathAttempts >= 2){
       feedback.className = "feedback-line no";
@@ -4437,7 +4549,7 @@ function showMathResults(){
   btn3.onclick = ()=>goTo("welcome");
 
   goTo("results");
-  if(ratio>=0.6) launchConfetti(40);
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
 
 function quitMathGame(){
@@ -4537,6 +4649,7 @@ function placeTile(id){
   if(!tile || tile.used) return;
   tile.used = true;
   state.placed.push({word:tile.word, id:tile.id});
+  playTapSound();
   renderTiles();
 }
 
@@ -4581,12 +4694,14 @@ function checkAnswer(){
     document.getElementById("score-pill").textContent = "🏅 " + state.score + "/100";
     document.getElementById("q-marks-left").textContent = 0;
     document.getElementById("mascot-game").classList.add("happy");
+    playCorrectSound();
     launchConfetti();
     resolveQuestion();
   } else {
     state.attempts++;
     targetEl.className = "sentence-target wrong";
     document.getElementById("mascot-game").classList.add("sad");
+    playWrongSound();
     setTimeout(()=>document.getElementById("mascot-game").classList.remove("sad"), 500);
     const marksLeft = Math.max(0, state.marksPerQuestion - 2*state.attempts);
     document.getElementById("q-marks-left").textContent = marksLeft;
@@ -4654,7 +4769,7 @@ function showResults(){
   btn2.onclick = ()=>goTo("level");
   btn3.onclick = ()=>goTo("welcome");
   goTo("results");
-  if(ratio>=0.6) launchConfetti(40);
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
 
 /* ---------------- QUIT / EXIT MID-GAME ---------------- */
