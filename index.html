@@ -169,6 +169,12 @@
   .bank-tile:active, .placed-tile:active{transform:translateY(2px);}
   .bank-tile:hover{border-color:#6C7BFF;}
   .bank-tile.used{opacity:0; pointer-events:none; transform:scale(0.5);}
+  .bank-tile.selected{border-color:#6C7BFF; background:#EEF0FF; box-shadow:0 3px 0 #6C7BFF;}
+  .bank-tile.correct{background:#EAFCF2; border-color:var(--leaf); box-shadow:0 3px 0 #2A9E63;}
+  .bank-tile.wrong{background:#FFEEEC; border-color:var(--coral); box-shadow:0 3px 0 #C94B3F; animation:shake .4s ease;}
+  .bank-tile:disabled{cursor:default; opacity:0.85;}
+  .fillblank-group{margin:14px 0;}
+  .fillblank-group-label{text-align:center; font-weight:800; color:#8b84b8; font-size:13px; margin-bottom:8px;}
 
   .word-bank{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0;}
 
@@ -403,7 +409,7 @@
     <div class="card">
       <div class="mascot-wrap"><span class="mascot">🐼</span></div>
       <h2 style="text-align:center;" id="level-heading">Choose your level</h2>
-      <div class="choice-grid" id="level-grid"></div>
+      <div class="choice-grid" id="level-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
     </div>
   </section>
 
@@ -449,6 +455,51 @@
         <button class="btn sun" id="btn-check" onclick="checkAnswer()">Check ✓</button>
         <button class="btn secondary" id="btn-clear" onclick="clearAnswer()">Clear ↺</button>
         <button class="btn green" id="btn-next" onclick="nextQuestion()" style="display:none;">Next ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILL IN THE BLANK: MODE SELECT -->
+  <section class="screen" id="screen-fillblank-mode">
+    <button class="icon-btn home-btn" onclick="goTo('level')" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;" id="fillblank-mode-heading">Choose a mode</h2>
+      <div class="choice-grid" id="fillblank-mode-grid"></div>
+    </div>
+  </section>
+
+  <!-- FILL IN THE BLANK: INSTRUCTIONS -->
+  <section class="screen" id="screen-fillblank-instructions">
+    <button class="icon-btn home-btn" onclick="goTo('fillblank-mode')" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;" id="fillblank-instr-title">How to play</h2>
+      <p class="tagline" id="fillblank-instr-text"></p>
+      <div class="btn-row">
+        <button class="btn green" id="btn-start-fillblank" onclick="startFillBlankGame()">⭐ Let's Play!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILL IN THE BLANK: GAMEPLAY -->
+  <section class="screen" id="screen-fillblank-game">
+    <button class="icon-btn home-btn" onclick="quitFillBlankGame()" aria-label="Stop and exit">🏠</button>
+    <div class="card">
+      <div class="top-bar">
+        <span class="pill" id="fillblank-counter">Q 1/10</span>
+        <div class="progress-track"><div class="progress-fill" id="fillblank-progress-fill" style="width:0%"></div></div>
+        <span class="pill stars-earned" id="fillblank-score-pill">🏅 0/100</span>
+      </div>
+      <div class="mascot-wrap"><span class="mascot" id="mascot-fillblank">🐼</span></div>
+      <div class="speech" id="fillblank-speech">Pick the missing word!</div>
+      <div class="story-text" id="fillblank-sentence"></div>
+      <div class="hint-line" id="fillblank-hint-line"></div>
+      <div id="fillblank-options-wrap"></div>
+      <div class="feedback-line" id="fillblank-feedback-line"></div>
+      <div class="btn-row">
+        <button class="btn sun" id="btn-fillblank-check" onclick="checkFillBlankAnswer()">Check ✓</button>
+        <button class="btn green" id="btn-fillblank-next" onclick="nextFillBlankQuestion()" style="display:none;">Next ▶</button>
       </div>
     </div>
   </section>
@@ -797,6 +848,13 @@ const UI_TEXT = {
     langName:"English", flag:"🇬🇧",
     pickLevel:"Choose your level", level1:"Standard 1", level2:"Standard 2",
     level1sub:"Easier · 4-6 words", level2sub:"Harder · 6-10 words",
+    fillBlankCard:"Fill in the Blank", fillBlankCardSub:"Pick the missing word",
+    fillBlankModeHeading:"Choose a mode",
+    fillBlankOne:"Fill in One Blank", fillBlankOneSub:"Easier · 1 missing word",
+    fillBlankTwo:"Fill in Two Blanks", fillBlankTwoSub:"Harder · 2 missing words",
+    fillBlankInstrBody:"Read the sentence and tap the correct word to fill in each blank. You have 2 tries per question!",
+    fillBlankHint:"Tap the correct word to fill in the blank.",
+    fillBlankSelectAll:"Please choose a word for every blank!",
     instrTitle:"How to play", instrBody:"Tap the scrambled words below in the correct order to build the sentence. You have 2 tries per question!",
     startPlay:"Let's Play!", checkBtn:"Check", clearBtn:"Clear", removeHint:"Tap a placed word to remove it.",
     questionWorth:"This question is worth", marksWord:"marks", marksLeftWord:"marks left", nextBtn:"Next ▶",
@@ -831,6 +889,13 @@ const UI_TEXT = {
     langName:"Bahasa Melayu", flag:"🇲🇾",
     pickLevel:"Pilih tahap anda", level1:"Tahun 1", level2:"Tahun 2",
     level1sub:"Mudah · 4-6 perkataan", level2sub:"Sukar · 6-10 perkataan",
+    fillBlankCard:"Isi Tempat Kosong", fillBlankCardSub:"Pilih perkataan yang tepat",
+    fillBlankModeHeading:"Pilih mod",
+    fillBlankOne:"Isi Satu Tempat Kosong", fillBlankOneSub:"Mudah · 1 perkataan hilang",
+    fillBlankTwo:"Isi Dua Tempat Kosong", fillBlankTwoSub:"Sukar · 2 perkataan hilang",
+    fillBlankInstrBody:"Baca ayat itu dan ketik perkataan yang betul untuk mengisi setiap tempat kosong. Anda ada 2 percubaan setiap soalan!",
+    fillBlankHint:"Ketik perkataan yang betul untuk mengisi tempat kosong.",
+    fillBlankSelectAll:"Sila pilih satu perkataan untuk setiap tempat kosong!",
     instrTitle:"Cara bermain", instrBody:"Ketik perkataan yang bercelaru mengikut susunan yang betul untuk membina ayat. Anda ada 2 percubaan setiap soalan!",
     startPlay:"Jom Main!", checkBtn:"Semak", clearBtn:"Padam", removeHint:"Ketik perkataan untuk membuangnya.",
     questionWorth:"Soalan ini bernilai", marksWord:"markah", marksLeftWord:"markah lagi", nextBtn:"Seterusnya ▶",
@@ -865,6 +930,13 @@ const UI_TEXT = {
     langName:"简体中文", flag:"🇨🇳",
     pickLevel:"选择你的级别", level1:"一年级", level2:"二年级",
     level1sub:"简单 · 3-5个词", level2sub:"较难 · 5-8个词",
+    fillBlankCard:"填空练习", fillBlankCardSub:"选出缺少的词语",
+    fillBlankModeHeading:"选择模式",
+    fillBlankOne:"填一个空", fillBlankOneSub:"简单 · 缺一个词",
+    fillBlankTwo:"填两个空", fillBlankTwoSub:"较难 · 缺两个词",
+    fillBlankInstrBody:"读一读句子，点击正确的词语填入每个空格。每题有两次机会！",
+    fillBlankHint:"点击正确的词语来填空。",
+    fillBlankSelectAll:"请为每个空格选一个词语！",
     instrTitle:"游戏玩法", instrBody:"按照正确的顺序点击下面打乱的词语，组成正确的句子。每题有两次机会！",
     startPlay:"开始游戏！", checkBtn:"检查", clearBtn:"清除", removeHint:"点击已放置的词语可以移除它。",
     questionWorth:"这一题的满分是", marksWord:"分", marksLeftWord:"分剩余", nextBtn:"下一题 ▶",
@@ -1338,6 +1410,16 @@ const BANK = {
     ]
   }
 };
+
+// Unique token pool per language, used to generate multiple-choice distractors for Fill in the Blank.
+const ALL_BANK_TOKENS = {};
+["en","ms","zh"].forEach(langCode=>{
+  const set = new Set();
+  [1,2].forEach(lvl=>{
+    BANK[langCode][lvl].forEach(q=> q.tokens.forEach(tok=> set.add(tok)));
+  });
+  ALL_BANK_TOKENS[langCode] = Array.from(set);
+});
 
 // 50 common, useful Standard 1/2 words, translated across all three languages.
 const WORD_BANK = [
@@ -3029,6 +3111,10 @@ let state = {
   lang:"en", level:1, questions:[], qIndex:0,
   correctCount:0, wrongCount:0, score:0, starsThisQ:0, totalStars:0,
   attempts:0, placed:[], bank:[], marksPerQuestion:10, resolved:false,
+  // fill in the blank state
+  fillBlankCount:1, fillBlankQuestions:[], fillBlankIndex:0,
+  fillBlankCorrectCount:0, fillBlankWrongCount:0, fillBlankScore:0, fillBlankTotalStars:0,
+  fillBlankAttempts:0, fillBlankMarksPerQuestion:10, fillBlankResolved:false,
   // vocab match state
   baseLang:"en", targetLang:"ms",
   vocabPairs:[], leftTiles:[], rightTiles:[],
@@ -3155,6 +3241,8 @@ function goTo(name){
   if(name==="language"){ state.mode="sentence"; renderLanguageGrid(); }
   if(name==="level") renderLevelGrid();
   if(name==="instructions") renderInstructions();
+  if(name==="fillblank-mode") renderFillBlankModeGrid();
+  if(name==="fillblank-instructions") renderFillBlankInstructions();
   if(name==="vocab-base"){ state.mode="vocab"; renderVocabBaseGrid(); }
   if(name==="vocab-target") renderVocabTargetGrid();
   if(name==="vocab-instructions") renderVocabInstructions();
@@ -3186,11 +3274,30 @@ function renderLevelGrid(){
   document.getElementById("level-heading").textContent = t.pickLevel;
   const grid = document.getElementById("level-grid");
   grid.innerHTML = `
+    <div class="choice-card" onclick="goTo('fillblank-mode')"><span class="emoji">🧩</span>${t.fillBlankCard}<div style="font-size:12px; font-weight:600; margin-top:6px; color:#8b84b8;">${t.fillBlankCardSub}</div></div>
     <div class="choice-card" onclick="pickLevel(1)"><span class="emoji">🌱</span>${t.level1}<div style="font-size:12px; font-weight:600; margin-top:6px; color:#8b84b8;">${t.level1sub}</div></div>
     <div class="choice-card" onclick="pickLevel(2)"><span class="emoji">🌟</span>${t.level2}<div style="font-size:12px; font-weight:600; margin-top:6px; color:#8b84b8;">${t.level2sub}</div></div>
   `;
 }
 function pickLevel(lvl){ state.level = lvl; goTo("instructions"); }
+
+function renderFillBlankModeGrid(){
+  const t = UI_TEXT[state.lang];
+  document.getElementById("fillblank-mode-heading").textContent = t.fillBlankModeHeading;
+  const grid = document.getElementById("fillblank-mode-grid");
+  grid.innerHTML = `
+    <div class="choice-card" onclick="pickFillBlankMode(1)"><span class="emoji">🔲</span>${t.fillBlankOne}<div style="font-size:12px; font-weight:600; margin-top:6px; color:#8b84b8;">${t.fillBlankOneSub}</div></div>
+    <div class="choice-card" onclick="pickFillBlankMode(2)"><span class="emoji">🟪</span>${t.fillBlankTwo}<div style="font-size:12px; font-weight:600; margin-top:6px; color:#8b84b8;">${t.fillBlankTwoSub}</div></div>
+  `;
+}
+function pickFillBlankMode(n){ state.fillBlankCount = n; goTo("fillblank-instructions"); }
+
+function renderFillBlankInstructions(){
+  const t = UI_TEXT[state.lang];
+  document.getElementById("fillblank-instr-title").textContent = t.instrTitle;
+  document.getElementById("fillblank-instr-text").textContent = t.fillBlankInstrBody;
+  document.getElementById("btn-start-fillblank").textContent = "⭐ " + t.startPlay;
+}
 
 function renderInstructions(){
   const t = UI_TEXT[state.lang];
@@ -4862,6 +4969,236 @@ function quitSentenceGame(){
     showResults();
   });
 }
+
+/* ---------------- FILL IN THE BLANK ---------------- */
+function startFillBlankGame(){
+  const pool = BANK[state.lang][1].concat(BANK[state.lang][2]);
+  const minLen = state.fillBlankCount + 2; // keep some surrounding context words
+  const eligible = pool.filter(q => q.tokens.length >= minLen);
+  const source = eligible.length >= 10 ? eligible : pool;
+  const chosen = shuffle(source).slice(0, Math.min(10, source.length));
+  state.fillBlankQuestions = chosen.map(q => buildFillBlankQuestion(q));
+  state.fillBlankIndex = 0;
+  state.fillBlankCorrectCount = 0;
+  state.fillBlankWrongCount = 0;
+  state.fillBlankScore = 0;
+  state.fillBlankTotalStars = 0;
+  state.fillBlankMarksPerQuestion = Math.round((100/state.fillBlankQuestions.length) * 10) / 10;
+  goTo("fillblank-game");
+  loadFillBlankQuestion();
+}
+
+function buildFillBlankQuestion(q){
+  const n = Math.min(state.fillBlankCount, q.tokens.length - 1);
+  const indices = shuffle(q.tokens.map((_,i)=>i)).slice(0, n).sort((a,b)=>a-b);
+  const globalPool = ALL_BANK_TOKENS[state.lang];
+  const blanks = indices.map(idx=>{
+    const correct = q.tokens[idx];
+    const distractorPool = globalPool.filter(w=>w!==correct);
+    const distractors = shuffle(distractorPool).slice(0,3);
+    const options = shuffle([correct, ...distractors]);
+    return {idx, correct, options, selected:null};
+  });
+  return {tokens:q.tokens, blanks};
+}
+
+function loadFillBlankQuestion(){
+  const t = UI_TEXT[state.lang];
+  const q = state.fillBlankQuestions[state.fillBlankIndex];
+  state.fillBlankAttempts = 0;
+  state.fillBlankResolved = false;
+  q.blanks.forEach(b=> b.selected = null);
+  document.getElementById("fillblank-counter").textContent = `Q ${state.fillBlankIndex+1}/${state.fillBlankQuestions.length}`;
+  document.getElementById("fillblank-progress-fill").style.width = ((state.fillBlankIndex)/state.fillBlankQuestions.length*100)+"%";
+  document.getElementById("fillblank-score-pill").textContent = "🏅 " + state.fillBlankScore + "/100";
+  document.getElementById("fillblank-hint-line").innerHTML = t.fillBlankHint + " " + (t.questionWorth || "This question is worth") + ' <span id="fillblank-marks-left">' + state.fillBlankMarksPerQuestion + '</span> ' + (t.marksWord || "marks") + ".";
+  document.getElementById("fillblank-feedback-line").textContent = "";
+  document.getElementById("fillblank-feedback-line").className = "feedback-line";
+  document.getElementById("fillblank-speech").textContent = fillBlankMascotPrompt();
+  document.getElementById("btn-fillblank-check").disabled = false;
+  document.getElementById("btn-fillblank-next").style.display = "none";
+  document.getElementById("btn-fillblank-next").textContent = t.nextBtn;
+  renderFillBlankSentence();
+  renderFillBlankOptions();
+}
+
+function fillBlankMascotPrompt(){
+  const prompts = {
+    en:["Pick the missing word!","What word fits here?","You can do it!"],
+    ms:["Pilih perkataan yang hilang!","Perkataan apa yang sesuai?","Anda boleh!"],
+    zh:["选出缺少的词语！","哪个词最合适？","你可以的！"]
+  };
+  const arr = prompts[state.lang];
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function renderFillBlankSentence(){
+  const q = state.fillBlankQuestions[state.fillBlankIndex];
+  const el = document.getElementById("fillblank-sentence");
+  const multi = q.blanks.length > 1;
+  const parts = q.tokens.map((tok, i)=>{
+    const bIdx = q.blanks.findIndex(b=>b.idx===i);
+    if(bIdx === -1) return tok;
+    const blank = q.blanks[bIdx];
+    const filled = blank.selected !== null;
+    const cls = "story-blank" + (filled ? " filled":"");
+    const label = multi ? String(bIdx+1) : "";
+    const text = filled ? blank.options[blank.selected] : ("___" + label + "___");
+    return `<span class="${cls}" data-blank="${bIdx}">${text}</span>`;
+  });
+  el.innerHTML = parts.join(" ");
+}
+
+function renderFillBlankOptions(){
+  const q = state.fillBlankQuestions[state.fillBlankIndex];
+  const wrap = document.getElementById("fillblank-options-wrap");
+  wrap.innerHTML = "";
+  const multi = q.blanks.length > 1;
+  q.blanks.forEach((blank, bIdx)=>{
+    const group = document.createElement("div");
+    group.className = "fillblank-group";
+    if(multi){
+      const label = document.createElement("div");
+      label.className = "fillblank-group-label";
+      label.textContent = "Blank " + (bIdx+1);
+      group.appendChild(label);
+    }
+    const row = document.createElement("div");
+    row.className = "word-bank";
+    blank.options.forEach((opt, oIdx)=>{
+      const btn = document.createElement("button");
+      btn.className = "bank-tile" + (blank.selected===oIdx ? " selected":"");
+      btn.textContent = opt;
+      btn.disabled = state.fillBlankResolved;
+      btn.onclick = ()=> selectFillBlankOption(bIdx, oIdx);
+      row.appendChild(btn);
+    });
+    group.appendChild(row);
+    wrap.appendChild(group);
+  });
+}
+
+function selectFillBlankOption(blankIdx, optionIdx){
+  if(state.fillBlankResolved) return;
+  const q = state.fillBlankQuestions[state.fillBlankIndex];
+  q.blanks[blankIdx].selected = optionIdx;
+  playTapSound();
+  renderFillBlankSentence();
+  renderFillBlankOptions();
+}
+
+function checkFillBlankAnswer(){
+  const t = UI_TEXT[state.lang];
+  const q = state.fillBlankQuestions[state.fillBlankIndex];
+  const feedback = document.getElementById("fillblank-feedback-line");
+  const allSelected = q.blanks.every(b=>b.selected!==null);
+  if(!allSelected){
+    feedback.className = "feedback-line no";
+    feedback.textContent = "⚠️ " + t.fillBlankSelectAll;
+    return;
+  }
+  const maxWrongAttempts = Math.ceil(state.fillBlankMarksPerQuestion / 2);
+  const allCorrect = q.blanks.every(b=> b.options[b.selected] === b.correct);
+
+  if(allCorrect){
+    const marksEarned = Math.max(0, state.fillBlankMarksPerQuestion - 2*state.fillBlankAttempts);
+    feedback.className = "feedback-line ok";
+    feedback.textContent = "✅ " + t.correctMsgs[Math.floor(Math.random()*t.correctMsgs.length)] + " +" + marksEarned + " " + (t.marksWord || "marks");
+    state.fillBlankCorrectCount++;
+    state.fillBlankScore += marksEarned;
+    state.fillBlankTotalStars++;
+    document.getElementById("fillblank-score-pill").textContent = "🏅 " + state.fillBlankScore + "/100";
+    document.getElementById("fillblank-marks-left").textContent = 0;
+    document.getElementById("mascot-fillblank").classList.add("happy");
+    document.querySelectorAll("#fillblank-sentence .story-blank").forEach(elx=>elx.classList.add("correct"));
+    playCorrectSound();
+    launchConfetti();
+    resolveFillBlankQuestion();
+  } else {
+    state.fillBlankAttempts++;
+    document.getElementById("mascot-fillblank").classList.add("sad");
+    document.querySelectorAll("#fillblank-sentence .story-blank").forEach(elx=>elx.classList.add("wrong"));
+    playWrongSound();
+    setTimeout(()=>{
+      document.getElementById("mascot-fillblank").classList.remove("sad");
+      document.querySelectorAll("#fillblank-sentence .story-blank").forEach(elx=>elx.classList.remove("wrong"));
+    }, 500);
+    const marksLeft = Math.max(0, state.fillBlankMarksPerQuestion - 2*state.fillBlankAttempts);
+    document.getElementById("fillblank-marks-left").textContent = marksLeft;
+    if(state.fillBlankAttempts >= maxWrongAttempts || marksLeft <= 0){
+      feedback.className = "feedback-line no";
+      feedback.textContent = "💡 " + t.showAnswer + " " + q.tokens.join(" ") + " (0 " + (t.marksWord || "marks") + ")";
+      state.fillBlankWrongCount++;
+      resolveFillBlankQuestion();
+    } else {
+      feedback.className = "feedback-line no";
+      feedback.textContent = "❌ " + t.wrongMsg + " (" + marksLeft + " " + (t.marksLeftWord || "marks left") + ")";
+    }
+  }
+}
+
+function resolveFillBlankQuestion(){
+  state.fillBlankResolved = true;
+  document.getElementById("btn-fillblank-check").disabled = true;
+  document.getElementById("btn-fillblank-next").style.display = "";
+  renderFillBlankOptions();
+}
+
+function nextFillBlankQuestion(){
+  document.getElementById("mascot-fillblank").classList.remove("happy","sad");
+  state.fillBlankIndex++;
+  if(state.fillBlankIndex >= state.fillBlankQuestions.length){
+    showFillBlankResults();
+  } else {
+    loadFillBlankQuestion();
+  }
+}
+
+function showFillBlankResults(){
+  document.getElementById("fillblank-progress-fill").style.width = "100%";
+  const t = UI_TEXT[state.lang];
+  const score = state.fillBlankScore;
+  const attempted = state.fillBlankCorrectCount + state.fillBlankWrongCount;
+  const maxPossible = attempted * state.fillBlankMarksPerQuestion;
+  const ratio = maxPossible ? score/maxPossible : 0;
+  const starsEarned = Math.round(ratio * 10);
+  let gradeKey;
+  if(attempted===0) gradeKey="F";
+  else if(ratio>=0.9) gradeKey="A+";
+  else if(ratio>=0.75) gradeKey="A";
+  else if(ratio>=0.6) gradeKey="B";
+  else if(ratio>=0.4) gradeKey="C";
+  else if(ratio>0) gradeKey="D";
+  else gradeKey="F";
+  const g = t.grades[gradeKey];
+  document.getElementById("grade-emoji").textContent = g.emoji;
+  document.getElementById("grade-label").textContent = g.label;
+  document.getElementById("grade-msg").textContent = g.msg;
+  document.getElementById("stat-score").textContent = score + "/" + maxPossible;
+  document.getElementById("stat-correct").textContent = state.fillBlankCorrectCount;
+  document.getElementById("stat-wrong").textContent = state.fillBlankWrongCount;
+  document.getElementById("stars-row").textContent = "⭐".repeat(starsEarned) + "☆".repeat(Math.max(0,10-starsEarned));
+  document.getElementById("stat-correct-label").textContent = "CORRECT";
+  document.getElementById("stat-wrong-label").textContent = "INCORRECT";
+  const btn1 = document.getElementById("btn-result-1");
+  const btn2 = document.getElementById("btn-result-2");
+  const btn3 = document.getElementById("btn-result-3");
+  btn1.textContent = "🔁 Play Again";
+  btn1.onclick = startFillBlankGame;
+  btn2.textContent = "🌐 Change Mode";
+  btn2.onclick = ()=>goTo("fillblank-mode");
+  btn3.onclick = ()=>goTo("welcome");
+  goTo("results");
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
+}
+
+function quitFillBlankGame(){
+  openQuitModal(state.lang, ()=>{
+    document.getElementById("btn-fillblank-check").disabled = true;
+    showFillBlankResults();
+  });
+}
+
 function quitVocabGame(){
   openQuitModal(state.baseLang, ()=>{
     showVocabResults();
