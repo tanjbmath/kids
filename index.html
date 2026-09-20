@@ -175,6 +175,10 @@
   .bank-tile:disabled{cursor:default; opacity:0.85;}
   .fillblank-group{margin:14px 0;}
   .fillblank-group-label{text-align:center; font-weight:800; color:#8b84b8; font-size:13px; margin-bottom:8px;}
+  .detective-word-row{display:flex; align-items:center; justify-content:center; gap:12px; margin:10px 0;}
+  .detective-word-row .story-text{margin:0; flex:1;}
+  .detective-word .story-blank{margin:0 3px; min-width:34px; font-family:'Baloo 2',cursive; font-weight:800; letter-spacing:1px;}
+  #btn-detective-hint{flex-shrink:0;}
 
   .word-bank{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0;}
 
@@ -374,7 +378,7 @@
     <div class="card big-center">
       <div class="mascot-wrap"><span class="mascot" id="mascot-welcome">🐼</span></div>
       <h1 class="title">Word<br><span class="accent">Adventure</span></h1>
-      <p class="tagline">Pip the Panda has four games for you today!</p>
+      <p class="tagline">Pip the Panda has five games for you today!</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr; margin-top:20px;">
         <div class="choice-card" onclick="goTo('language')">
           <span class="emoji">📝</span>Sentence<br>Builder
@@ -387,6 +391,9 @@
         </div>
         <div class="choice-card" onclick="goTo('ringgit-role')">
           <span class="emoji">💰</span>Ringgit<br>Shop
+        </div>
+        <div class="choice-card" style="grid-column:1 / -1;" onclick="goTo('detective-language')">
+          <span class="emoji">🕵️</span>Word<br>Detective
         </div>
       </div>
     </div>
@@ -500,6 +507,66 @@
       <div class="btn-row">
         <button class="btn sun" id="btn-fillblank-check" onclick="checkFillBlankAnswer()">Check ✓</button>
         <button class="btn green" id="btn-fillblank-next" onclick="nextFillBlankQuestion()" style="display:none;">Next ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORD DETECTIVE: LANGUAGE SELECT -->
+  <section class="screen" id="screen-detective-language">
+    <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;">Choose your language</h2>
+      <p class="tagline">Pick the language you want to play in.</p>
+      <div class="choice-grid" id="detective-language-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    </div>
+  </section>
+
+  <!-- WORD DETECTIVE: DIFFICULTY SELECT -->
+  <section class="screen" id="screen-detective-difficulty">
+    <button class="icon-btn home-btn" onclick="goTo('detective-language')" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;" id="detective-difficulty-heading">Choose your difficulty</h2>
+      <div class="choice-grid" id="detective-difficulty-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    </div>
+  </section>
+
+  <!-- WORD DETECTIVE: INSTRUCTIONS -->
+  <section class="screen" id="screen-detective-instructions">
+    <button class="icon-btn home-btn" onclick="detectiveInstrBack()" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;" id="detective-instr-title">How to play</h2>
+      <p class="tagline" id="detective-instr-text"></p>
+      <div class="btn-row">
+        <button class="btn green" id="btn-start-detective" onclick="startDetectiveGame()">⭐ Let's Play!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORD DETECTIVE: GAMEPLAY -->
+  <section class="screen" id="screen-detective-game">
+    <button class="icon-btn home-btn" onclick="quitDetectiveGame()" aria-label="Stop and exit">🏠</button>
+    <div class="card">
+      <div class="top-bar">
+        <span class="pill" id="detective-counter">Q 1/10</span>
+        <div class="progress-track"><div class="progress-fill" id="detective-progress-fill" style="width:0%"></div></div>
+        <span class="pill stars-earned" id="detective-score-pill">🏅 0/100</span>
+      </div>
+      <div class="mascot-wrap"><span class="mascot" id="mascot-detective">🐼</span></div>
+      <div class="speech" id="detective-speech">Crack the code!</div>
+      <div class="detective-word-row">
+        <div class="story-text detective-word" id="detective-word"></div>
+        <button class="icon-btn" id="btn-detective-hint" onclick="revealDetectiveHint()" aria-label="Hint">💡</button>
+      </div>
+      <div class="hint-line" id="detective-hint-area" style="display:none;"></div>
+      <div class="word-bank" id="detective-choice-wrap"></div>
+      <div class="feedback-line" id="detective-feedback-line"></div>
+      <div class="btn-row">
+        <button class="btn sun" id="btn-detective-check" onclick="checkDetectiveAnswer()">Check ✓</button>
+        <button class="btn secondary" id="btn-detective-clear" onclick="clearDetectiveAnswer()">Clear ↺</button>
+        <button class="btn green" id="btn-detective-next" onclick="nextDetectiveQuestion()" style="display:none;">Next ▶</button>
       </div>
     </div>
   </section>
@@ -855,6 +922,14 @@ const UI_TEXT = {
     fillBlankInstrBody:"Read the sentence and tap the correct word to fill in each blank. You have 2 tries per question!",
     fillBlankHint:"Tap the correct word to fill in the blank.",
     fillBlankSelectAll:"Please choose a word for every blank!",
+    detectiveCard:"Word Detective", detectiveCardSub:"Crack the missing letters",
+    detectiveDifficultyHeading:"Choose your difficulty",
+    detectiveEasy:"Easy", detectiveEasySub:"Hide 1 letter",
+    detectiveMedium:"Medium", detectiveMediumSub:"Hide 2 letters",
+    detectiveHard:"Hard", detectiveHardSub:"Hide 3 letters",
+    detectiveInstrBody:"Tap the correct letters to complete the word. Use the hint button if you get stuck!",
+    detectiveFillAll:"Please fill in every letter first!",
+    detectiveShowAnswer:"The correct word is:",
     instrTitle:"How to play", instrBody:"Tap the scrambled words below in the correct order to build the sentence. You have 2 tries per question!",
     startPlay:"Let's Play!", checkBtn:"Check", clearBtn:"Clear", removeHint:"Tap a placed word to remove it.",
     questionWorth:"This question is worth", marksWord:"marks", marksLeftWord:"marks left", nextBtn:"Next ▶",
@@ -896,6 +971,14 @@ const UI_TEXT = {
     fillBlankInstrBody:"Baca ayat itu dan ketik perkataan yang betul untuk mengisi setiap tempat kosong. Anda ada 2 percubaan setiap soalan!",
     fillBlankHint:"Ketik perkataan yang betul untuk mengisi tempat kosong.",
     fillBlankSelectAll:"Sila pilih satu perkataan untuk setiap tempat kosong!",
+    detectiveCard:"Detektif Perkataan", detectiveCardSub:"Cari huruf yang hilang",
+    detectiveDifficultyHeading:"Pilih tahap kesukaran",
+    detectiveEasy:"Mudah", detectiveEasySub:"Sembunyi 1 huruf",
+    detectiveMedium:"Sederhana", detectiveMediumSub:"Sembunyi 2 huruf",
+    detectiveHard:"Sukar", detectiveHardSub:"Sembunyi 3 huruf",
+    detectiveInstrBody:"Ketik huruf yang betul untuk melengkapkan perkataan. Gunakan butang petunjuk jika anda tersekat!",
+    detectiveFillAll:"Sila isi setiap huruf dahulu!",
+    detectiveShowAnswer:"Perkataan yang betul ialah:",
     instrTitle:"Cara bermain", instrBody:"Ketik perkataan yang bercelaru mengikut susunan yang betul untuk membina ayat. Anda ada 2 percubaan setiap soalan!",
     startPlay:"Jom Main!", checkBtn:"Semak", clearBtn:"Padam", removeHint:"Ketik perkataan untuk membuangnya.",
     questionWorth:"Soalan ini bernilai", marksWord:"markah", marksLeftWord:"markah lagi", nextBtn:"Seterusnya ▶",
@@ -937,6 +1020,14 @@ const UI_TEXT = {
     fillBlankInstrBody:"读一读句子，点击正确的词语填入每个空格。每题有两次机会！",
     fillBlankHint:"点击正确的词语来填空。",
     fillBlankSelectAll:"请为每个空格选一个词语！",
+    detectiveCard:"词语侦探", detectiveCardSub:"找出缺少的字",
+    detectiveDifficultyHeading:"选择难度",
+    detectiveEasy:"简单", detectiveEasySub:"隐藏1个字母",
+    detectiveMedium:"中等", detectiveMediumSub:"隐藏2个字母",
+    detectiveHard:"困难", detectiveHardSub:"隐藏3个字母",
+    detectiveInstrBody:"点击正确的字来完成词语。如果卡住了，可以使用提示按钮！",
+    detectiveFillAll:"请先填满每一个空格！",
+    detectiveShowAnswer:"正确答案是：",
     instrTitle:"游戏玩法", instrBody:"按照正确的顺序点击下面打乱的词语，组成正确的句子。每题有两次机会！",
     startPlay:"开始游戏！", checkBtn:"检查", clearBtn:"清除", removeHint:"点击已放置的词语可以移除它。",
     questionWorth:"这一题的满分是", marksWord:"分", marksLeftWord:"分剩余", nextBtn:"下一题 ▶",
@@ -3307,6 +3398,10 @@ let state = {
   fillBlankCount:1, fillBlankQuestions:[], fillBlankIndex:0,
   fillBlankCorrectCount:0, fillBlankWrongCount:0, fillBlankScore:0, fillBlankTotalStars:0,
   fillBlankAttempts:0, fillBlankMarksPerQuestion:10, fillBlankResolved:false,
+  // word detective state
+  detectiveLang:"en", detectiveDifficulty:"easy", detectiveQuestions:[], detectiveIndex:0,
+  detectiveCorrectCount:0, detectiveWrongCount:0, detectiveScore:0, detectiveTotalStars:0,
+  detectiveAttempts:0, detectiveResolved:false, detectiveTotalPossible:100,
   // vocab match state
   baseLang:"en", targetLang:"ms",
   vocabPairs:[], leftTiles:[], rightTiles:[],
@@ -3435,6 +3530,9 @@ function goTo(name){
   if(name==="instructions") renderInstructions();
   if(name==="fillblank-mode") renderFillBlankModeGrid();
   if(name==="fillblank-instructions") renderFillBlankInstructions();
+  if(name==="detective-language") renderDetectiveLanguageGrid();
+  if(name==="detective-difficulty") renderDetectiveDifficultyGrid();
+  if(name==="detective-instructions") renderDetectiveInstructions();
   if(name==="vocab-base"){ state.mode="vocab"; renderVocabBaseGrid(); }
   if(name==="vocab-target") renderVocabTargetGrid();
   if(name==="vocab-instructions") renderVocabInstructions();
@@ -5402,6 +5500,341 @@ function quitFillBlankGame(){
   openQuitModal(state.lang, ()=>{
     document.getElementById("btn-fillblank-check").disabled = true;
     showFillBlankResults();
+  });
+}
+
+/* ---------------- WORD DETECTIVE ---------------- */
+const DETECTIVE_HIDDEN_COUNT = {easy:1, medium:2, hard:3};
+
+function renderDetectiveLanguageGrid(){
+  const grid = document.getElementById("detective-language-grid");
+  grid.innerHTML = "";
+  Object.keys(UI_TEXT).forEach(code=>{
+    const t = UI_TEXT[code];
+    const div = document.createElement("div");
+    div.className = "choice-card";
+    div.innerHTML = `<span class="emoji">${t.flag}</span>${t.langName}`;
+    div.onclick = ()=>{
+      state.detectiveLang = code;
+      goTo(code === "zh" ? "detective-instructions" : "detective-difficulty");
+    };
+    grid.appendChild(div);
+  });
+}
+
+function renderDetectiveDifficultyGrid(){
+  const t = UI_TEXT[state.detectiveLang];
+  document.getElementById("detective-difficulty-heading").textContent = t.detectiveDifficultyHeading;
+  const grid = document.getElementById("detective-difficulty-grid");
+  grid.innerHTML = `
+    <div class="choice-card" onclick="pickDetectiveDifficulty('easy')"><span class="emoji">🔍</span>${t.detectiveEasy}<div style="font-size:12px; font-weight:600; margin-top:6px; color:#8b84b8;">${t.detectiveEasySub}</div></div>
+    <div class="choice-card" onclick="pickDetectiveDifficulty('medium')"><span class="emoji">🕵️</span>${t.detectiveMedium}<div style="font-size:12px; font-weight:600; margin-top:6px; color:#8b84b8;">${t.detectiveMediumSub}</div></div>
+    <div class="choice-card" onclick="pickDetectiveDifficulty('hard')"><span class="emoji">🧩</span>${t.detectiveHard}<div style="font-size:12px; font-weight:600; margin-top:6px; color:#8b84b8;">${t.detectiveHardSub}</div></div>
+  `;
+}
+function pickDetectiveDifficulty(diff){ state.detectiveDifficulty = diff; goTo("detective-instructions"); }
+
+function detectiveInstrBack(){
+  goTo(state.detectiveLang === "zh" ? "detective-language" : "detective-difficulty");
+}
+
+function renderDetectiveInstructions(){
+  const t = UI_TEXT[state.detectiveLang];
+  document.getElementById("detective-instr-title").textContent = t.instrTitle;
+  document.getElementById("detective-instr-text").textContent = t.detectiveInstrBody;
+  document.getElementById("btn-start-detective").textContent = "⭐ " + t.startPlay;
+}
+
+function buildDetectivePool(lang, hiddenCount){
+  if(lang === "zh"){
+    return WORD_BANK.filter(e => Array.from(e.zh).length >= 2);
+  }
+  return WORD_BANK.filter(e => {
+    const letterCount = e[lang].split("").filter(ch => /[A-Za-z]/.test(ch)).length;
+    return letterCount >= hiddenCount + 1;
+  });
+}
+
+function buildDetectiveQuestion(entry, lang, hiddenCount){
+  if(lang === "zh"){
+    const chars = Array.from(entry.zh);
+    const hidePos = Math.floor(Math.random() * chars.length);
+    const correctChar = chars[hidePos];
+    const allChars = new Set();
+    WORD_BANK.forEach(e2 => Array.from(e2.zh).forEach(c => allChars.add(c)));
+    allChars.delete(correctChar);
+    const distractors = shuffle(Array.from(allChars)).slice(0, 3);
+    const tiles = [{id:"dt0", letter:correctChar, correct:true, used:false}]
+      .concat(distractors.map((d,i)=>({id:"dx"+i, letter:d, correct:false, used:false})));
+    return {
+      entry, lang, hiddenCount:1,
+      displayChars: chars.map((c,i)=> i===hidePos ? null : c),
+      blanks: [{pos:hidePos, correct:correctChar}],
+      choiceTiles: shuffle(tiles),
+      placed: [null],
+      hintUsed:false
+    };
+  }
+  const word = entry[lang].toUpperCase();
+  const chars = word.split("");
+  const letterPositions = [];
+  chars.forEach((ch,i)=>{ if(/[A-Z]/.test(ch)) letterPositions.push(i); });
+  const hidePositions = shuffle(letterPositions).slice(0, hiddenCount).sort((a,b)=>a-b);
+  const blanks = hidePositions.map(pos=>({pos, correct:chars[pos]}));
+  const correctSet = new Set(blanks.map(b=>b.correct));
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").filter(l=>!correctSet.has(l));
+  const distractors = shuffle(alphabet).slice(0,3);
+  const tiles = blanks.map((b,i)=>({id:"dt"+i, letter:b.correct, correct:true, used:false}))
+    .concat(distractors.map((d,i)=>({id:"dx"+i, letter:d, correct:false, used:false})));
+  return {
+    entry, lang, hiddenCount,
+    displayChars: chars.map((c,i)=> hidePositions.includes(i) ? null : c),
+    blanks,
+    choiceTiles: shuffle(tiles),
+    placed: new Array(blanks.length).fill(null),
+    hintUsed:false
+  };
+}
+
+function startDetectiveGame(){
+  const lang = state.detectiveLang;
+  const hiddenCount = lang === "zh" ? 1 : DETECTIVE_HIDDEN_COUNT[state.detectiveDifficulty];
+  let pool = buildDetectivePool(lang, hiddenCount);
+  if(pool.length < 10){
+    pool = lang === "zh"
+      ? WORD_BANK.filter(e => Array.from(e.zh).length >= 2)
+      : WORD_BANK.filter(e => e[lang].split("").filter(ch=>/[A-Za-z]/.test(ch)).length >= 2);
+  }
+  const chosen = shuffle(pool).slice(0, Math.min(10, pool.length));
+  state.detectiveQuestions = chosen.map(e => buildDetectiveQuestion(e, lang, hiddenCount));
+  state.detectiveIndex = 0;
+  state.detectiveCorrectCount = 0;
+  state.detectiveWrongCount = 0;
+  state.detectiveScore = 0;
+  state.detectiveTotalStars = 0;
+  state.detectiveTotalPossible = state.detectiveQuestions.length * 10;
+  goTo("detective-game");
+  loadDetectiveQuestion();
+}
+
+function detectiveMascotPrompt(lang){
+  const prompts = {
+    en:["Crack the code!","What letter is missing?","You can solve it!"],
+    ms:["Cari huruf yang hilang!","Apa jawapannya?","Anda pasti boleh!"],
+    zh:["找出缺少的字！","答案是什么？","你可以的！"]
+  };
+  const arr = prompts[lang];
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function loadDetectiveQuestion(){
+  const t = UI_TEXT[state.detectiveLang];
+  state.detectiveAttempts = 0;
+  state.detectiveResolved = false;
+  document.getElementById("detective-counter").textContent = `Q ${state.detectiveIndex+1}/${state.detectiveQuestions.length}`;
+  document.getElementById("detective-progress-fill").style.width = ((state.detectiveIndex)/state.detectiveQuestions.length*100)+"%";
+  document.getElementById("detective-score-pill").textContent = "🏅 " + state.detectiveScore + "/" + state.detectiveTotalPossible;
+  document.getElementById("detective-feedback-line").textContent = "";
+  document.getElementById("detective-feedback-line").className = "feedback-line";
+  document.getElementById("detective-speech").textContent = detectiveMascotPrompt(state.detectiveLang);
+  document.getElementById("detective-hint-area").style.display = "none";
+  document.getElementById("detective-hint-area").textContent = "";
+  document.getElementById("btn-detective-hint").disabled = false;
+  document.getElementById("btn-detective-check").disabled = false;
+  document.getElementById("btn-detective-clear").disabled = false;
+  document.getElementById("btn-detective-next").style.display = "none";
+  document.getElementById("btn-detective-next").textContent = t.nextBtn;
+  renderDetectiveWord();
+  renderDetectiveBank();
+}
+
+function renderDetectiveWord(){
+  const q = state.detectiveQuestions[state.detectiveIndex];
+  const el = document.getElementById("detective-word");
+  let blankIdx = 0;
+  const parts = q.displayChars.map((ch)=>{
+    if(ch !== null) return `<span>${ch}</span>`;
+    const myIdx = blankIdx;
+    const filled = q.placed[myIdx];
+    const cls = "story-blank" + (filled ? " filled":"");
+    const text = filled ? filled.letter : "_";
+    blankIdx++;
+    return `<span class="${cls}" data-blank="${myIdx}" onclick="removeDetectiveLetter(${myIdx})">${text}</span>`;
+  });
+  el.innerHTML = parts.join("");
+}
+
+function renderDetectiveBank(){
+  const q = state.detectiveQuestions[state.detectiveIndex];
+  const wrap = document.getElementById("detective-choice-wrap");
+  wrap.innerHTML = "";
+  q.choiceTiles.forEach(tile=>{
+    const btn = document.createElement("button");
+    btn.className = "bank-tile" + (tile.used ? " used":"");
+    btn.textContent = tile.letter;
+    btn.disabled = tile.used || state.detectiveResolved;
+    btn.onclick = ()=> placeDetectiveLetter(tile.id);
+    wrap.appendChild(btn);
+  });
+}
+
+function placeDetectiveLetter(id){
+  if(state.detectiveResolved) return;
+  const q = state.detectiveQuestions[state.detectiveIndex];
+  const tile = q.choiceTiles.find(t=>t.id===id);
+  if(!tile || tile.used) return;
+  const emptyIdx = q.placed.findIndex(p=>p===null);
+  if(emptyIdx === -1) return;
+  tile.used = true;
+  q.placed[emptyIdx] = {letter:tile.letter, id:tile.id};
+  playTapSound();
+  renderDetectiveWord();
+  renderDetectiveBank();
+}
+
+function removeDetectiveLetter(blankIdx){
+  if(state.detectiveResolved) return;
+  const q = state.detectiveQuestions[state.detectiveIndex];
+  const placedTile = q.placed[blankIdx];
+  if(!placedTile) return;
+  const tile = q.choiceTiles.find(t=>t.id===placedTile.id);
+  if(tile) tile.used = false;
+  q.placed[blankIdx] = null;
+  renderDetectiveWord();
+  renderDetectiveBank();
+}
+
+function clearDetectiveAnswer(){
+  if(state.detectiveResolved) return;
+  const q = state.detectiveQuestions[state.detectiveIndex];
+  q.placed = q.placed.map(()=>null);
+  q.choiceTiles.forEach(t=>t.used=false);
+  renderDetectiveWord();
+  renderDetectiveBank();
+}
+
+function revealDetectiveHint(){
+  const q = state.detectiveQuestions[state.detectiveIndex];
+  if(q.hintUsed || state.detectiveResolved) return;
+  q.hintUsed = true;
+  const otherLangs = ["en","ms","zh"].filter(l=>l!==state.detectiveLang);
+  const hintLang = otherLangs[Math.floor(Math.random()*otherLangs.length)];
+  const hintText = q.entry[hintLang];
+  document.getElementById("detective-hint-area").textContent = "💡 " + hintText;
+  document.getElementById("detective-hint-area").style.display = "";
+  document.getElementById("btn-detective-hint").disabled = true;
+}
+
+function checkDetectiveAnswer(){
+  const t = UI_TEXT[state.detectiveLang];
+  const q = state.detectiveQuestions[state.detectiveIndex];
+  const feedback = document.getElementById("detective-feedback-line");
+
+  if(q.placed.some(p=>p===null)){
+    feedback.className = "feedback-line no";
+    feedback.textContent = "⚠️ " + t.detectiveFillAll;
+    return;
+  }
+
+  const allCorrect = q.blanks.every((b,i)=> q.placed[i].letter === b.correct);
+  const maxWrongAttempts = 5;
+
+  if(allCorrect){
+    const marksEarned = q.hintUsed ? 5 : 10;
+    document.querySelectorAll("#detective-word .story-blank").forEach(el=>el.classList.add("correct"));
+    feedback.className = "feedback-line ok";
+    feedback.textContent = "✅ " + t.correctMsgs[Math.floor(Math.random()*t.correctMsgs.length)] + " +" + marksEarned + " " + (t.marksWord || "marks");
+    state.detectiveCorrectCount++;
+    state.detectiveScore += marksEarned;
+    state.detectiveTotalStars++;
+    document.getElementById("detective-score-pill").textContent = "🏅 " + state.detectiveScore + "/" + state.detectiveTotalPossible;
+    document.getElementById("mascot-detective").classList.add("happy");
+    playCorrectSound();
+    launchConfetti();
+    resolveDetectiveQuestion();
+  } else {
+    state.detectiveAttempts++;
+    document.getElementById("mascot-detective").classList.add("sad");
+    document.querySelectorAll("#detective-word .story-blank").forEach(el=>el.classList.add("wrong"));
+    playWrongSound();
+    setTimeout(()=>{
+      document.getElementById("mascot-detective").classList.remove("sad");
+      document.querySelectorAll("#detective-word .story-blank").forEach(el=>el.classList.remove("wrong"));
+    }, 500);
+    if(state.detectiveAttempts >= maxWrongAttempts){
+      const answerWord = state.detectiveLang === "zh" ? q.entry.zh : q.entry[state.detectiveLang].toUpperCase();
+      feedback.className = "feedback-line no";
+      feedback.textContent = "💡 " + t.detectiveShowAnswer + " " + answerWord + " (0 " + (t.marksWord || "marks") + ")";
+      state.detectiveWrongCount++;
+      resolveDetectiveQuestion();
+    } else {
+      feedback.className = "feedback-line no";
+      feedback.textContent = "❌ " + t.wrongMsg;
+    }
+  }
+}
+
+function resolveDetectiveQuestion(){
+  state.detectiveResolved = true;
+  document.getElementById("btn-detective-check").disabled = true;
+  document.getElementById("btn-detective-clear").disabled = true;
+  document.getElementById("btn-detective-hint").disabled = true;
+  document.getElementById("btn-detective-next").style.display = "";
+  renderDetectiveBank();
+}
+
+function nextDetectiveQuestion(){
+  document.getElementById("mascot-detective").classList.remove("happy","sad");
+  state.detectiveIndex++;
+  if(state.detectiveIndex >= state.detectiveQuestions.length){
+    showDetectiveResults();
+  } else {
+    loadDetectiveQuestion();
+  }
+}
+
+function showDetectiveResults(){
+  document.getElementById("detective-progress-fill").style.width = "100%";
+  const t = UI_TEXT[state.detectiveLang];
+  const score = state.detectiveScore;
+  const attempted = state.detectiveCorrectCount + state.detectiveWrongCount;
+  const maxPossible = attempted * 10;
+  const ratio = maxPossible ? score/maxPossible : 0;
+  const starsEarned = Math.round(ratio * 10);
+  let gradeKey;
+  if(attempted===0) gradeKey="F";
+  else if(ratio>=0.9) gradeKey="A+";
+  else if(ratio>=0.75) gradeKey="A";
+  else if(ratio>=0.6) gradeKey="B";
+  else if(ratio>=0.4) gradeKey="C";
+  else if(ratio>0) gradeKey="D";
+  else gradeKey="F";
+  const g = t.grades[gradeKey];
+  document.getElementById("grade-emoji").textContent = g.emoji;
+  document.getElementById("grade-label").textContent = g.label;
+  document.getElementById("grade-msg").textContent = g.msg;
+  document.getElementById("stat-score").textContent = score + "/" + maxPossible;
+  document.getElementById("stat-correct").textContent = state.detectiveCorrectCount;
+  document.getElementById("stat-wrong").textContent = state.detectiveWrongCount;
+  document.getElementById("stars-row").textContent = "⭐".repeat(starsEarned) + "☆".repeat(Math.max(0,10-starsEarned));
+  document.getElementById("stat-correct-label").textContent = "CORRECT";
+  document.getElementById("stat-wrong-label").textContent = "INCORRECT";
+  const btn1 = document.getElementById("btn-result-1");
+  const btn2 = document.getElementById("btn-result-2");
+  const btn3 = document.getElementById("btn-result-3");
+  btn1.textContent = "🔁 Play Again";
+  btn1.onclick = startDetectiveGame;
+  btn2.textContent = "🌐 Change Difficulty";
+  btn2.onclick = ()=> goTo(state.detectiveLang === "zh" ? "detective-language" : "detective-difficulty");
+  btn3.onclick = ()=>goTo("welcome");
+  goTo("results");
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
+}
+
+function quitDetectiveGame(){
+  openQuitModal(state.detectiveLang, ()=>{
+    document.getElementById("btn-detective-check").disabled = true;
+    showDetectiveResults();
   });
 }
 
