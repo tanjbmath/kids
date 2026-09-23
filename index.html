@@ -173,6 +173,19 @@
   .bank-tile.correct{background:#EAFCF2; border-color:var(--leaf); box-shadow:0 3px 0 #2A9E63;}
   .bank-tile.wrong{background:#FFEEEC; border-color:var(--coral); box-shadow:0 3px 0 #C94B3F; animation:shake .4s ease;}
   .bank-tile:disabled{cursor:default; opacity:0.85;}
+  .mathquiz-scenario{
+    background:#FAFBFF; border:3px dashed #C7CEFF; border-radius:16px;
+    padding:14px 16px; margin:10px 0 6px; font-weight:700; color:var(--plum); font-size:15px; text-align:left;
+  }
+  .mathquiz-question{
+    text-align:center; font-weight:800; color:var(--plum); font-size:17px; margin:6px 0 14px;
+  }
+  .mathquiz-options{display:flex; flex-direction:column; gap:10px; margin:10px 0;}
+  .mathquiz-options .bank-tile{width:100%; text-align:center; font-size:16px; padding:14px 16px;}
+  .mathquiz-explain{
+    text-align:left; font-size:13px; font-weight:700; color:#5b5487;
+    background:#F5F7FF; border-radius:12px; padding:10px 14px; margin-top:8px;
+  }
   .fillblank-group{margin:14px 0;}
   .fillblank-group-label{text-align:center; font-weight:800; color:#8b84b8; font-size:13px; margin-bottom:8px;}
   .detective-word-row{display:flex; align-items:center; justify-content:center; gap:12px; margin:10px 0;}
@@ -446,6 +459,8 @@
   .lk-game:nth-child(2){animation-delay:-1.4s;}
   .lk-game:nth-child(3){animation-delay:-2.8s;}
   .lk-game:nth-child(4){animation-delay:-4.1s;}
+  .lk-game:nth-child(5){animation-delay:-1.9s;}
+  .lk-game:nth-child(6){animation-delay:-3.3s;}
   .lk-wide{grid-column:1 / -1; flex-direction:row; justify-content:flex-start; padding:18px 20px; gap:18px;}
   .lk-wide .lk-game-title{text-align:left;}
   .lk-wide .lk-game-arrow{margin-left:auto;}
@@ -459,6 +474,7 @@
   .g-story{background:linear-gradient(150deg,#2FD6A8 0%,#0FB784 100%);}
   .g-shop{background:linear-gradient(150deg,#FFB43A 0%,#FF8C1A 100%);}
   .g-detective{background:linear-gradient(150deg,#C86BFA 0%,#9B3DE0 100%);}
+  .g-mathquiz{background:linear-gradient(150deg,#4FB6FF 0%,#1E8FE0 100%);}
   .lk-game:before{
     content:""; position:absolute; top:-34px; right:-34px;
     width:110px;height:110px;border-radius:50%;
@@ -580,9 +596,14 @@
         <span class="lk-game-title">Ringgit<br>Shop</span>
         <span class="lk-game-arrow">▶</span>
       </div>
-      <div class="lk-game g-detective lk-wide" onclick="goTo('detective-language')" role="button" tabindex="0">
+      <div class="lk-game g-detective" onclick="goTo('detective-language')" role="button" tabindex="0">
         <span class="lk-game-badge">🕵️</span>
         <span class="lk-game-title">Word<br>Detective</span>
+        <span class="lk-game-arrow">▶</span>
+      </div>
+      <div class="lk-game g-mathquiz" onclick="goTo('mathquiz-year')" role="button" tabindex="0">
+        <span class="lk-game-badge">🔢</span>
+        <span class="lk-game-title">Math<br>Quiz</span>
         <span class="lk-game-arrow">▶</span>
       </div>
     </div>
@@ -758,6 +779,51 @@
         <button class="btn sun" id="btn-detective-check" onclick="checkDetectiveAnswer()">Check ✓</button>
         <button class="btn secondary" id="btn-detective-clear" onclick="clearDetectiveAnswer()">Clear ↺</button>
         <button class="btn green" id="btn-detective-next" onclick="nextDetectiveQuestion()" style="display:none;">Next ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATH QUIZ: YEAR SELECT -->
+  <section class="screen" id="screen-mathquiz-year">
+    <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;">选择年级</h2>
+      <p class="tagline">挑选你想挑战的数学题目！</p>
+      <div class="choice-grid" id="mathquiz-year-grid" style="grid-template-columns:1fr 1fr;"></div>
+    </div>
+  </section>
+
+  <!-- MATH QUIZ: INSTRUCTIONS -->
+  <section class="screen" id="screen-mathquiz-instructions">
+    <button class="icon-btn home-btn" onclick="goTo('mathquiz-year')" aria-label="Back">⬅</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;">游戏玩法</h2>
+      <p class="tagline">读一读情境和问题，然后点击正确的答案。每题最多可以尝试几次哦！</p>
+      <div class="btn-row">
+        <button class="btn green" id="btn-start-mathquiz" onclick="startMathQuizGame()">⭐ 开始游戏！</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATH QUIZ: GAMEPLAY -->
+  <section class="screen" id="screen-mathquiz-game">
+    <button class="icon-btn home-btn" onclick="quitMathQuizGame()" aria-label="Stop and exit">🏠</button>
+    <div class="card">
+      <div class="top-bar">
+        <span class="pill" id="mathquiz-counter">Q 1/10</span>
+        <div class="progress-track"><div class="progress-fill" id="mathquiz-progress-fill" style="width:0%"></div></div>
+        <span class="pill stars-earned" id="mathquiz-score-pill">🏅 0/100</span>
+      </div>
+      <div class="mascot-wrap"><span class="mascot" id="mascot-mathquiz">🐼</span></div>
+      <div class="speech" id="mathquiz-speech">加油，你可以的！</div>
+      <div class="mathquiz-scenario" id="mathquiz-scenario"></div>
+      <div class="mathquiz-question" id="mathquiz-question"></div>
+      <div class="mathquiz-options" id="mathquiz-options-wrap"></div>
+      <div class="feedback-line" id="mathquiz-feedback-line"></div>
+      <div class="btn-row">
+        <button class="btn green" id="btn-mathquiz-next" onclick="nextMathQuizQuestion()" style="display:none;">下一题 ▶</button>
       </div>
     </div>
   </section>
@@ -2565,6 +2631,1211 @@ const WORD_BANK = [
 {topic:"Nature", en:"sunset", ms:"matahari terbenam", zh:"日落"}
 ];
 
+const MATH_QUESTION_BANK = [
+  {
+    id: 1,
+    topic: "整数与基本运算",
+    year: 1,
+    scenario_zh: "小华有 17 颗弹珠，他的朋友再给他 11 颗弹珠。",
+    question_zh: "小华现在一共有多少颗弹珠？",
+    options: ["27", "38", "28", "29"],
+    correct_index: 2,
+    explanation_zh: "17 + 11 = 28。把两堆弹珠加起来就是答案。"
+  },
+  {
+    id: 2,
+    topic: "整数与基本运算",
+    year: 1,
+    scenario_zh: "小华有 18 颗弹珠，他的朋友再给他 16 颗弹珠。",
+    question_zh: "小华现在一共有多少颗弹珠？",
+    options: ["35", "33", "2", "34"],
+    correct_index: 3,
+    explanation_zh: "18 + 16 = 34。把两堆弹珠加起来就是答案。"
+  },
+  {
+    id: 3,
+    topic: "整数与基本运算",
+    year: 1,
+    scenario_zh: "商店里原本有 32 个苹果，卖出了 5 个。",
+    question_zh: "商店里还剩下多少个苹果？",
+    options: ["28", "26", "37", "27"],
+    correct_index: 3,
+    explanation_zh: "32 - 5 = 27。原本的数量减去卖出的数量就是剩下的数量。"
+  },
+  {
+    id: 4,
+    topic: "整数与基本运算",
+    year: 1,
+    scenario_zh: "商店里原本有 62 个苹果，卖出了 43 个。",
+    question_zh: "商店里还剩下多少个苹果？",
+    options: ["20", "105", "18", "19"],
+    correct_index: 3,
+    explanation_zh: "62 - 43 = 19。原本的数量减去卖出的数量就是剩下的数量。"
+  },
+  {
+    id: 5,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "图书馆星期六借出了 452 本书，星期天借出了 379 本书。",
+    question_zh: "这两天一共借出了多少本书？",
+    options: ["821", "841", "831", "931"],
+    correct_index: 2,
+    explanation_zh: "452 + 379 = 831。把两天借出的数量相加。"
+  },
+  {
+    id: 6,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "图书馆星期六借出了 421 本书，星期天借出了 242 本书。",
+    question_zh: "这两天一共借出了多少本书？",
+    options: ["653", "673", "763", "663"],
+    correct_index: 3,
+    explanation_zh: "421 + 242 = 663。把两天借出的数量相加。"
+  },
+  {
+    id: 7,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "一个农场有 674 只鸡，农夫卖出了 242 只。",
+    question_zh: "农场里现在还有多少只鸡？",
+    options: ["422", "916", "432", "442"],
+    correct_index: 2,
+    explanation_zh: "674 - 242 = 432。原本的数量减去卖出的数量。"
+  },
+  {
+    id: 8,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "老师把学生分成 3 组，每组有 3 个人。",
+    question_zh: "全班一共有多少个学生？",
+    options: ["6", "12", "9", "10"],
+    correct_index: 2,
+    explanation_zh: "3 × 3 = 9。乘法就是把 3 组，每组 3 人加起来。"
+  },
+  {
+    id: 9,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "老师把学生分成 7 组，每组有 6 个人。",
+    question_zh: "全班一共有多少个学生？",
+    options: ["13", "49", "35", "42"],
+    correct_index: 3,
+    explanation_zh: "7 × 6 = 42。乘法就是把 7 组，每组 6 人加起来。"
+  },
+  {
+    id: 10,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "老师有 24 支铅笔，要平均分给 3 个学生。",
+    question_zh: "每个学生可以得到多少支铅笔？",
+    options: ["3", "9", "7", "8"],
+    correct_index: 3,
+    explanation_zh: "24 ÷ 3 = 8。把 24 平均分成 3 份，每份是 8。"
+  },
+  {
+    id: 11,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "老师有 77 支铅笔，要平均分给 7 个学生。",
+    question_zh: "每个学生可以得到多少支铅笔？",
+    options: ["7", "11", "10", "12"],
+    correct_index: 1,
+    explanation_zh: "77 ÷ 7 = 11。把 77 平均分成 7 份，每份是 11。"
+  },
+  {
+    id: 12,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "一盒饼干有 12 片，妈妈买了 3 盒。",
+    question_zh: "妈妈一共买了多少片饼干？",
+    options: ["48", "33", "36", "15"],
+    correct_index: 2,
+    explanation_zh: "12 × 3 = 36。每盒 12 片，共 3 盒，所以是 12 × 3。"
+  },
+  {
+    id: 13,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "一盒饼干有 38 片，妈妈买了 2 盒。",
+    question_zh: "妈妈一共买了多少片饼干？",
+    options: ["76", "40", "114", "74"],
+    correct_index: 0,
+    explanation_zh: "38 × 2 = 76。每盒 38 片，共 2 盒，所以是 38 × 2。"
+  },
+  {
+    id: 14,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "果园里摘了 64 个橙子，平均装进 8 个篮子里。",
+    question_zh: "每个篮子里有多少个橙子？",
+    options: ["8", "7", "56", "9"],
+    correct_index: 0,
+    explanation_zh: "64 ÷ 8 = 8。平均分配就是用除法计算。"
+  },
+  {
+    id: 15,
+    topic: "整数与基本运算",
+    year: 1,
+    scenario_zh: "数字 44 是一个两位数。",
+    question_zh: "数字 44 十位上的数字是多少？",
+    options: ["3", "7", "5", "4"],
+    correct_index: 3,
+    explanation_zh: "44 可以分成 4 个十和 4 个一，所以十位上的数字是 4。"
+  },
+  {
+    id: 16,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "数字 932 是一个三位数。",
+    question_zh: "数字 932 百位上的数字是多少？",
+    options: ["9", "2", "8", "3"],
+    correct_index: 0,
+    explanation_zh: "932 可以分成 9 个百、3 个十和 2 个一，所以百位上的数字是 9。"
+  },
+  {
+    id: 17,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "比较两个数字 755 和 800。",
+    question_zh: "以下哪一个比较是正确的？",
+    options: ["755 < 800", "755 = 800", "755 > 800", "800 < 755"],
+    correct_index: 0,
+    explanation_zh: "因为 800 比 755 大，所以 755 < 800 是正确的。"
+  },
+  {
+    id: 18,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "小明种了 5 排树，每排 4 棵。后来有 8 棵树枯萎了。",
+    question_zh: "现在还有多少棵树是健康的？",
+    options: ["13", "28", "20", "12"],
+    correct_index: 3,
+    explanation_zh: "先算 5 × 4 = 20 棵，再减去枯萎的 8 棵：20 - 8 = 12。"
+  },
+  {
+    id: 19,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "小明种了 9 排树，每排 3 棵。后来有 3 棵树枯萎了。",
+    question_zh: "现在还有多少棵树是健康的？",
+    options: ["25", "27", "24", "30"],
+    correct_index: 2,
+    explanation_zh: "先算 9 × 3 = 27 棵，再减去枯萎的 3 棵：27 - 3 = 24。"
+  },
+  {
+    id: 20,
+    topic: "整数与基本运算",
+    year: 1,
+    scenario_zh: "小华有 35 颗弹珠，他的朋友再给他 39 颗弹珠。",
+    question_zh: "小华现在一共有多少颗弹珠？",
+    options: ["75", "74", "84", "73"],
+    correct_index: 1,
+    explanation_zh: "35 + 39 = 74。把两堆弹珠加起来就是答案。"
+  },
+  {
+    id: 21,
+    topic: "分数、小数与百分比",
+    year: 2,
+    scenario_zh: "一个图形被平均分成 3 份，其中 2 份被涂上颜色。",
+    question_zh: "涂色部分可以用哪一个分数表示？",
+    options: ["1/3", "2/5", "2/3", "2/4"],
+    correct_index: 2,
+    explanation_zh: "图形共有 3 份（分母），涂色的有 2 份（分子），所以分数是 2/3。"
+  },
+  {
+    id: 22,
+    topic: "分数、小数与百分比",
+    year: 2,
+    scenario_zh: "一个图形被平均分成 6 份，其中 4 份被涂上颜色。",
+    question_zh: "涂色部分可以用哪一个分数表示？",
+    options: ["5/6", "4/7", "2/6", "4/6"],
+    correct_index: 3,
+    explanation_zh: "图形共有 6 份（分母），涂色的有 4 份（分子），所以分数是 4/6。"
+  },
+  {
+    id: 23,
+    topic: "分数、小数与百分比",
+    year: 2,
+    scenario_zh: "一个图形被平均分成 3 份，其中 1 份被涂上颜色。",
+    question_zh: "涂色部分可以用哪一个分数表示？",
+    options: ["1/3", "2/3", "1/4", "2/4"],
+    correct_index: 0,
+    explanation_zh: "图形共有 3 份（分母），涂色的有 1 份（分子），所以分数是 1/3。"
+  },
+  {
+    id: 24,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "比较两个分数 5/10 和 6/10。",
+    question_zh: "以下哪一个比较是正确的？",
+    options: ["6/10 < 5/10", "5/10 > 6/10", "5/10 = 6/10", "5/10 < 6/10"],
+    correct_index: 3,
+    explanation_zh: "当分母相同时，分子越大，分数越大。因为 5 小于 6，所以 5/10 < 6/10。"
+  },
+  {
+    id: 25,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "比较两个分数 1/6 和 4/6。",
+    question_zh: "以下哪一个比较是正确的？",
+    options: ["1/6 = 4/6", "1/6 > 4/6", "1/6 < 4/6", "4/6 < 1/6"],
+    correct_index: 2,
+    explanation_zh: "当分母相同时，分子越大，分数越大。因为 1 小于 4，所以 1/6 < 4/6。"
+  },
+  {
+    id: 26,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "小美吃了蛋糕的 2/4，她的哥哥吃了 1/4。",
+    question_zh: "他们两人一共吃了多少分之几的蛋糕？",
+    options: ["2/4", "4/4", "3/8", "3/4"],
+    correct_index: 3,
+    explanation_zh: "分母相同时，直接把分子相加：2/4 + 1/4 = 3/4。"
+  },
+  {
+    id: 27,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "小美吃了蛋糕的 1/5，她的哥哥吃了 2/5。",
+    question_zh: "他们两人一共吃了多少分之几的蛋糕？",
+    options: ["2/5", "3/5", "3/10", "4/5"],
+    correct_index: 1,
+    explanation_zh: "分母相同时，直接把分子相加：1/5 + 2/5 = 3/5。"
+  },
+  {
+    id: 28,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "小数 6.8 由整数部分和小数部分组成。",
+    question_zh: "数字 6.8 十分位（小数点后第一位）上的数字是多少？",
+    options: ["6", "9", "1", "8"],
+    correct_index: 3,
+    explanation_zh: "在 6.8 中，小数点后的第一个数字 8 就是十分位上的数字。"
+  },
+  {
+    id: 29,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "分数 5/10 需要转换成小数。",
+    question_zh: "5/10 等于以下哪一个小数？",
+    options: ["5.0", "50.0", "0.5", "0.05"],
+    correct_index: 2,
+    explanation_zh: "当分母是 10 时，分子的数字直接放在小数点后：5/10 = 0.5。"
+  },
+  {
+    id: 30,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "小华跑了 5.2 千米，接着又跑了 3.7 千米。",
+    question_zh: "小华一共跑了多少千米？",
+    options: ["1.5", "9.0", "8.8", "8.9"],
+    correct_index: 3,
+    explanation_zh: "5.2 + 3.7 = 8.9。把两段距离的小数相加，注意对齐小数点。"
+  },
+  {
+    id: 31,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "小华跑了 4.9 千米，接着又跑了 3.7 千米。",
+    question_zh: "小华一共跑了多少千米？",
+    options: ["8.5", "1.2", "8.6", "8.7"],
+    correct_index: 2,
+    explanation_zh: "4.9 + 3.7 = 8.6。把两段距离的小数相加，注意对齐小数点。"
+  },
+  {
+    id: 32,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "一个图形被平均分成 2 份，其中 1 份被涂上颜色。",
+    question_zh: "涂色部分是整个图形的百分之几？",
+    options: ["50%", "75%", "100%", "25%"],
+    correct_index: 0,
+    explanation_zh: "涂色部分是 1/2，而 1/2 等于 50%，因为 50 是 100 的一半。"
+  },
+  {
+    id: 33,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "一个图形被完全涂上颜色，没有留下空白部分。",
+    question_zh: "涂色部分是整个图形的百分之几？",
+    options: ["0%", "100%", "75%", "50%"],
+    correct_index: 1,
+    explanation_zh: "整个图形都被涂色，所以是全部，也就是 100%。"
+  },
+  {
+    id: 34,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "班上有 12 个学生，其中 1/4 是女生。",
+    question_zh: "班上有多少个女生？",
+    options: ["3", "12", "9", "4"],
+    correct_index: 0,
+    explanation_zh: "要求 12 的 1/4，就是 12 ÷ 4 = 3。"
+  },
+  {
+    id: 35,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "班上有 8 个学生，其中 1/2 是女生。",
+    question_zh: "班上有多少个女生？",
+    options: ["8", "3", "4", "5"],
+    correct_index: 2,
+    explanation_zh: "要求 8 的 1/2，就是 8 ÷ 2 = 4。"
+  },
+  {
+    id: 36,
+    topic: "理财与RM货币",
+    year: 1,
+    scenario_zh: "小明有 38 仙，妈妈再给他 10 仙。",
+    question_zh: "小明现在一共有多少仙？",
+    options: ["53仙", "28仙", "43仙", "48仙"],
+    correct_index: 3,
+    explanation_zh: "38 + 10 = 48。把两次得到的钱加起来，单位是仙。"
+  },
+  {
+    id: 37,
+    topic: "理财与RM货币",
+    year: 1,
+    scenario_zh: "小明有 39 仙，妈妈再给他 18 仙。",
+    question_zh: "小明现在一共有多少仙？",
+    options: ["52仙", "21仙", "62仙", "57仙"],
+    correct_index: 3,
+    explanation_zh: "39 + 18 = 57。把两次得到的钱加起来，单位是仙。"
+  },
+  {
+    id: 38,
+    topic: "理财与RM货币",
+    year: 2,
+    scenario_zh: "小玲买了一枝铅笔，花了 RM5.10，又买了一本笔记本，花了 RM2.10。",
+    question_zh: "小玲一共花了多少钱？",
+    options: ["RM3.00", "RM7.70", "RM7.20", "RM8.20"],
+    correct_index: 2,
+    explanation_zh: "RM5.10 + RM2.10 = RM7.20。把两样东西的价钱加起来。"
+  },
+  {
+    id: 39,
+    topic: "理财与RM货币",
+    year: 2,
+    scenario_zh: "小玲买了一枝铅笔，花了 RM6.55，又买了一本笔记本，花了 RM4.55。",
+    question_zh: "小玲一共花了多少钱？",
+    options: ["RM10.10", "RM2.00", "RM11.10", "RM11.60"],
+    correct_index: 2,
+    explanation_zh: "RM6.55 + RM4.55 = RM11.10。把两样东西的价钱加起来。"
+  },
+  {
+    id: 40,
+    topic: "理财与RM货币",
+    year: 3,
+    scenario_zh: "一件玩具售价 RM5.66，小华付了 RM6.00。",
+    question_zh: "收银员应该找回多少钱？",
+    options: ["RM0.54", "RM5.66", "RM0.84", "RM0.34"],
+    correct_index: 3,
+    explanation_zh: "RM6.00 - RM5.66 = RM0.34。找钱 = 付的钱 - 商品的价钱。"
+  },
+  {
+    id: 41,
+    topic: "理财与RM货币",
+    year: 3,
+    scenario_zh: "一件玩具售价 RM5.12，小华付了 RM7.00。",
+    question_zh: "收银员应该找回多少钱？",
+    options: ["RM5.12", "RM1.88", "RM1.38", "RM2.38"],
+    correct_index: 1,
+    explanation_zh: "RM7.00 - RM5.12 = RM1.88。找钱 = 付的钱 - 商品的价钱。"
+  },
+  {
+    id: 42,
+    topic: "理财与RM货币",
+    year: 3,
+    scenario_zh: "一件玩具售价 RM8.39，小华付了 RM11.00。",
+    question_zh: "收银员应该找回多少钱？",
+    options: ["RM2.11", "RM3.11", "RM8.39", "RM2.61"],
+    correct_index: 3,
+    explanation_zh: "RM11.00 - RM8.39 = RM2.61。找钱 = 付的钱 - 商品的价钱。"
+  },
+  {
+    id: 43,
+    topic: "理财与RM货币",
+    year: 2,
+    scenario_zh: "我们知道 RM1 等于 100 仙。",
+    question_zh: "RM6 等于多少仙？",
+    options: ["60仙", "106仙", "6000仙", "600仙"],
+    correct_index: 3,
+    explanation_zh: "RM1 = 100仙，所以 RM6 = 6 × 100 = 600仙。"
+  },
+  {
+    id: 44,
+    topic: "理财与RM货币",
+    year: 2,
+    scenario_zh: "我们知道 RM1 等于 100 仙。",
+    question_zh: "RM4 等于多少仙？",
+    options: ["104仙", "40仙", "400仙", "4000仙"],
+    correct_index: 2,
+    explanation_zh: "RM1 = 100仙，所以 RM4 = 4 × 100 = 400仙。"
+  },
+  {
+    id: 45,
+    topic: "理财与RM货币",
+    year: 2,
+    scenario_zh: "我们知道 100 仙等于 RM1。",
+    question_zh: "400 仙等于多少令吉（RM）？",
+    options: ["RM40", "RM4", "RM5", "RM3"],
+    correct_index: 1,
+    explanation_zh: "每 100 仙 = RM1，所以 400 仙 = 400 ÷ 100 = RM4。"
+  },
+  {
+    id: 46,
+    topic: "理财与RM货币",
+    year: 2,
+    scenario_zh: "我们知道 100 仙等于 RM1。",
+    question_zh: "300 仙等于多少令吉（RM）？",
+    options: ["RM4", "RM3", "RM2", "RM30"],
+    correct_index: 1,
+    explanation_zh: "每 100 仙 = RM1，所以 300 仙 = 300 ÷ 100 = RM3。"
+  },
+  {
+    id: 47,
+    topic: "理财与RM货币",
+    year: 2,
+    scenario_zh: "一条面包售价 RM2.51，一瓶牛奶售价 RM4.67。",
+    question_zh: "以下哪一个说法是正确的？",
+    options: ["面包比牛奶贵", "面包和牛奶一样贵", "无法比较", "面包比牛奶便宜"],
+    correct_index: 3,
+    explanation_zh: "因为 RM2.51 少于 RM4.67，所以面包比牛奶便宜。"
+  },
+  {
+    id: 48,
+    topic: "理财与RM货币",
+    year: 3,
+    scenario_zh: "一枝铅笔售价 RM4，小美要买 5 枝。",
+    question_zh: "小美一共需要付多少钱？",
+    options: ["RM15", "RM20", "RM24", "RM9"],
+    correct_index: 1,
+    explanation_zh: "RM4 × 5 = RM20。用单价乘以数量。"
+  },
+  {
+    id: 49,
+    topic: "理财与RM货币",
+    year: 3,
+    scenario_zh: "一枝铅笔售价 RM8，小美要买 2 枝。",
+    question_zh: "小美一共需要付多少钱？",
+    options: ["RM14", "RM16", "RM10", "RM24"],
+    correct_index: 1,
+    explanation_zh: "RM8 × 2 = RM16。用单价乘以数量。"
+  },
+  {
+    id: 50,
+    topic: "理财与RM货币",
+    year: 3,
+    scenario_zh: "小健每天储蓄 RM5，连续储蓄了 5 天。",
+    question_zh: "小健一共储蓄了多少钱？",
+    options: ["RM25", "RM30", "RM10", "RM20"],
+    correct_index: 0,
+    explanation_zh: "RM5 × 5 = RM25。每天存的钱乘以天数。"
+  },
+  {
+    id: 51,
+    topic: "时间与时刻",
+    year: 1,
+    scenario_zh: "时钟的时针指着 12，分针指着 12。",
+    question_zh: "现在是几点钟？",
+    options: ["8时正", "9时正", "12时正", "11时正"],
+    correct_index: 2,
+    explanation_zh: "当分针指向 12，时针指向几，就是几时正。所以现在是 12时正。"
+  },
+  {
+    id: 52,
+    topic: "时间与时刻",
+    year: 1,
+    scenario_zh: "时钟的时针指着 4，分针指着 12。",
+    question_zh: "现在是几点钟？",
+    options: ["12时正", "10时正", "1时正", "4时正"],
+    correct_index: 3,
+    explanation_zh: "当分针指向 12，时针指向几，就是几时正。所以现在是 4时正。"
+  },
+  {
+    id: 53,
+    topic: "时间与时刻",
+    year: 2,
+    scenario_zh: "时钟的时针指在 1 和 2 之间，分针指着 6。",
+    question_zh: "现在是几点几分？",
+    options: ["2时30分", "1时45分", "1时15分", "1时30分"],
+    correct_index: 3,
+    explanation_zh: "当分针指向 6，表示过了半小时，所以是 1时30分。"
+  },
+  {
+    id: 54,
+    topic: "时间与时刻",
+    year: 2,
+    scenario_zh: "时钟的时针指在 9 和 10 之间，分针指着 6。",
+    question_zh: "现在是几点几分？",
+    options: ["10时30分", "9时15分", "9时30分", "9时45分"],
+    correct_index: 2,
+    explanation_zh: "当分针指向 6，表示过了半小时，所以是 9时30分。"
+  },
+  {
+    id: 55,
+    topic: "时间与时刻",
+    year: 2,
+    scenario_zh: "时钟的时针刚过 3，分针指着 3。",
+    question_zh: "现在是几点几分？",
+    options: ["4时15分", "3时30分", "3时45分", "3时15分"],
+    correct_index: 3,
+    explanation_zh: "当分针指向 3，表示过了15分钟，所以是 3时15分。"
+  },
+  {
+    id: 56,
+    topic: "时间与时刻",
+    year: 1,
+    scenario_zh: "一个星期由星期一到星期日组成。",
+    question_zh: "一个星期一共有多少天？",
+    options: ["6天", "7天", "10天", "5天"],
+    correct_index: 1,
+    explanation_zh: "一个星期包括星期一、二、三、四、五、六、日，一共是7天。"
+  },
+  {
+    id: 57,
+    topic: "时间与时刻",
+    year: 2,
+    scenario_zh: "日历上显示了从一月到十二月的所有月份。",
+    question_zh: "一年一共有多少个月？",
+    options: ["24个月", "12个月", "11个月", "10个月"],
+    correct_index: 1,
+    explanation_zh: "一年从一月开始，到十二月结束，一共是12个月。"
+  },
+  {
+    id: 58,
+    topic: "时间与时刻",
+    year: 2,
+    scenario_zh: "时钟上的时针一天之内会转两圈。",
+    question_zh: "一天一共有多少个小时？",
+    options: ["48小时", "60小时", "12小时", "24小时"],
+    correct_index: 3,
+    explanation_zh: "一天从午夜开始到第二天午夜结束，一共是24小时。"
+  },
+  {
+    id: 59,
+    topic: "时间与时刻",
+    year: 1,
+    scenario_zh: "分针从12走回12，正好是一个小时。",
+    question_zh: "1个小时等于多少分钟？",
+    options: ["12分钟", "30分钟", "60分钟", "100分钟"],
+    correct_index: 2,
+    explanation_zh: "1小时 = 60分钟，这是时间单位的基本换算。"
+  },
+  {
+    id: 60,
+    topic: "时间与时刻",
+    year: 3,
+    scenario_zh: "小华在 2时正 开始做功课，在 5时正 做完。",
+    question_zh: "小华一共花了多少时间做功课？",
+    options: ["4小时", "2小时", "3小时", "5小时"],
+    correct_index: 2,
+    explanation_zh: "5时 - 2时 = 3小时。用结束时间减去开始时间。"
+  },
+  {
+    id: 61,
+    topic: "时间与时刻",
+    year: 3,
+    scenario_zh: "小华在 4时正 开始做功课，在 7时正 做完。",
+    question_zh: "小华一共花了多少时间做功课？",
+    options: ["4小时", "2小时", "7小时", "3小时"],
+    correct_index: 3,
+    explanation_zh: "7时 - 4时 = 3小时。用结束时间减去开始时间。"
+  },
+  {
+    id: 62,
+    topic: "时间与时刻",
+    year: 1,
+    scenario_zh: "今天是星期五。",
+    question_zh: "明天是星期几？",
+    options: ["星期三", "星期二", "星期六", "星期四"],
+    correct_index: 2,
+    explanation_zh: "星期五的隔天就是星期六，按照星期的顺序推算。"
+  },
+  {
+    id: 63,
+    topic: "时间与时刻",
+    year: 1,
+    scenario_zh: "今天是星期一。",
+    question_zh: "明天是星期几？",
+    options: ["星期五", "星期二", "星期一", "星期日"],
+    correct_index: 1,
+    explanation_zh: "星期一的隔天就是星期二，按照星期的顺序推算。"
+  },
+  {
+    id: 64,
+    topic: "时间与时刻",
+    year: 2,
+    scenario_zh: "小明早上7点起床，准备去上学。",
+    question_zh: "小明起床的时间应该用以下哪一个来表示？",
+    options: ["晚上7时", "早上7时", "凌晨7时", "中午7时"],
+    correct_index: 1,
+    explanation_zh: "早上7点是白天开始的时间，应该用“早上7时”来表示。"
+  },
+  {
+    id: 65,
+    topic: "时间与时刻",
+    year: 1,
+    scenario_zh: "小华的早晨活动顺序是：7时00分刷牙，7时15分吃早餐，7时30分上学。",
+    question_zh: "小华完成刷牙后，接下来做什么？",
+    options: ["睡觉", "吃早餐", "刷牙", "上学"],
+    correct_index: 1,
+    explanation_zh: "根据时间顺序，刷牙（7时00分）之后是吃早餐（7时15分）。"
+  },
+  {
+    id: 66,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 1 米 (m) 等于 100 厘米 (cm)。",
+    question_zh: "2 米等于多少厘米？",
+    options: ["200 cm", "102 cm", "2000 cm", "20 cm"],
+    correct_index: 0,
+    explanation_zh: "1 m = 100 cm，所以 2 m = 2 × 100 = 200 cm。"
+  },
+  {
+    id: 67,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 1 米 (m) 等于 100 厘米 (cm)。",
+    question_zh: "4 米等于多少厘米？",
+    options: ["4000 cm", "40 cm", "400 cm", "104 cm"],
+    correct_index: 2,
+    explanation_zh: "1 m = 100 cm，所以 4 m = 4 × 100 = 400 cm。"
+  },
+  {
+    id: 68,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 100 厘米 (cm) 等于 1 米 (m)。",
+    question_zh: "900 cm 等于多少米？",
+    options: ["8 m", "9 m", "10 m", "90 m"],
+    correct_index: 1,
+    explanation_zh: "100 cm = 1 m，所以 900 cm = 900 ÷ 100 = 9 m。"
+  },
+  {
+    id: 69,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 1 千克 (kg) 等于 1000 克 (g)。",
+    question_zh: "2 kg 等于多少克？",
+    options: ["1002 g", "2000 g", "200 g", "20000 g"],
+    correct_index: 1,
+    explanation_zh: "1 kg = 1000 g，所以 2 kg = 2 × 1000 = 2000 g。"
+  },
+  {
+    id: 70,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 1 千克 (kg) 等于 1000 克 (g)。",
+    question_zh: "1 kg 等于多少克？",
+    options: ["10000 g", "100 g", "1000 g", "1001 g"],
+    correct_index: 2,
+    explanation_zh: "1 kg = 1000 g，所以 1 kg = 1 × 1000 = 1000 g。"
+  },
+  {
+    id: 71,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 1000 克 (g) 等于 1 千克 (kg)。",
+    question_zh: "3000 g 等于多少千克？",
+    options: ["3 kg", "4 kg", "2 kg", "30 kg"],
+    correct_index: 0,
+    explanation_zh: "1000 g = 1 kg，所以 3000 g = 3000 ÷ 1000 = 3 kg。"
+  },
+  {
+    id: 72,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 1 公升 (L) 等于 1000 毫升 (mL)。",
+    question_zh: "9 L 等于多少毫升？",
+    options: ["900 mL", "1009 mL", "90000 mL", "9000 mL"],
+    correct_index: 3,
+    explanation_zh: "1 L = 1000 mL，所以 9 L = 9 × 1000 = 9000 mL。"
+  },
+  {
+    id: 73,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 1 公升 (L) 等于 1000 毫升 (mL)。",
+    question_zh: "3 L 等于多少毫升？",
+    options: ["1003 mL", "30000 mL", "300 mL", "3000 mL"],
+    correct_index: 3,
+    explanation_zh: "1 L = 1000 mL，所以 3 L = 3 × 1000 = 3000 mL。"
+  },
+  {
+    id: 74,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "一瓶牛奶有 2 L，小明喝了 400 mL。",
+    question_zh: "瓶子里还剩下多少 mL 的牛奶？",
+    options: ["2000 mL", "1500 mL", "1700 mL", "1600 mL"],
+    correct_index: 3,
+    explanation_zh: "2 L = 2000 mL。2000 mL - 400 mL = 1600 mL。"
+  },
+  {
+    id: 75,
+    topic: "度量衡",
+    year: 1,
+    scenario_zh: "一条绳子长 77 cm，另一条绳子长 60 cm。",
+    question_zh: "把两条绳子连接起来，一共有多长？",
+    options: ["132 cm", "17 cm", "142 cm", "137 cm"],
+    correct_index: 3,
+    explanation_zh: "77 cm + 60 cm = 137 cm。把两条绳子的长度相加。"
+  },
+  {
+    id: 76,
+    topic: "度量衡",
+    year: 1,
+    scenario_zh: "一个西瓜重 4 kg，另一个西瓜重 5 kg。",
+    question_zh: "哪一个西瓜比较重？",
+    options: ["5 kg 的西瓜比较重", "4 kg 的西瓜比较重", "无法比较", "两个西瓜一样重"],
+    correct_index: 0,
+    explanation_zh: "因为 5 kg 大于 4 kg，所以 5 kg 的西瓜比较重。"
+  },
+  {
+    id: 77,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "小华要测量教室的长度，也要测量铅笔的长度。",
+    question_zh: "测量教室的长度，最适合用哪一个单位？",
+    options: ["毫升 (mL)", "克 (g)", "米 (m)", "厘米 (cm)"],
+    correct_index: 2,
+    explanation_zh: "教室比较长，所以用“米”作为单位比较合适；铅笔比较短，才用“厘米”。"
+  },
+  {
+    id: 78,
+    topic: "度量衡",
+    year: 1,
+    scenario_zh: "小美要测量一颗苹果的重量，也要测量一辆汽车的重量。",
+    question_zh: "测量一颗苹果的重量，最适合用哪一个单位？",
+    options: ["厘米 (cm)", "克 (g)", "公升 (L)", "千克 (kg)"],
+    correct_index: 1,
+    explanation_zh: "苹果比较轻，所以用“克”作为单位；汽车比较重，才用“千克”。"
+  },
+  {
+    id: 79,
+    topic: "度量衡",
+    year: 1,
+    scenario_zh: "小健要装一杯水，也要装满一个大水桶。",
+    question_zh: "装一杯水，最适合用哪一个单位来量？",
+    options: ["毫升 (mL)", "米 (m)", "克 (g)", "公升 (L)"],
+    correct_index: 0,
+    explanation_zh: "一杯水的量比较少，所以用“毫升”；一大桶水才用“公升”。"
+  },
+  {
+    id: 80,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "一袋米重 600 g，另一袋面粉重 310 g。",
+    question_zh: "两袋加起来一共有多重？",
+    options: ["860 g", "910 g", "290 g", "960 g"],
+    correct_index: 1,
+    explanation_zh: "600 g + 310 g = 910 g。把两包东西的重量相加。"
+  },
+  {
+    id: 81,
+    topic: "形状与空间",
+    year: 1,
+    scenario_zh: "三角形是一种常见的平面图形。",
+    question_zh: "三角形有多少条边？",
+    options: ["5条", "6条", "4条", "3条"],
+    correct_index: 3,
+    explanation_zh: "三角形的名字就说明了它有3个角，也就是3条边。"
+  },
+  {
+    id: 82,
+    topic: "形状与空间",
+    year: 1,
+    scenario_zh: "正方形的四条边长度都相等。",
+    question_zh: "正方形有多少个角？",
+    options: ["3个", "5个", "4个", "6个"],
+    correct_index: 2,
+    explanation_zh: "正方形是四边形，有4条边，所以也有4个角。"
+  },
+  {
+    id: 83,
+    topic: "形状与空间",
+    year: 1,
+    scenario_zh: "圆形是一种没有角的图形。",
+    question_zh: "以下哪一个是圆形的特征？",
+    options: ["没有边和角", "有3个角", "有4条边", "有6条边"],
+    correct_index: 0,
+    explanation_zh: "圆形是弯曲的曲线组成的，没有直的边，也没有角。"
+  },
+  {
+    id: 84,
+    topic: "形状与空间",
+    year: 2,
+    scenario_zh: "六边形是一种多边形。",
+    question_zh: "六边形有多少条边？",
+    options: ["8条", "7条", "6条", "5条"],
+    correct_index: 2,
+    explanation_zh: "“六边形”的意思就是有6条边的图形。"
+  },
+  {
+    id: 85,
+    topic: "形状与空间",
+    year: 2,
+    scenario_zh: "立方体（例如骰子）是一种立体图形。",
+    question_zh: "立方体有多少个面？",
+    options: ["6个", "5个", "8个", "4个"],
+    correct_index: 0,
+    explanation_zh: "立方体有上、下、左、右、前、后，一共6个面。"
+  },
+  {
+    id: 86,
+    topic: "形状与空间",
+    year: 2,
+    scenario_zh: "球体（例如皮球）是一种立体图形。",
+    question_zh: "以下哪一个物体的形状最像球体？",
+    options: ["红萝卜", "书本", "篮球", "罐头"],
+    correct_index: 2,
+    explanation_zh: "篮球是圆圆的，可以从任何方向看都一样，这就是球体的特征。"
+  },
+  {
+    id: 87,
+    topic: "形状与空间",
+    year: 2,
+    scenario_zh: "圆柱体的形状像一个罐头。",
+    question_zh: "以下哪一个物体的形状最像圆柱体？",
+    options: ["饮料罐", "足球", "金字塔", "魔方"],
+    correct_index: 0,
+    explanation_zh: "饮料罐的上下是圆形，中间是直直的，这就是圆柱体的形状。"
+  },
+  {
+    id: 88,
+    topic: "形状与空间",
+    year: 3,
+    scenario_zh: "一个图形如果对折后两边可以完全重合，就说它有对称。",
+    question_zh: "以下哪一个图形对折后两边能够完全重合？",
+    options: ["不规则的星星（缺角）", "普通的三角形（三边不等）", "正方形", "手写的数字7"],
+    correct_index: 2,
+    explanation_zh: "正方形对折后两边一样大小、一样形状，所以是对称的图形。"
+  },
+  {
+    id: 89,
+    topic: "形状与空间",
+    year: 1,
+    scenario_zh: "小猫站在桌子的左边，小狗站在桌子的右边。",
+    question_zh: "小狗站在桌子的哪一边？",
+    options: ["下面", "左边", "右边", "上面"],
+    correct_index: 2,
+    explanation_zh: "根据描述，小狗站在桌子的右边。"
+  },
+  {
+    id: 90,
+    topic: "形状与空间",
+    year: 1,
+    scenario_zh: "苹果放在盒子的里面，橙子放在盒子的旁边。",
+    question_zh: "橙子和盒子的位置关系是什么？",
+    options: ["在盒子上面", "在盒子里面", "在盒子下面", "在盒子旁边"],
+    correct_index: 3,
+    explanation_zh: "根据描述，橙子是放在盒子的旁边，不是里面。"
+  },
+  {
+    id: 91,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "图表上每一个 🍎 图案代表 2 个水果。苹果有4个图案、香蕉有5个图案、橙子有2个图案。",
+    question_zh: "香蕉一共有多少个？",
+    options: ["12", "10", "8", "5"],
+    correct_index: 1,
+    explanation_zh: "香蕉有 5 个图案，每个图案代表 2 个，所以是 5 × 2 = 10 个。"
+  },
+  {
+    id: 92,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "图表上每一个 🍎 图案代表 2 个水果。苹果有2个图案、香蕉有3个图案、橙子有4个图案。",
+    question_zh: "香蕉一共有多少个？",
+    options: ["4", "3", "8", "6"],
+    correct_index: 3,
+    explanation_zh: "香蕉有 3 个图案，每个图案代表 2 个，所以是 3 × 2 = 6 个。"
+  },
+  {
+    id: 93,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "班上同学投票选择喜欢的颜色：红色8票、蓝色4票、绿色7票。",
+    question_zh: "哪一个颜色得到的票数最多？",
+    options: ["红色", "蓝色", "无法确定", "绿色"],
+    correct_index: 0,
+    explanation_zh: "比较三个颜色的票数，红色有8票，是最多的。"
+  },
+  {
+    id: 94,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "班上同学最喜欢的运动调查结果：足球8人、篮球9人、羽毛球7人。",
+    question_zh: "哪一种运动最少人喜欢？",
+    options: ["篮球", "无法确定", "羽毛球", "足球"],
+    correct_index: 2,
+    explanation_zh: "比较三种运动的人数，羽毛球有7人，是最少的。"
+  },
+  {
+    id: 95,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "计数表上画了正字记号：3个五画一组（共15）加上4个单画。",
+    question_zh: "这些计数记号一共代表多少？",
+    options: ["19", "24", "18", "20"],
+    correct_index: 0,
+    explanation_zh: "每5个记号画成一组（正字的一横一竖），3个五画一组（共15）加上4个单画，加起来一共是19。"
+  },
+  {
+    id: 96,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "计数表上画了正字记号：2个五画一组（共10）加上1个单画。",
+    question_zh: "这些计数记号一共代表多少？",
+    options: ["16", "11", "12", "10"],
+    correct_index: 1,
+    explanation_zh: "每5个记号画成一组（正字的一横一竖），2个五画一组（共10）加上1个单画，加起来一共是11。"
+  },
+  {
+    id: 97,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "三个班级参加比赛的人数分别是：一班5人、二班8人、三班6人。",
+    question_zh: "三个班级一共有多少人参加比赛？",
+    options: ["19", "8", "20", "18"],
+    correct_index: 0,
+    explanation_zh: "5 + 8 + 6 = 19。把三个班级的人数加起来。"
+  },
+  {
+    id: 98,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "三个班级参加比赛的人数分别是：一班5人、二班7人、三班3人。",
+    question_zh: "三个班级一共有多少人参加比赛？",
+    options: ["16", "15", "14", "7"],
+    correct_index: 1,
+    explanation_zh: "5 + 7 + 3 = 15。把三个班级的人数加起来。"
+  },
+  {
+    id: 99,
+    topic: "数据处理",
+    year: 3,
+    scenario_zh: "图表上每一个 ⭐ 代表 2 颗星星奖励。甲组得到2个图案，乙组得到4个图案。",
+    question_zh: "乙组比甲组多得多少颗星星奖励？",
+    options: ["6", "8", "4", "2"],
+    correct_index: 2,
+    explanation_zh: "甲组：2×2=4颗；乙组：4×2=8颗。8-4=4颗。"
+  },
+  {
+    id: 100,
+    topic: "数据处理",
+    year: 3,
+    scenario_zh: "图表上每一个 ⭐ 代表 2 颗星星奖励。甲组得到4个图案，乙组得到5个图案。",
+    question_zh: "乙组比甲组多得多少颗星星奖励？",
+    options: ["8", "6", "2", "4"],
+    correct_index: 2,
+    explanation_zh: "甲组：4×2=8颗；乙组：5×2=10颗。10-8=2颗。"
+  }
+,
+  {
+    id: 101,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "老师把学生分成 5 组，每组有 9 个人。",
+    question_zh: "全班一共有多少个学生？",
+    options: ["45", "40", "50", "14"],
+    correct_index: 0,
+    explanation_zh: "5 × 9 = 45。乘法就是把 5 组，每组 9 人加起来。"
+  },
+  {
+    id: 102,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "老师有 70 支铅笔，要平均分给 7 个学生。",
+    question_zh: "每个学生可以得到多少支铅笔？",
+    options: ["7", "9", "11", "10"],
+    correct_index: 3,
+    explanation_zh: "70 ÷ 7 = 10。把 70 平均分成 7 份，每份是 10。"
+  },
+  {
+    id: 103,
+    topic: "整数与基本运算",
+    year: 2,
+    scenario_zh: "比较两个数字 715 和 734。",
+    question_zh: "以下哪一个比较是正确的？",
+    options: ["734 < 715", "715 > 734", "715 = 734", "715 < 734"],
+    correct_index: 3,
+    explanation_zh: "因为 734 比 715 大，所以 715 < 734 是正确的。"
+  },
+  {
+    id: 104,
+    topic: "整数与基本运算",
+    year: 3,
+    scenario_zh: "小明种了 10 排树，每排 3 棵。后来有 8 棵树枯萎了。",
+    question_zh: "现在还有多少棵树是健康的？",
+    options: ["23", "30", "38", "22"],
+    correct_index: 3,
+    explanation_zh: "先算 10 × 3 = 30 棵，再减去枯萎的 8 棵：30 - 8 = 22。"
+  },
+  {
+    id: 105,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "比较两个分数 3/6 和 4/6。",
+    question_zh: "以下哪一个比较是正确的？",
+    options: ["3/6 = 4/6", "3/6 < 4/6", "4/6 < 3/6", "3/6 > 4/6"],
+    correct_index: 1,
+    explanation_zh: "当分母相同时，分子越大，分数越大。因为 3 小于 4，所以 3/6 < 4/6。"
+  },
+  {
+    id: 106,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "小华跑了 4.9 千米，接着又跑了 3.3 千米。",
+    question_zh: "小华一共跑了多少千米？",
+    options: ["8.1", "1.6", "8.3", "8.2"],
+    correct_index: 3,
+    explanation_zh: "4.9 + 3.3 = 8.2。把两段距离的小数相加，注意对齐小数点。"
+  },
+  {
+    id: 107,
+    topic: "分数、小数与百分比",
+    year: 3,
+    scenario_zh: "班上有 20 个学生，其中 1/5 是女生。",
+    question_zh: "班上有多少个女生？",
+    options: ["4", "20", "5", "16"],
+    correct_index: 0,
+    explanation_zh: "要求 20 的 1/5，就是 20 ÷ 5 = 4。"
+  },
+  {
+    id: 108,
+    topic: "理财与RM货币",
+    year: 3,
+    scenario_zh: "一件玩具售价 RM2.46，小华付了 RM5.00。",
+    question_zh: "收银员应该找回多少钱？",
+    options: ["RM2.46", "RM2.04", "RM2.54", "RM3.04"],
+    correct_index: 2,
+    explanation_zh: "RM5.00 - RM2.46 = RM2.54。找钱 = 付的钱 - 商品的价钱。"
+  },
+  {
+    id: 109,
+    topic: "理财与RM货币",
+    year: 2,
+    scenario_zh: "我们知道 RM1 等于 100 仙。",
+    question_zh: "RM8 等于多少仙？",
+    options: ["8000仙", "80仙", "800仙", "108仙"],
+    correct_index: 2,
+    explanation_zh: "RM1 = 100仙，所以 RM8 = 8 × 100 = 800仙。"
+  },
+  {
+    id: 110,
+    topic: "理财与RM货币",
+    year: 3,
+    scenario_zh: "小健每天储蓄 RM2，连续储蓄了 6 天。",
+    question_zh: "小健一共储蓄了多少钱？",
+    options: ["RM14", "RM12", "RM6", "RM8"],
+    correct_index: 1,
+    explanation_zh: "RM2 × 6 = RM12。每天存的钱乘以天数。"
+  },
+  {
+    id: 111,
+    topic: "时间与时刻",
+    year: 2,
+    scenario_zh: "时钟的时针刚过 9，分针指着 3。",
+    question_zh: "现在是几点几分？",
+    options: ["9时15分", "10时15分", "9时45分", "9时30分"],
+    correct_index: 0,
+    explanation_zh: "当分针指向 3，表示过了15分钟，所以是 9时15分。"
+  },
+  {
+    id: 112,
+    topic: "时间与时刻",
+    year: 3,
+    scenario_zh: "小华在 3时正 开始做功课，在 5时正 做完。",
+    question_zh: "小华一共花了多少时间做功课？",
+    options: ["3小时", "5小时", "1小时", "2小时"],
+    correct_index: 3,
+    explanation_zh: "5时 - 3时 = 2小时。用结束时间减去开始时间。"
+  },
+  {
+    id: 113,
+    topic: "时间与时刻",
+    year: 1,
+    scenario_zh: "今天是星期六。",
+    question_zh: "明天是星期几？",
+    options: ["星期日", "星期二", "星期三", "星期六"],
+    correct_index: 0,
+    explanation_zh: "星期六的隔天就是星期日，按照星期的顺序推算。"
+  },
+  {
+    id: 114,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "小杯装了 427 mL 的果汁，大杯装了 275 mL 的果汁。",
+    question_zh: "两杯果汁一共有多少 mL？",
+    options: ["752 mL", "702 mL", "152 mL", "652 mL"],
+    correct_index: 1,
+    explanation_zh: "427 mL + 275 mL = 702 mL。把两杯的容量相加。"
+  },
+  {
+    id: 115,
+    topic: "度量衡",
+    year: 2,
+    scenario_zh: "我们知道 1000 克 (g) 等于 1 千克 (kg)。",
+    question_zh: "1000 g 等于多少千克？",
+    options: ["1 kg", "10 kg", "2 kg", "0 kg"],
+    correct_index: 0,
+    explanation_zh: "1000 g = 1 kg，所以 1000 g = 1000 ÷ 1000 = 1 kg。"
+  },
+  {
+    id: 116,
+    topic: "度量衡",
+    year: 1,
+    scenario_zh: "一条绳子长 29 cm，另一条绳子长 53 cm。",
+    question_zh: "把两条绳子连接起来，一共有多长？",
+    options: ["82 cm", "87 cm", "24 cm", "77 cm"],
+    correct_index: 0,
+    explanation_zh: "29 cm + 53 cm = 82 cm。把两条绳子的长度相加。"
+  },
+  {
+    id: 117,
+    topic: "形状与空间",
+    year: 2,
+    scenario_zh: "五边形是一种有五条边的多边形。",
+    question_zh: "五边形有多少个角？",
+    options: ["6个", "4个", "5个", "3个"],
+    correct_index: 2,
+    explanation_zh: "五边形有5条边，边和角的数量相同，所以也有5个角。"
+  },
+  {
+    id: 118,
+    topic: "形状与空间",
+    year: 2,
+    scenario_zh: "圆锥体的形状像一顶生日帽。",
+    question_zh: "以下哪一个物体的形状最像圆锥体？",
+    options: ["生日帽", "足球", "骰子", "饮料罐"],
+    correct_index: 0,
+    explanation_zh: "生日帽的底部是圆形，顶端是一个尖尖的点，这就是圆锥体的形状。"
+  },
+  {
+    id: 119,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "班上同学投票选择喜欢的颜色：红色7票、蓝色9票、绿色5票。",
+    question_zh: "哪一个颜色得到的票数最多？",
+    options: ["红色", "蓝色", "绿色", "无法确定"],
+    correct_index: 1,
+    explanation_zh: "比较三个颜色的票数，蓝色有9票，是最多的。"
+  },
+  {
+    id: 120,
+    topic: "数据处理",
+    year: 2,
+    scenario_zh: "三个班级参加比赛的人数分别是：一班2人、二班5人、三班8人。",
+    question_zh: "三个班级一共有多少人参加比赛？",
+    options: ["14", "8", "16", "15"],
+    correct_index: 3,
+    explanation_zh: "2 + 5 + 8 = 15。把三个班级的人数加起来。"
+  }
+];
+
+
 // Word category map for Fill in the Blank distractor generation (same part-of-speech/semantic group).
 const TOKEN_CATEGORY = (function(){
   const TOPIC_TO_CATEGORY = {"Actions": "VERB", "Animals": "NOUN_ANIMAL", "Bakery": "NOUN_FOOD", "Beach": "NOUN_PLACE", "Birds": "NOUN_ANIMAL", "Body": "NOUN_BODY", "Camping": "NOUN_OBJECT", "Celebrations": "NOUN_ABSTRACT", "Classroom Items": "NOUN_OBJECT", "Cleanliness": "NOUN_OBJECT", "Clothes": "NOUN_OBJECT", "Colours": "ADJECTIVE", "Community Helpers": "NOUN_PERSON", "Daily routines": "VERB", "Days": "NOUN_TIME", "Descriptions": "ADJECTIVE", "Directions": "ADVERB", "Drinks": "NOUN_FOOD", "Emotions": "ADJECTIVE", "Family": "NOUN_PERSON", "Farm Animals": "NOUN_ANIMAL", "Feelings": "ADJECTIVE", "Food": "NOUN_FOOD", "Friends": "NOUN_PERSON", "Fruits": "NOUN_FOOD", "Greetings": "GREETING", "Household Items": "NOUN_OBJECT", "Insects": "NOUN_ANIMAL", "Kitchen": "NOUN_OBJECT", "Money": "NOUN_OBJECT", "Musical Instruments": "NOUN_OBJECT", "Nature": "NOUN_NATURE", "Numbers": "NUMBER", "Objects": "NOUN_OBJECT", "Occupations": "NOUN_PERSON", "Places": "NOUN_PLACE", "Playground": "NOUN_OBJECT", "Questions": "QUESTION", "Safety": "NOUN_OBJECT", "School": "NOUN_OBJECT", "School Subjects": "NOUN_ABSTRACT", "Sea Creatures": "NOUN_ANIMAL", "Seasons": "NOUN_TIME", "Shapes": "NOUN_OBJECT", "Space": "NOUN_NATURE", "Sports": "NOUN_ABSTRACT", "Sports Equipment": "NOUN_OBJECT", "Technology": "NOUN_OBJECT", "Time": "NOUN_TIME", "Tools": "NOUN_OBJECT", "Toys": "NOUN_OBJECT", "Transport": "NOUN_OBJECT", "Travel": "NOUN_OBJECT", "Vegetables": "NOUN_FOOD", "Weather": "NOUN_NATURE"};
@@ -3623,6 +4894,10 @@ let state = {
   detectiveLang:"en", detectiveDifficulty:"easy", detectiveQuestions:[], detectiveIndex:0,
   detectiveCorrectCount:0, detectiveWrongCount:0, detectiveScore:0, detectiveTotalStars:0,
   detectiveAttempts:0, detectiveResolved:false, detectiveTotalPossible:100,
+  // math quiz state
+  mathQuizYear:"all", mathQuizQuestions:[], mathQuizIndex:0,
+  mathQuizCorrectCount:0, mathQuizWrongCount:0, mathQuizScore:0, mathQuizTotalStars:0,
+  mathQuizAttempts:0, mathQuizResolved:false, mathQuizMarksPerQuestion:10, mathQuizTotalPossible:100,
   // vocab match state
   baseLang:"en", targetLang:"ms",
   vocabPairs:[], leftTiles:[], rightTiles:[],
@@ -3754,6 +5029,7 @@ function goTo(name){
   if(name==="detective-language") renderDetectiveLanguageGrid();
   if(name==="detective-difficulty") renderDetectiveDifficultyGrid();
   if(name==="detective-instructions") renderDetectiveInstructions();
+  if(name==="mathquiz-year") renderMathQuizYearGrid();
   if(name==="vocab-base"){ state.mode="vocab"; renderVocabBaseGrid(); }
   if(name==="vocab-target") renderVocabTargetGrid();
   if(name==="vocab-instructions") renderVocabInstructions();
@@ -6056,6 +7332,189 @@ function quitDetectiveGame(){
   openQuitModal(state.detectiveLang, ()=>{
     document.getElementById("btn-detective-check").disabled = true;
     showDetectiveResults();
+  });
+}
+
+/* ---------------- MATH QUIZ ---------------- */
+function renderMathQuizYearGrid(){
+  const grid = document.getElementById("mathquiz-year-grid");
+  grid.innerHTML = `
+    <div class="choice-card" onclick="pickMathQuizYear('1')"><span class="emoji">🌱</span>一年级</div>
+    <div class="choice-card" onclick="pickMathQuizYear('2')"><span class="emoji">🌿</span>二年级</div>
+    <div class="choice-card" onclick="pickMathQuizYear('3')"><span class="emoji">🌳</span>三年级</div>
+    <div class="choice-card" onclick="pickMathQuizYear('all')"><span class="emoji">🎯</span>综合挑战</div>
+  `;
+}
+function pickMathQuizYear(year){ state.mathQuizYear = year; goTo("mathquiz-instructions"); }
+
+function startMathQuizGame(){
+  const pool = state.mathQuizYear === "all"
+    ? MATH_QUESTION_BANK
+    : MATH_QUESTION_BANK.filter(q => q.year === parseInt(state.mathQuizYear, 10));
+  const source = pool.length >= 10 ? pool : MATH_QUESTION_BANK;
+  const chosen = shuffle(source).slice(0, 10);
+  // Deep-copy each question and shuffle its options (keeping correct_index in sync)
+  state.mathQuizQuestions = chosen.map(q => {
+    const optionIdxs = [0,1,2,3];
+    const shuffledIdxs = shuffle(optionIdxs);
+    const options = shuffledIdxs.map(i => q.options[i]);
+    const correct_index = shuffledIdxs.indexOf(q.correct_index);
+    return {
+      id:q.id, topic:q.topic, year:q.year,
+      scenario_zh:q.scenario_zh, question_zh:q.question_zh,
+      options, correct_index, explanation_zh:q.explanation_zh
+    };
+  });
+  state.mathQuizIndex = 0;
+  state.mathQuizCorrectCount = 0;
+  state.mathQuizWrongCount = 0;
+  state.mathQuizScore = 0;
+  state.mathQuizTotalStars = 0;
+  state.mathQuizMarksPerQuestion = 10;
+  state.mathQuizTotalPossible = state.mathQuizQuestions.length * 10;
+  goTo("mathquiz-game");
+  loadMathQuizQuestion();
+}
+
+function mathQuizMascotPrompt(){
+  const prompts = ["加油，你可以的！","仔细想一想！","相信自己！","慢慢算，别着急！"];
+  return prompts[Math.floor(Math.random()*prompts.length)];
+}
+
+function loadMathQuizQuestion(){
+  const t = UI_TEXT.zh;
+  state.mathQuizAttempts = 0;
+  state.mathQuizResolved = false;
+  const q = state.mathQuizQuestions[state.mathQuizIndex];
+  document.getElementById("mathquiz-counter").textContent = `Q ${state.mathQuizIndex+1}/${state.mathQuizQuestions.length}`;
+  document.getElementById("mathquiz-progress-fill").style.width = ((state.mathQuizIndex)/state.mathQuizQuestions.length*100)+"%";
+  document.getElementById("mathquiz-score-pill").textContent = "🏅 " + state.mathQuizScore + "/" + state.mathQuizTotalPossible;
+  document.getElementById("mathquiz-speech").textContent = mathQuizMascotPrompt();
+  document.getElementById("mathquiz-scenario").textContent = q.scenario_zh;
+  document.getElementById("mathquiz-question").textContent = q.question_zh;
+  document.getElementById("mathquiz-feedback-line").textContent = "";
+  document.getElementById("mathquiz-feedback-line").className = "feedback-line";
+  document.getElementById("btn-mathquiz-next").style.display = "none";
+  document.getElementById("btn-mathquiz-next").textContent = t.nextBtn;
+  renderMathQuizOptions();
+}
+
+function renderMathQuizOptions(){
+  const q = state.mathQuizQuestions[state.mathQuizIndex];
+  const wrap = document.getElementById("mathquiz-options-wrap");
+  wrap.innerHTML = "";
+  q.options.forEach((opt, idx)=>{
+    const btn = document.createElement("button");
+    btn.className = "bank-tile";
+    btn.textContent = opt;
+    btn.disabled = state.mathQuizResolved;
+    btn.onclick = ()=> selectMathQuizOption(idx);
+    wrap.appendChild(btn);
+  });
+}
+
+function selectMathQuizOption(idx){
+  if(state.mathQuizResolved) return;
+  const t = UI_TEXT.zh;
+  const q = state.mathQuizQuestions[state.mathQuizIndex];
+  const feedback = document.getElementById("mathquiz-feedback-line");
+  const buttons = document.querySelectorAll("#mathquiz-options-wrap .bank-tile");
+  const maxWrongAttempts = 3;
+
+  if(idx === q.correct_index){
+    const marksEarned = Math.max(4, state.mathQuizMarksPerQuestion - 2*state.mathQuizAttempts);
+    buttons[idx].classList.add("correct");
+    buttons.forEach(b=>b.disabled = true);
+    feedback.className = "feedback-line ok";
+    feedback.innerHTML = "✅ " + t.correctMsgs[Math.floor(Math.random()*t.correctMsgs.length)] + " +" + marksEarned + " " + t.marksWord +
+      "<div class=\"mathquiz-explain\">💡 " + q.explanation_zh + "</div>";
+    state.mathQuizCorrectCount++;
+    state.mathQuizScore += marksEarned;
+    state.mathQuizTotalStars++;
+    document.getElementById("mathquiz-score-pill").textContent = "🏅 " + state.mathQuizScore + "/" + state.mathQuizTotalPossible;
+    document.getElementById("mascot-mathquiz").classList.add("happy");
+    playCorrectSound();
+    launchConfetti();
+    resolveMathQuizQuestion();
+  } else {
+    state.mathQuizAttempts++;
+    buttons[idx].classList.add("wrong");
+    buttons[idx].disabled = true;
+    document.getElementById("mascot-mathquiz").classList.add("sad");
+    playWrongSound();
+    setTimeout(()=> document.getElementById("mascot-mathquiz").classList.remove("sad"), 500);
+    if(state.mathQuizAttempts >= maxWrongAttempts){
+      const correctBtn = buttons[q.correct_index];
+      if(correctBtn) correctBtn.classList.add("correct");
+      buttons.forEach(b=>b.disabled = true);
+      feedback.className = "feedback-line no";
+      feedback.innerHTML = "💡 " + t.showAnswer + " " + q.options[q.correct_index] +
+        " (0 " + t.marksWord + ")<div class=\"mathquiz-explain\">💡 " + q.explanation_zh + "</div>";
+      state.mathQuizWrongCount++;
+      resolveMathQuizQuestion();
+    } else {
+      feedback.className = "feedback-line no";
+      feedback.textContent = "❌ " + t.wrongMsg;
+    }
+  }
+}
+
+function resolveMathQuizQuestion(){
+  state.mathQuizResolved = true;
+  document.getElementById("btn-mathquiz-next").style.display = "";
+}
+
+function nextMathQuizQuestion(){
+  document.getElementById("mascot-mathquiz").classList.remove("happy","sad");
+  state.mathQuizIndex++;
+  if(state.mathQuizIndex >= state.mathQuizQuestions.length){
+    showMathQuizResults();
+  } else {
+    loadMathQuizQuestion();
+  }
+}
+
+function showMathQuizResults(){
+  document.getElementById("mathquiz-progress-fill").style.width = "100%";
+  const t = UI_TEXT.zh;
+  const score = state.mathQuizScore;
+  const attempted = state.mathQuizCorrectCount + state.mathQuizWrongCount;
+  const maxPossible = attempted * 10;
+  const ratio = maxPossible ? score/maxPossible : 0;
+  const starsEarned = Math.round(ratio * 10);
+  let gradeKey;
+  if(attempted===0) gradeKey="F";
+  else if(ratio>=0.9) gradeKey="A+";
+  else if(ratio>=0.75) gradeKey="A";
+  else if(ratio>=0.6) gradeKey="B";
+  else if(ratio>=0.4) gradeKey="C";
+  else if(ratio>0) gradeKey="D";
+  else gradeKey="F";
+  const g = t.grades[gradeKey];
+  document.getElementById("grade-emoji").textContent = g.emoji;
+  document.getElementById("grade-label").textContent = g.label;
+  document.getElementById("grade-msg").textContent = g.msg;
+  document.getElementById("stat-score").textContent = score + "/" + maxPossible;
+  document.getElementById("stat-correct").textContent = state.mathQuizCorrectCount;
+  document.getElementById("stat-wrong").textContent = state.mathQuizWrongCount;
+  document.getElementById("stars-row").textContent = "⭐".repeat(starsEarned) + "☆".repeat(Math.max(0,10-starsEarned));
+  document.getElementById("stat-correct-label").textContent = "CORRECT";
+  document.getElementById("stat-wrong-label").textContent = "INCORRECT";
+  const btn1 = document.getElementById("btn-result-1");
+  const btn2 = document.getElementById("btn-result-2");
+  const btn3 = document.getElementById("btn-result-3");
+  btn1.textContent = "🔁 Play Again";
+  btn1.onclick = startMathQuizGame;
+  btn2.textContent = "🌐 Change Year";
+  btn2.onclick = ()=> goTo("mathquiz-year");
+  btn3.onclick = ()=>goTo("welcome");
+  goTo("results");
+  if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
+}
+
+function quitMathQuizGame(){
+  openQuitModal("zh", ()=>{
+    showMathQuizResults();
   });
 }
 
