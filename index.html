@@ -775,9 +775,11 @@
       <div class="hint-line" id="detective-hint-area" style="display:none;"></div>
       <div class="word-bank" id="detective-choice-wrap"></div>
       <div class="feedback-line" id="detective-feedback-line"></div>
+      <div class="hint-line" id="detective-meaning-area" style="display:none;"></div>
       <div class="btn-row">
         <button class="btn sun" id="btn-detective-check" onclick="checkDetectiveAnswer()">Check ✓</button>
         <button class="btn secondary" id="btn-detective-clear" onclick="clearDetectiveAnswer()">Clear ↺</button>
+        <button class="btn secondary" id="btn-detective-meaning" onclick="playDetectiveMeaning()" style="display:none;">🔊 Meaning</button>
         <button class="btn green" id="btn-detective-next" onclick="nextDetectiveQuestion()" style="display:none;">Next ▶</button>
       </div>
     </div>
@@ -1187,6 +1189,7 @@ const UI_TEXT = {
     detectiveInstrBody:"Tap the correct letters to complete the word. Use the hint button if you get stuck!",
     detectiveFillAll:"Please fill in every letter first!",
     detectiveShowAnswer:"The correct word is:",
+    detectiveMeaningBtn:"🔊 Meaning",
     instrTitle:"How to play", instrBody:"Tap the scrambled words below in the correct order to build the sentence. You have 2 tries per question!",
     startPlay:"Let's Play!", checkBtn:"Check", clearBtn:"Clear", removeHint:"Tap a placed word to remove it.",
     questionWorth:"This question is worth", marksWord:"marks", marksLeftWord:"marks left", nextBtn:"Next ▶",
@@ -1236,6 +1239,7 @@ const UI_TEXT = {
     detectiveInstrBody:"Ketik huruf yang betul untuk melengkapkan perkataan. Gunakan butang petunjuk jika anda tersekat!",
     detectiveFillAll:"Sila isi setiap huruf dahulu!",
     detectiveShowAnswer:"Perkataan yang betul ialah:",
+    detectiveMeaningBtn:"🔊 Makna",
     instrTitle:"Cara bermain", instrBody:"Ketik perkataan yang bercelaru mengikut susunan yang betul untuk membina ayat. Anda ada 2 percubaan setiap soalan!",
     startPlay:"Jom Main!", checkBtn:"Semak", clearBtn:"Padam", removeHint:"Ketik perkataan untuk membuangnya.",
     questionWorth:"Soalan ini bernilai", marksWord:"markah", marksLeftWord:"markah lagi", nextBtn:"Seterusnya ▶",
@@ -1285,6 +1289,7 @@ const UI_TEXT = {
     detectiveInstrBody:"点击正确的字来完成词语。如果卡住了，可以使用提示按钮！",
     detectiveFillAll:"请先填满每一个空格！",
     detectiveShowAnswer:"正确答案是：",
+    detectiveMeaningBtn:"🔊 意思",
     instrTitle:"游戏玩法", instrBody:"按照正确的顺序点击下面打乱的词语，组成正确的句子。每题有两次机会！",
     startPlay:"开始游戏！", checkBtn:"检查", clearBtn:"清除", removeHint:"点击已放置的词语可以移除它。",
     questionWorth:"这一题的满分是", marksWord:"分", marksLeftWord:"分剩余", nextBtn:"下一题 ▶",
@@ -7141,6 +7146,10 @@ function loadDetectiveQuestion(){
   document.getElementById("btn-detective-clear").disabled = false;
   document.getElementById("btn-detective-next").style.display = "none";
   document.getElementById("btn-detective-next").textContent = t.nextBtn;
+  document.getElementById("btn-detective-meaning").style.display = "none";
+  document.getElementById("btn-detective-meaning").textContent = t.detectiveMeaningBtn;
+  document.getElementById("detective-meaning-area").style.display = "none";
+  document.getElementById("detective-meaning-area").textContent = "";
   renderDetectiveWord();
   renderDetectiveBank();
 }
@@ -7222,6 +7231,26 @@ function revealDetectiveHint(){
   document.getElementById("btn-detective-hint").disabled = true;
 }
 
+function playDetectiveMeaning(){
+  const q = state.detectiveQuestions[state.detectiveIndex];
+  const langCodeMap = {en:"en-US", ms:"ms-MY", zh:"zh-CN"};
+  const priority = ["zh","en","ms"];
+  const otherLangs = priority.filter(l=>l!==state.detectiveLang);
+  const playWord = state.detectiveLang === "zh" ? q.entry.zh : q.entry[state.detectiveLang].toUpperCase();
+  const text1 = q.entry[otherLangs[0]];
+  const text2 = q.entry[otherLangs[1]];
+  document.getElementById("detective-meaning-area").textContent = "🔊 " + playWord + " is " + text1 + "，" + text2;
+  document.getElementById("detective-meaning-area").style.display = "";
+
+  speechSynthesis.cancel();
+  const u1 = new SpeechSynthesisUtterance(text1);
+  u1.lang = langCodeMap[otherLangs[0]];
+  const u2 = new SpeechSynthesisUtterance(text2);
+  u2.lang = langCodeMap[otherLangs[1]];
+  speechSynthesis.speak(u1);
+  speechSynthesis.speak(u2);
+}
+
 function checkDetectiveAnswer(){
   const t = UI_TEXT[state.detectiveLang];
   const q = state.detectiveQuestions[state.detectiveIndex];
@@ -7249,6 +7278,7 @@ function checkDetectiveAnswer(){
     playCorrectSound();
     launchConfetti();
     resolveDetectiveQuestion();
+    document.getElementById("btn-detective-meaning").style.display = "";
   } else {
     state.detectiveAttempts++;
     document.getElementById("mascot-detective").classList.add("sad");
