@@ -7237,16 +7237,20 @@ function playDetectiveMeaning(){
   const priority = ["zh","en","ms"];
   const otherLangs = priority.filter(l=>l!==state.detectiveLang);
   const playWord = state.detectiveLang === "zh" ? q.entry.zh : q.entry[state.detectiveLang].toUpperCase();
+  const playText = q.entry[state.detectiveLang];
   const text1 = q.entry[otherLangs[0]];
   const text2 = q.entry[otherLangs[1]];
   document.getElementById("detective-meaning-area").textContent = "🔊 " + playWord + " is " + text1 + "，" + text2;
   document.getElementById("detective-meaning-area").style.display = "";
 
   speechSynthesis.cancel();
+  const u0 = new SpeechSynthesisUtterance(playText);
+  u0.lang = langCodeMap[state.detectiveLang];
   const u1 = new SpeechSynthesisUtterance(text1);
   u1.lang = langCodeMap[otherLangs[0]];
   const u2 = new SpeechSynthesisUtterance(text2);
   u2.lang = langCodeMap[otherLangs[1]];
+  speechSynthesis.speak(u0);
   speechSynthesis.speak(u1);
   speechSynthesis.speak(u2);
 }
