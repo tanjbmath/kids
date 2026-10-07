@@ -581,7 +581,7 @@
         <span class="lk-game-title">Sentence<br>Builder</span>
         <span class="lk-game-arrow">▶</span>
       </div>
-      <div class="lk-game g-vocab" onclick="goTo('vocab-base')" role="button" tabindex="0">
+      <div class="lk-game g-vocab" onclick="goTo('vocab-mode')" role="button" tabindex="0">
         <span class="lk-game-badge">🔤</span>
         <span class="lk-game-title">Word<br>Match</span>
         <span class="lk-game-arrow">▶</span>
@@ -831,8 +831,26 @@
   </section>
 
   <!-- VOCAB: BASE LANGUAGE SELECT -->
-  <section class="screen" id="screen-vocab-base">
+  <!-- VOCAB: MODE SELECT -->
+  <section class="screen" id="screen-vocab-mode">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
+    <div class="card">
+      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <h2 style="text-align:center;">Choose a Mode</h2>
+      <p class="tagline">Match everyday words, or practise spelling tricky ones!</p>
+      <div class="choice-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="choice-card" onclick="pickVocabMode(false)">
+          <span class="emoji">🔤</span>Word<br>Match
+        </div>
+        <div class="choice-card" onclick="pickVocabMode(true)">
+          <span class="emoji">✏️</span>听写<br>Spelling / Ejaan
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-vocab-base">
+    <button class="icon-btn home-btn" onclick="goTo('vocab-mode')" aria-label="Back">⬅</button>
     <div class="card">
       <div class="mascot-wrap"><span class="mascot">🐼</span></div>
       <h2 style="text-align:center;" id="vocab-base-heading">Which language do you know best?</h2>
@@ -876,6 +894,7 @@
       </div>
       <div class="mascot-wrap"><span class="mascot" id="mascot-vocab">🐼</span></div>
       <div class="speech" id="vocab-speech">Tap a word, then tap its match!</div>
+      <div id="vocab-dictation-banner" class="hint-line" style="display:none; text-align:center; background:#EFE9FF; border:2px dashed #8E7BFF; border-radius:14px; padding:8px 12px; margin-bottom:10px; font-weight:800; color:#4b3a9e;">✏️ 听写 Spelling / Ejaan Mode</div>
       <div id="vocab-bonus-banner" class="hint-line" style="display:none; text-align:center; background:#FFF3D6; border:2px dashed #E8A33D; border-radius:14px; padding:8px 12px; margin-bottom:10px; font-weight:800; color:#8a5a12;"></div>
       <div class="vocab-grid" id="vocab-grid-wrap">
         <div class="vocab-col" id="vocab-col-left"></div>
@@ -2117,12 +2136,12 @@ const WORD_BANK = [
   {topic:"Weather", en:"cold", ms:"sejuk", zh:"冷"},
   {topic:"Descriptions", en:"big", ms:"besar", zh:"大"},
   {topic:"Descriptions", en:"small", ms:"kecil", zh:"小"},
-  {topic:"Descriptions", en:"happy", ms:"gembira", zh:"开心"},
+  {topic:"Descriptions", en:"happy", ms:"gembira", zh:"开心", dictation:true},
   {topic:"Greetings", en:"good morning", ms:"selamat pagi", zh:"早上好"},
-  {topic:"Greetings", en:"thank you", ms:"terima kasih", zh:"谢谢"},
+  {topic:"Greetings", en:"thank you", ms:"terima kasih", zh:"谢谢", dictation:true},
   {topic:"Daily routines", en:"play", ms:"bermain", zh:"玩"},
   {topic:"Daily routines", en:"read", ms:"membaca", zh:"读书"},
-  {topic:"Sports", en:"run", ms:"berlari", zh:"跑"},
+  {topic:"Sports", en:"run", ms:"berlari", zh:"跑", dictation:true},
   {topic:"Daily routines", en:"eat", ms:"makan", zh:"吃"},
   {topic:"Daily routines", en:"sleep", ms:"tidur", zh:"睡觉"},
   {topic:"Daily routines", en:"today", ms:"hari ini", zh:"今天"},
@@ -2157,7 +2176,7 @@ const WORD_BANK = [
   {topic:"Food", en:"egg", ms:"telur", zh:"鸡蛋"},
   {topic:"Food", en:"noodles", ms:"mi", zh:"面条"},
   {topic:"Food", en:"soup", ms:"sup", zh:"汤"},
-  {topic:"Food", en:"vegetable", ms:"sayur", zh:"蔬菜"},
+  {topic:"Food", en:"vegetable", ms:"sayur", zh:"蔬菜", dictation:true},
   {topic:"Food", en:"fruit", ms:"buah", zh:"水果"},
   {topic:"Food", en:"mango", ms:"mangga", zh:"芒果"},
   {topic:"Food", en:"watermelon", ms:"tembikai", zh:"西瓜"},
@@ -2172,7 +2191,7 @@ const WORD_BANK = [
   {topic:"Food", en:"juice", ms:"jus", zh:"果汁"},
   {topic:"Food", en:"tea", ms:"teh", zh:"茶"},
   {topic:"Food", en:"cake", ms:"kek", zh:"蛋糕"},
-  {topic:"Food", en:"sweet", ms:"manis", zh:"甜"},
+  {topic:"Food", en:"sweet", ms:"manis", zh:"甜", dictation:true},
   {topic:"Food", en:"sour", ms:"masam", zh:"酸"},
   {topic:"Food", en:"bitter", ms:"pahit", zh:"苦"},
   {topic:"Food", en:"spicy", ms:"pedas", zh:"辣"},
@@ -2205,7 +2224,7 @@ const WORD_BANK = [
   {topic:"Places", en:"market", ms:"pasar", zh:"市场"},
   {topic:"Places", en:"hospital", ms:"hospital", zh:"医院"},
   {topic:"Places", en:"shop", ms:"kedai", zh:"商店"},
-  {topic:"Places", en:"beach", ms:"pantai", zh:"海滩"},
+  {topic:"Places", en:"beach", ms:"pantai", zh:"海滩", dictation:true},
   {topic:"Places", en:"zoo", ms:"zoo", zh:"动物园"},
   {topic:"Places", en:"playground", ms:"taman permainan", zh:"游乐场"},
   {topic:"Places", en:"kitchen", ms:"dapur", zh:"厨房"},
@@ -2216,8 +2235,8 @@ const WORD_BANK = [
   {topic:"Transport", en:"bus", ms:"bas", zh:"公共汽车"},
   {topic:"Transport", en:"bicycle", ms:"basikal", zh:"自行车"},
   {topic:"Transport", en:"motorcycle", ms:"motosikal", zh:"摩托车"},
-  {topic:"Transport", en:"train", ms:"kereta api", zh:"火车"},
-  {topic:"Transport", en:"aeroplane", ms:"kapal terbang", zh:"飞机"},
+  {topic:"Transport", en:"train", ms:"kereta api", zh:"火车", dictation:true},
+  {topic:"Transport", en:"aeroplane", ms:"kapal terbang", zh:"飞机", dictation:true},
 
   {topic:"Days", en:"Monday", ms:"Isnin", zh:"星期一"},
   {topic:"Days", en:"Tuesday", ms:"Selasa", zh:"星期二"},
@@ -2228,7 +2247,7 @@ const WORD_BANK = [
   {topic:"Days", en:"Sunday", ms:"Ahad", zh:"星期日"},
 
   {topic:"Time", en:"morning", ms:"pagi", zh:"早上"},
-  {topic:"Time", en:"afternoon", ms:"tengah hari", zh:"中午"},
+  {topic:"Time", en:"afternoon", ms:"tengah hari", zh:"中午", dictation:true},
   {topic:"Time", en:"evening", ms:"petang", zh:"傍晚"},
   {topic:"Time", en:"night", ms:"malam", zh:"晚上"},
   {topic:"Time", en:"tomorrow", ms:"esok", zh:"明天"},
@@ -2236,7 +2255,7 @@ const WORD_BANK = [
   {topic:"Time", en:"week", ms:"minggu", zh:"星期"},
   {topic:"Time", en:"hour", ms:"jam", zh:"小时"},
 
-  {topic:"Actions", en:"walk", ms:"berjalan", zh:"走路"},
+  {topic:"Actions", en:"walk", ms:"berjalan", zh:"走路", dictation:true},
   {topic:"Actions", en:"jump", ms:"melompat", zh:"跳"},
   {topic:"Actions", en:"swim", ms:"berenang", zh:"游泳"},
   {topic:"Actions", en:"dance", ms:"menari", zh:"跳舞"},
@@ -2245,15 +2264,15 @@ const WORD_BANK = [
   {topic:"Actions", en:"draw", ms:"melukis", zh:"画画"},
   {topic:"Actions", en:"open", ms:"buka", zh:"打开"},
   {topic:"Actions", en:"close", ms:"tutup", zh:"关闭"},
-  {topic:"Actions", en:"sit", ms:"duduk", zh:"坐"},
-  {topic:"Actions", en:"stand", ms:"berdiri", zh:"站"},
+  {topic:"Actions", en:"sit", ms:"duduk", zh:"坐", dictation:true},
+  {topic:"Actions", en:"stand", ms:"berdiri", zh:"站", dictation:true},
   {topic:"Actions", en:"listen", ms:"dengar", zh:"听"},
   {topic:"Actions", en:"speak", ms:"bercakap", zh:"说话"},
-  {topic:"Actions", en:"help", ms:"tolong", zh:"帮助"},
+  {topic:"Actions", en:"help", ms:"tolong", zh:"帮助", dictation:true},
   {topic:"Actions", en:"buy", ms:"beli", zh:"买"},
   {topic:"Actions", en:"wear", ms:"pakai", zh:"穿"},
 
-  {topic:"Descriptions", en:"tall", ms:"tinggi", zh:"高"},
+  {topic:"Descriptions", en:"tall", ms:"tinggi", zh:"高", dictation:true},
   {topic:"Descriptions", en:"short", ms:"pendek", zh:"矮"},
   {topic:"Descriptions", en:"fast", ms:"pantas", zh:"快"},
   {topic:"Descriptions", en:"slow", ms:"perlahan", zh:"慢"},
@@ -2318,7 +2337,7 @@ const WORD_BANK = [
   {topic:"Directions", en:"up", ms:"atas", zh:"上"},
   {topic:"Directions", en:"down", ms:"bawah", zh:"下"},
   {topic:"Directions", en:"straight", ms:"lurus", zh:"直"},
-  {topic:"Community Helpers", en:"doctor", ms:"doktor", zh:"医生"},
+  {topic:"Community Helpers", en:"doctor", ms:"doktor", zh:"医生", dictation:true},
   {topic:"Community Helpers", en:"nurse", ms:"jururawat", zh:"护士"},
   {topic:"Community Helpers", en:"police officer", ms:"polis", zh:"警察"},
   {topic:"Community Helpers", en:"firefighter", ms:"bomba", zh:"消防员"},
@@ -2362,7 +2381,7 @@ const WORD_BANK = [
   {topic:"Cleanliness", en:"toothbrush", ms:"berus gigi", zh:"牙刷"},
   {topic:"Cleanliness", en:"towel", ms:"tuala", zh:"毛巾"},
   {topic:"Cleanliness", en:"broom", ms:"penyapu", zh:"扫把"},
-  {topic:"Cleanliness", en:"dustbin", ms:"tong sampah", zh:"垃圾桶"},
+  {topic:"Cleanliness", en:"dustbin", ms:"tong sampah", zh:"垃圾桶", dictation:true},
   {topic:"Safety", en:"helmet", ms:"topi keledar", zh:"头盔"},
   {topic:"Safety", en:"seatbelt", ms:"tali pinggang keledar", zh:"安全带"},
   {topic:"Safety", en:"traffic light", ms:"lampu isyarat", zh:"红绿灯"},
@@ -2378,8 +2397,8 @@ const WORD_BANK = [
   {topic:"Sports Equipment", en:"basketball", ms:"bola keranjang", zh:"篮球"},
   {topic:"Sports Equipment", en:"goal", ms:"gol", zh:"球门"},
   {topic:"Sports Equipment", en:"net", ms:"jaring", zh:"球网"},
-  {topic:"Occupations", en:"chef", ms:"tukang masak", zh:"厨师"},
-  {topic:"Occupations", en:"driver", ms:"pemandu", zh:"司机"},
+  {topic:"Occupations", en:"chef", ms:"tukang masak", zh:"厨师", dictation:true},
+  {topic:"Occupations", en:"driver", ms:"pemandu", zh:"司机", dictation:true},
   {topic:"Occupations", en:"singer", ms:"penyanyi", zh:"歌手"},
   {topic:"Occupations", en:"dancer", ms:"penari", zh:"舞者"},
   {topic:"Occupations", en:"artist", ms:"pelukis", zh:"画家"},
@@ -2401,7 +2420,7 @@ const WORD_BANK = [
   {topic:"Birds", en:"eagle", ms:"helang", zh:"老鹰"},
   {topic:"Birds", en:"owl", ms:"burung hantu", zh:"猫头鹰"},
   {topic:"Birds", en:"parrot", ms:"burung kakak tua", zh:"鹦鹉"},
-  {topic:"Birds", en:"peacock", ms:"burung merak", zh:"孔雀"},
+  {topic:"Birds", en:"peacock", ms:"burung merak", zh:"孔雀", dictation:true},
   {topic:"Birds", en:"sparrow", ms:"burung pipit", zh:"麻雀"},
   {topic:"Space", en:"astronaut", ms:"angkasawan", zh:"宇航员"},
   {topic:"Space", en:"rocket", ms:"roket", zh:"火箭"},
@@ -2439,7 +2458,7 @@ const WORD_BANK = [
   {topic:"Family", en:"aunt", ms:"makcik", zh:"阿姨"},
   {topic:"Family", en:"uncle", ms:"pakcik", zh:"叔叔"},
   {topic:"Feelings", en:"jealous", ms:"cemburu", zh:"嫉妒"},
-  {topic:"Feelings", en:"proud", ms:"bangga", zh:"骄傲"},
+  {topic:"Feelings", en:"proud", ms:"bangga", zh:"骄傲", dictation:true},
   {topic:"Feelings", en:"worried", ms:"risau", zh:"担心"},
   {topic:"Feelings", en:"confused", ms:"keliru", zh:"困惑"},
   {topic:"Feelings", en:"calm", ms:"tenang", zh:"平静"},
@@ -2470,11 +2489,11 @@ const WORD_BANK = [
 {topic:"Food", en:"carrot", ms:"lobak merah", zh:"胡萝卜"},
 {topic:"Food", en:"onion", ms:"bawang", zh:"洋葱"},
 {topic:"Food", en:"honey", ms:"madu", zh:"蜂蜜"},
-{topic:"Actions", en:"run", ms:"lari", zh:"跑"},
-{topic:"Actions", en:"walk", ms:"berjalan", zh:"走"},
+{topic:"Actions", en:"run", ms:"lari", zh:"跑", dictation:true},
+{topic:"Actions", en:"walk", ms:"berjalan", zh:"走", dictation:true},
 {topic:"Actions", en:"jump", ms:"lompat", zh:"跳"},
-{topic:"Actions", en:"sit", ms:"duduk", zh:"坐"},
-{topic:"Actions", en:"stand", ms:"berdiri", zh:"站"},
+{topic:"Actions", en:"sit", ms:"duduk", zh:"坐", dictation:true},
+{topic:"Actions", en:"stand", ms:"berdiri", zh:"站", dictation:true},
 {topic:"Actions", en:"sleep", ms:"tidur", zh:"睡觉"},
 {topic:"Actions", en:"wake up", ms:"bangun", zh:"起床"},
 {topic:"Actions", en:"eat", ms:"makan", zh:"吃"},
@@ -2486,7 +2505,7 @@ const WORD_BANK = [
 {topic:"Actions", en:"colour", ms:"mewarna", zh:"上色"},
 {topic:"Actions", en:"sing", ms:"menyanyi", zh:"唱歌"},
 {topic:"Actions", en:"dance", ms:"menari", zh:"跳舞"},
-{topic:"Actions", en:"listen", ms:"mendengar", zh:"听"},
+{topic:"Actions", en:"listen", ms:"mendengar", zh:"听", dictation:true},
 {topic:"Actions", en:"speak", ms:"bercakap", zh:"说"},
 {topic:"Actions", en:"watch", ms:"menonton", zh:"观看"},
 {topic:"Actions", en:"look", ms:"melihat", zh:"看"},
@@ -2494,7 +2513,7 @@ const WORD_BANK = [
 
 {topic:"Actions", en:"play", ms:"bermain", zh:"玩"},
 {topic:"Actions", en:"swim", ms:"berenang", zh:"游泳"},
-{topic:"Actions", en:"ride", ms:"menunggang", zh:"骑"},
+{topic:"Actions", en:"ride", ms:"menunggang", zh:"骑", dictation:true},
 {topic:"Actions", en:"climb", ms:"memanjat", zh:"爬"},
 {topic:"Actions", en:"throw", ms:"membaling", zh:"扔"},
 {topic:"Actions", en:"catch", ms:"menangkap", zh:"接住"},
@@ -2512,11 +2531,11 @@ const WORD_BANK = [
 {topic:"Actions", en:"pick", ms:"mengambil", zh:"拿起"},
 {topic:"Actions", en:"give", ms:"memberi", zh:"给"},
 {topic:"Actions", en:"take", ms:"mengambil", zh:"拿"},
-{topic:"Actions", en:"help", ms:"membantu", zh:"帮助"},
+{topic:"Actions", en:"help", ms:"membantu", zh:"帮助", dictation:true},
 
-{topic:"Actions", en:"find", ms:"mencari", zh:"寻找"},
+{topic:"Actions", en:"find", ms:"mencari", zh:"寻找", dictation:true},
 {topic:"Actions", en:"show", ms:"menunjukkan", zh:"展示"},
-{topic:"Actions", en:"learn", ms:"belajar", zh:"学习"},
+{topic:"Actions", en:"learn", ms:"belajar", zh:"学习", dictation:true},
 {topic:"Actions", en:"teach", ms:"mengajar", zh:"教导"},
 {topic:"Actions", en:"answer", ms:"menjawab", zh:"回答"},
 {topic:"Actions", en:"ask", ms:"bertanya", zh:"询问"},
@@ -2550,16 +2569,16 @@ const WORD_BANK = [
 {topic:"Actions", en:"crawl", ms:"merangkak", zh:"爬行"},
 {topic:"Actions", en:"stretch", ms:"meregang", zh:"伸展"},
 {topic:"Actions", en:"bend", ms:"membongkok", zh:"弯腰"},
-{topic:"Actions", en:"stop", ms:"berhenti", zh:"停止"},
+{topic:"Actions", en:"stop", ms:"berhenti", zh:"停止", dictation:true},
 {topic:"Actions", en:"start", ms:"memulakan", zh:"开始"},
 {topic:"Actions", en:"finish", ms:"menyelesaikan", zh:"完成"},
 {topic:"Actions", en:"win", ms:"menang", zh:"赢"},
 {topic:"Actions", en:"lose", ms:"kalah", zh:"输"},
 {topic:"Actions", en:"choose", ms:"memilih", zh:"选择"},
-{topic:"Actions", en:"remember", ms:"ingat", zh:"记得"},
+{topic:"Actions", en:"remember", ms:"ingat", zh:"记得", dictation:true},
 {topic:"Actions", en:"forget", ms:"lupa", zh:"忘记"},
 {topic:"Actions", en:"dream", ms:"bermimpi", zh:"做梦"},
-{topic:"Actions", en:"travel", ms:"melancong", zh:"旅行"},
+{topic:"Actions", en:"travel", ms:"melancong", zh:"旅行", dictation:true},
 {topic:"Actions", en:"arrive", ms:"tiba", zh:"到达"},
 {topic:"Actions", en:"enter", ms:"masuk", zh:"进入"},
 {topic:"Actions", en:"leave", ms:"pergi", zh:"离开"},
@@ -2677,8 +2696,8 @@ const WORD_BANK = [
 {topic:"Animals", en:"kangaroo", ms:"kanggaru", zh:"袋鼠"},
 {topic:"Animals", en:"panda", ms:"panda", zh:"熊猫"},
 {topic:"Animals", en:"koala", ms:"koala", zh:"考拉"},
-{topic:"Animals", en:"giraffe", ms:"zirafah", zh:"长颈鹿"},
-{topic:"Animals", en:"crocodile", ms:"buaya", zh:"鳄鱼"},
+{topic:"Animals", en:"giraffe", ms:"zirafah", zh:"长颈鹿", dictation:true},
+{topic:"Animals", en:"crocodile", ms:"buaya", zh:"鳄鱼", dictation:true},
 {topic:"Animals", en:"squirrel", ms:"tupai", zh:"松鼠"},
 {topic:"Animals", en:"hedgehog", ms:"landak", zh:"刺猬"},
 {topic:"Animals", en:"fox", ms:"rubah", zh:"狐狸"},
@@ -2687,7 +2706,7 @@ const WORD_BANK = [
 {topic:"Animals", en:"flamingo", ms:"flamingo", zh:"火烈鸟"},
 {topic:"Animals", en:"ladybug", ms:"kumbang", zh:"瓢虫"},
 {topic:"Animals", en:"caterpillar", ms:"ulat", zh:"毛毛虫"},
-{topic:"Animals", en:"snail", ms:"siput", zh:"蜗牛"},
+{topic:"Animals", en:"snail", ms:"siput", zh:"蜗牛", dictation:true},
 {topic:"Sea Creatures", en:"dolphin", ms:"lumba-lumba", zh:"海豚"},
 {topic:"Sea Creatures", en:"starfish", ms:"bintang laut", zh:"海星"},
 {topic:"Sea Creatures", en:"shell", ms:"kulit kerang", zh:"贝壳"},
@@ -2754,6 +2773,199 @@ const WORD_BANK = [
 {topic:"Sports", en:"archery", ms:"memanah", zh:"射箭"},
 {topic:"Nature", en:"sunrise", ms:"matahari terbit", zh:"日出"},
 {topic:"Nature", en:"sunset", ms:"matahari terbenam", zh:"日落"}
+,
+{topic:"Actions", en:"reach out", ms:"menghulurkan tangan", zh:"伸手", dictation:true},
+{topic:"Actions", en:"accept", ms:"menerima", zh:"接受", dictation:true},
+{topic:"Time", en:"a while", ms:"seketika", zh:"一阵子", dictation:true},
+{topic:"Actions", en:"unwrap", ms:"membuka", zh:"拆开", dictation:true},
+{topic:"Objects", en:"straw rope", ms:"tali jerami", zh:"草绳", dictation:true},
+{topic:"Actions", en:"cook rice", ms:"memasak nasi", zh:"煮饭", dictation:true},
+{topic:"Descriptions", en:"ripe", ms:"masak", zh:"熟", dictation:true},
+{topic:"Descriptions", en:"fluffy", ms:"gebu", zh:"松软", dictation:true},
+{topic:"Descriptions", en:"very", ms:"sangat", zh:"非常", dictation:true},
+{topic:"Descriptions", en:"faint", ms:"samar-samar", zh:"淡淡的", dictation:true},
+{topic:"Descriptions", en:"filled with", ms:"dipenuhi", zh:"充满", dictation:true},
+{topic:"School Subjects", en:"volume", ms:"isipadu", zh:"体积", dictation:true},
+{topic:"Nature", en:"plant", ms:"tumbuhan", zh:"植物", dictation:true},
+{topic:"Descriptions", en:"deep", ms:"dalam", zh:"深", dictation:true},
+{topic:"Descriptions", en:"shallow", ms:"cetek", zh:"浅", dictation:true},
+{topic:"Weather", en:"scorching hot", ms:"panas terik", zh:"炎热", dictation:true},
+{topic:"Actions", en:"cool off in the shade", ms:"berteduh", zh:"乘凉", dictation:true},
+{topic:"Nature", en:"green shade", ms:"naungan hijau", zh:"绿阴", dictation:true},
+{topic:"Actions", en:"observe", ms:"memerhati", zh:"观察", dictation:true},
+{topic:"Nature", en:"cockscomb flower", ms:"bunga jengger ayam", zh:"鸡冠花", dictation:true},
+{topic:"Birds", en:"white dove", ms:"merpati putih", zh:"白鸽", dictation:true},
+{topic:"Birds", en:"crow", ms:"gagak", zh:"乌鸦", dictation:true},
+{topic:"Birds", en:"swallow", ms:"burung layang-layang", zh:"燕子", dictation:true},
+{topic:"Actions", en:"spread", ms:"menyebarkan", zh:"传播", dictation:true},
+{topic:"Descriptions", en:"skill", ms:"kemahiran", zh:"本领", dictation:true},
+{topic:"Nature", en:"water lily", ms:"teratai", zh:"睡莲", dictation:true},
+{topic:"Actions", en:"drift", ms:"hanyut", zh:"漂流", dictation:true},
+{topic:"Questions", en:"along with", ms:"seiring dengan", zh:"随着", dictation:true},
+{topic:"Actions", en:"sink", ms:"tenggelam", zh:"沉", dictation:true},
+{topic:"Nature", en:"seedling", ms:"anak benih", zh:"幼苗", dictation:true},
+{topic:"Nature", en:"thorn", ms:"duri", zh:"刺", dictation:true},
+{topic:"Feelings", en:"cherish", ms:"menghargai", zh:"珍惜", dictation:true},
+{topic:"Actions", en:"practise", ms:"berlatih", zh:"练习", dictation:true},
+{topic:"Actions", en:"save resources", ms:"menjimatkan", zh:"节约", dictation:true},
+{topic:"Cleanliness", en:"scrub", ms:"menggosok", zh:"洗刷", dictation:true},
+{topic:"Actions", en:"waste", ms:"membazir", zh:"浪费", dictation:true},
+{topic:"Family", en:"descendants", ms:"keturunan", zh:"子孙", dictation:true},
+{topic:"Actions", en:"give off", ms:"memancarkan", zh:"散发", dictation:true},
+{topic:"Tools", en:"chainsaw", ms:"gergaji elektrik", zh:"电锯", dictation:true},
+{topic:"Objects", en:"paint", ms:"cat", zh:"油漆", dictation:true},
+{topic:"Clothes", en:"uniform", ms:"uniform", zh:"制服", dictation:true},
+{topic:"Clothes", en:"clothes", ms:"pakaian", zh:"衣裤", dictation:true},
+{topic:"Technology", en:"machine", ms:"mesin", zh:"机器", dictation:true},
+{topic:"School Subjects", en:"pass a test", ms:"lulus", zh:"及格", dictation:true},
+{topic:"Occupations", en:"fisherman", ms:"nelayan", zh:"渔夫", dictation:true},
+{topic:"Feelings", en:"dislike", ms:"benci", zh:"讨厌", dictation:true},
+{topic:"Feelings", en:"lazy", ms:"malas", zh:"懒惰", dictation:true},
+{topic:"Objects", en:"riddle", ms:"teka-teki", zh:"谜语", dictation:true},
+{topic:"Family", en:"parents", ms:"ibu bapa", zh:"父母", dictation:true},
+{topic:"Questions", en:"but", ms:"tetapi", zh:"却", dictation:true},
+{topic:"Vegetables", en:"beans", ms:"kacang", zh:"豆子", dictation:true},
+{topic:"Occupations", en:"vendor", ms:"penjaja", zh:"商贩", dictation:true},
+{topic:"Occupations", en:"craftsman", ms:"tukang", zh:"工匠", dictation:true},
+{topic:"Animals", en:"weasel", ms:"cerpelai", zh:"黄鼠狼", dictation:true},
+{topic:"Objects", en:"basket", ms:"bakul", zh:"篮子", dictation:true},
+{topic:"Objects", en:"medicine", ms:"ubat", zh:"药", dictation:true},
+{topic:"Feelings", en:"fierce", ms:"ganas", zh:"凶恶", dictation:true},
+{topic:"Actions", en:"step on", ms:"memijak", zh:"踏", dictation:true},
+{topic:"Feelings", en:"clumsy", ms:"kekok", zh:"笨", dictation:true},
+{topic:"Feelings", en:"thirsty", ms:"dahaga", zh:"口渴", dictation:true},
+{topic:"Drinks", en:"drink water", ms:"minum air", zh:"喝水", dictation:true},
+{topic:"Feelings", en:"calm", ms:"tenang", zh:"冷静", dictation:true},
+{topic:"Descriptions", en:"skilful hands", ms:"tangan mahir", zh:"巧手", dictation:true},
+{topic:"Actions", en:"grab tightly", ms:"genggam erat", zh:"抓紧", dictation:true},
+{topic:"Kitchen", en:"dishes", ms:"pinggan mangkuk", zh:"碗碟", dictation:true},
+{topic:"Actions", en:"quarrel", ms:"bertengkar", zh:"争吵", dictation:true},
+{topic:"Classroom Items", en:"dictionary", ms:"kamus", zh:"词典", dictation:true},
+{topic:"Actions", en:"copy writing", ms:"menyalin", zh:"抄", dictation:true},
+{topic:"Descriptions", en:"race against time", ms:"berpacu dengan masa", zh:"分秒必争", dictation:true},
+{topic:"Descriptions", en:"hardworking and resilient", ms:"rajin dan tabah", zh:"刻苦耐劳", dictation:true},
+{topic:"School Subjects", en:"Chinese language", ms:"Bahasa Cina", zh:"华文", dictation:true},
+{topic:"Nature", en:"immortal", ms:"dewa", zh:"仙人", dictation:true},
+{topic:"Household Items", en:"wall", ms:"dinding", zh:"墙壁", dictation:true},
+{topic:"Feelings", en:"sincerity", ms:"keikhlasan", zh:"诚心", dictation:true},
+{topic:"Actions", en:"bark", ms:"menyalak", zh:"吠", dictation:true},
+{topic:"Places", en:"bookstore", ms:"kedai buku", zh:"书局", dictation:true},
+{topic:"Descriptions", en:"careful", ms:"teliti", zh:"仔细", dictation:true},
+{topic:"Objects", en:"street vendor's call", ms:"seruan penjaja", zh:"叫卖声", dictation:true},
+{topic:"Objects", en:"bell sound", ms:"bunyi loceng", zh:"铃声", dictation:true},
+{topic:"Occupations", en:"customer", ms:"pelanggan", zh:"顾客", dictation:true},
+{topic:"Objects", en:"goods", ms:"barang dagangan", zh:"货品", dictation:true},
+{topic:"Descriptions", en:"countless", ms:"tidak terkira", zh:"多不胜数", dictation:true},
+{topic:"Musical Instruments", en:"gongs and drums", ms:"gong dan gendang", zh:"锣鼓", dictation:true}
+,
+{topic:"Descriptions", en:"fragrant", ms:"wangi", zh:"香", dictation:true},
+{topic:"Descriptions", en:"beautiful", ms:"indah", zh:"美丽", dictation:true},
+{topic:"Descriptions", en:"clear (water)", ms:"jernih", zh:"清澈", dictation:true},
+{topic:"Actions", en:"need", ms:"perlu", zh:"需要", dictation:true},
+{topic:"Actions", en:"spill", ms:"cicir", zh:"掉落", dictation:true},
+{topic:"Money", en:"savings", ms:"wang simpanan", zh:"储蓄", dictation:true},
+{topic:"Descriptions", en:"thrifty", ms:"cermat", zh:"节俭", dictation:true},
+{topic:"Actions", en:"add", ms:"menambahkan", zh:"增加", dictation:true},
+{topic:"Safety", en:"be careful", ms:"berhati-hati", zh:"小心", dictation:true},
+{topic:"Descriptions", en:"finished", ms:"habis", zh:"用完", dictation:true},
+{topic:"Actions", en:"manage", ms:"urus", zh:"管理", dictation:true},
+{topic:"Money", en:"spend money", ms:"belanja", zh:"花钱", dictation:true},
+{topic:"Money", en:"money", ms:"wang", zh:"金钱", dictation:true},
+{topic:"Money", en:"cash", ms:"duit", zh:"钱", dictation:true},
+{topic:"Time", en:"future", ms:"masa hadapan", zh:"未来", dictation:true},
+{topic:"Actions", en:"plan", ms:"rancang", zh:"计划", dictation:true},
+{topic:"Numbers", en:"total", ms:"jumlah", zh:"总数", dictation:true},
+{topic:"Money", en:"balance (remaining)", ms:"baki", zh:"余额", dictation:true},
+{topic:"Money", en:"piggy bank", ms:"tabung duit", zh:"储蓄罐", dictation:true},
+{topic:"Community", en:"national monument", ms:"tugu negara", zh:"国家纪念碑", dictation:true},
+{topic:"Community", en:"patriotic", ms:"patriotik", zh:"爱国", dictation:true},
+{topic:"Community", en:"presented", ms:"dipersembahkan", zh:"呈献", dictation:true},
+{topic:"Community", en:"sacrifice", ms:"korban", zh:"牺牲", dictation:true},
+{topic:"Occupations", en:"soldier", ms:"anggota tentera", zh:"军人", dictation:true},
+{topic:"Actions", en:"struggle for", ms:"juang", zh:"奋斗", dictation:true},
+{topic:"Questions", en:"merely", ms:"belaka", zh:"仅仅", dictation:true},
+{topic:"Actions", en:"remain", ms:"tinggal", zh:"留下", dictation:true},
+{topic:"Places", en:"area", ms:"kawasan", zh:"地区", dictation:true},
+{topic:"Time", en:"often", ms:"sering", zh:"常常", dictation:true},
+{topic:"Actions", en:"celebrate", ms:"menyambut", zh:"庆祝", dictation:true},
+{topic:"Food", en:"enjoy a delicious meal", ms:"menjamu selera", zh:"大饱口福", dictation:true},
+{topic:"Descriptions", en:"sharp", ms:"tajam", zh:"锋利", dictation:true},
+{topic:"Technology", en:"advanced (technology)", ms:"canggih", zh:"先进", dictation:true},
+{topic:"Places", en:"tower", ms:"menara", zh:"塔", dictation:true},
+{topic:"Numbers", en:"age", ms:"usia", zh:"年龄", dictation:true},
+{topic:"Transport", en:"ferry", ms:"feri", zh:"渡轮", dictation:true},
+{topic:"Nature", en:"seawater", ms:"air laut", zh:"海水", dictation:true},
+{topic:"Places", en:"located", ms:"terletak", zh:"位于", dictation:true},
+{topic:"Actions", en:"place (put)", ms:"meletakkan", zh:"放置", dictation:true},
+{topic:"Beach", en:"sand", ms:"pasir", zh:"沙", dictation:true},
+{topic:"Actions", en:"visit (a person)", ms:"kunjung", zh:"探访", dictation:true},
+{topic:"Actions", en:"visit (a place)", ms:"mengunjungi", zh:"参观", dictation:true},
+{topic:"Nature", en:"beautiful scenery", ms:"pemandangan indah", zh:"美丽的风景", dictation:true},
+{topic:"Sea Creatures", en:"marine life", ms:"hidupan laut", zh:"海洋生物", dictation:true},
+{topic:"Celebrations", en:"greeting card", ms:"kad ucapan", zh:"贺卡", dictation:true},
+{topic:"Classroom Items", en:"notice board", ms:"papan kenyataan", zh:"布告板", dictation:true},
+{topic:"Classroom Items", en:"exercise book", ms:"buku latihan", zh:"练习簿", dictation:true},
+{topic:"Classroom Items", en:"classroom", ms:"bilik darjah", zh:"教室", dictation:true},
+{topic:"Objects", en:"newspaper", ms:"surat khabar", zh:"报纸", dictation:true},
+{topic:"Time", en:"alarm clock", ms:"jam loceng", zh:"闹钟", dictation:true},
+{topic:"Places", en:"swimming pool", ms:"kolam renang", zh:"游泳池", dictation:true},
+{topic:"Time", en:"wristwatch", ms:"jam tangan", zh:"手表", dictation:true},
+{topic:"Insects", en:"mosquito larvae", ms:"jejentik", zh:"孑孓", dictation:true},
+{topic:"Classroom Items", en:"blackboard", ms:"papan tulis", zh:"黑板", dictation:true},
+{topic:"Celebrations", en:"Teachers' Day", ms:"hari guru", zh:"教师节", dictation:true},
+{topic:"Occupations", en:"class teacher", ms:"guru kelas", zh:"班主任", dictation:true},
+{topic:"Occupations", en:"headmaster", ms:"guru besar", zh:"校长", dictation:true},
+{topic:"School", en:"class monitor", ms:"ketua kelas", zh:"班长", dictation:true},
+{topic:"Sports", en:"competition", ms:"pertandingan", zh:"比赛", dictation:true},
+{topic:"Hobbies", en:"interest", ms:"minat", zh:"兴趣", dictation:true},
+{topic:"Actions", en:"organise (an event)", ms:"mengadakan", zh:"举办", dictation:true},
+{topic:"Actions", en:"participate", ms:"menyertai", zh:"参加", dictation:true},
+{topic:"Feelings", en:"caring", ms:"prihatin", zh:"关心", dictation:true},
+{topic:"Actions", en:"encourage", ms:"menggalakkan", zh:"鼓励", dictation:true},
+{topic:"Health", en:"problem", ms:"masalah", zh:"问题", dictation:true},
+{topic:"Places", en:"to be located", ms:"berada", zh:"处于", dictation:true},
+{topic:"Animals", en:"lay eggs", ms:"bertelur", zh:"下蛋", dictation:true},
+{topic:"Animals", en:"female (animal)", ms:"betina", zh:"雌性", dictation:true},
+{topic:"Animals", en:"male (animal)", ms:"jantan", zh:"雄性", dictation:true},
+{topic:"Community", en:"youth", ms:"pemuda", zh:"青年", dictation:true},
+{topic:"Feelings", en:"arrogant", ms:"sombong", zh:"傲慢", dictation:true},
+{topic:"Food", en:"palm sap", ms:"nira", zh:"棕榈汁", dictation:true},
+{topic:"Nature", en:"rattan", ms:"rotan", zh:"藤", dictation:true},
+{topic:"Places", en:"cape (headland)", ms:"tanjung", zh:"海角", dictation:true},
+{topic:"Feelings", en:"shy", ms:"malu", zh:"害羞", dictation:true},
+{topic:"Food", en:"host (with food)", ms:"jamu", zh:"款待", dictation:true},
+{topic:"Food", en:"rendang (spiced meat dish)", ms:"rendang", zh:"仁当", dictation:true},
+{topic:"Food", en:"raw", ms:"mentah", zh:"生的", dictation:true},
+{topic:"Food", en:"crispy", ms:"rangup", zh:"脆", dictation:true},
+{topic:"Feelings", en:"believe", ms:"percaya", zh:"相信", dictation:true},
+{topic:"Actions", en:"enjoy", ms:"menikmati", zh:"享受", dictation:true},
+{topic:"Actions", en:"pray", ms:"sembahyang", zh:"祈祷", dictation:true},
+{topic:"Descriptions", en:"traditional", ms:"tradisional", zh:"传统", dictation:true},
+{topic:"Community", en:"guest", ms:"tetamu", zh:"客人", dictation:true},
+{topic:"Recycling", en:"recycle", ms:"kitar semula", zh:"回收", dictation:true},
+{topic:"Recycling", en:"used (second-hand)", ms:"terpakai", zh:"用过的", dictation:true},
+{topic:"Actions", en:"wrap", ms:"membalut", zh:"包裹", dictation:true},
+{topic:"Actions", en:"invent", ms:"mereka cipta", zh:"发明", dictation:true},
+{topic:"Art", en:"creative", ms:"kreatif", zh:"有创意", dictation:true},
+{topic:"Art", en:"frame", ms:"bingkai", zh:"相框", dictation:true},
+{topic:"Reading", en:"bookmark", ms:"penanda buku", zh:"书签", dictation:true},
+{topic:"Actions", en:"create", ms:"mencipta", zh:"创造", dictation:true},
+{topic:"Directions", en:"beside", ms:"sebelah", zh:"旁边", dictation:true},
+{topic:"Numbers", en:"every", ms:"setiap", zh:"每个", dictation:true},
+{topic:"Actions", en:"produce", ms:"menghasilkan", zh:"生产", dictation:true},
+{topic:"Places", en:"there is", ms:"terdapat", zh:"存在", dictation:true},
+{topic:"Objects", en:"material", ms:"bahan", zh:"材料", dictation:true},
+{topic:"Actions", en:"use", ms:"menggunakan", zh:"使用", dictation:true},
+{topic:"Tools", en:"tool", ms:"alat", zh:"工具", dictation:true},
+{topic:"Beach", en:"sandcastle", ms:"istana pasir", zh:"沙堡", dictation:true},
+{topic:"Time", en:"holiday", ms:"cuti", zh:"假期", dictation:true},
+{topic:"Body", en:"skeleton", ms:"rangka", zh:"骨骼", dictation:true},
+{topic:"Community", en:"human", ms:"manusia", zh:"人类", dictation:true},
+{topic:"Animals", en:"lizard", ms:"cicak", zh:"蜥蜴", dictation:true},
+{topic:"Greetings", en:"no problem", ms:"tiada masalah", zh:"没问题", dictation:true},
+{topic:"Greetings", en:"well done", ms:"syabas", zh:"做得好", dictation:true},
+{topic:"Greetings", en:"here you are", ms:"ini dia", zh:"给你", dictation:true},
+{topic:"Greetings", en:"great idea", ms:"idea yang bagus", zh:"好主意", dictation:true}
 ];
 
 const MATH_QUESTION_BANK = [
@@ -5525,7 +5737,7 @@ let state = {
   mathQuizCorrectCount:0, mathQuizWrongCount:0, mathQuizScore:0, mathQuizTotalStars:0,
   mathQuizAttempts:0, mathQuizResolved:false, mathQuizMarksPerQuestion:10, mathQuizTotalPossible:100,
   // vocab match state
-  baseLang:"en", targetLang:"ms",
+  baseLang:"en", targetLang:"ms", vocabDictationMode:false,
   vocabPairs:[], leftTiles:[], rightTiles:[],
   selection:null, wrongCounts:{}, matchedCount:0,
   vocabScore:0, vocabWrong:0, vocabFirstTry:0, vocabRetried:0, vocabMarksPerPair:10,
@@ -5720,6 +5932,11 @@ function renderInstructions(){
 }
 
 /* ---------------- VOCAB MATCH: NAV/RENDER ---------------- */
+function pickVocabMode(isDictation){
+  state.vocabDictationMode = isDictation;
+  goTo("vocab-base");
+}
+
 function renderVocabBaseGrid(){
   const grid = document.getElementById("vocab-base-grid");
   grid.innerHTML = "";
@@ -5841,7 +6058,8 @@ function speakTileWord(pair){
   speechSynthesis.speak(utterance);
 }
 function startVocabGame(){
-  const pool = shuffle(WORD_BANK).slice(0, 10);
+  const sourceBank = state.vocabDictationMode ? WORD_BANK.filter(e=>e.dictation) : WORD_BANK;
+  const pool = shuffle(sourceBank).slice(0, Math.min(10, sourceBank.length));
   state.vocabPairs = pool;
   state.leftTiles = shuffle(pool.map((w,i)=>({pairId:i, word:w[state.baseLang], matched:false})));
   state.rightTiles = shuffle(pool.map((w,i)=>({pairId:i, word:w[state.targetLang], matched:false})));
@@ -5862,6 +6080,7 @@ function startVocabGame(){
   document.getElementById("vocab-grid-wrap").style.display = "";
   document.getElementById("vocab-review-wrap").style.display = "none";
   document.getElementById("vocab-bonus-banner").style.display = "none";
+  document.getElementById("vocab-dictation-banner").style.display = state.vocabDictationMode ? "" : "none";
   renderVocabBoard();
   updateVocabTopBar();
   document.getElementById("vocab-speech").textContent = UI_TEXT[state.baseLang].vocabHint;
