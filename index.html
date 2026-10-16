@@ -542,7 +542,18 @@
   }
   .icon-btn:hover, .sound-toggle-btn:hover{filter:brightness(1.08); transform:translateY(-2px);}
 
-</style>
+
+
+/* User preference: keep the background still by removing animated clouds and birds. */
+.home-sky .cloud-shape,
+.home-sky .bird {
+  display: none !important;
+  animation: none !important;
+}
+
+    /* User preference: remove all cloud and bird decorations, including any static remnants. */
+    .home-sky .cloud-shape, .home-sky .bird, .cloud { display:none !important; animation:none !important; }
+    </style>
 </head>
 <body>
 <button class="sound-toggle-btn" onclick="toggleSound()" aria-label="Toggle sound">🔊</button>
