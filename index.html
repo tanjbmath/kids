@@ -2,31 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>Word Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-
-    /* Fox Adventure design-system tokens */
-    --color-ink: #26334A;
-    --color-cream: #FFF9EF;
-    --color-orange: #F47B35;
-    --color-orange-deep: #D95D25;
-    --color-teal: #28A9A1;
-    --color-lilac: #8D7AE6;
-    --color-success: #25865D;
-    --color-danger: #C84C58;
-    --font-display: 'Baloo 2', 'Nunito', sans-serif;
-    --font-body: 'Nunito', system-ui, sans-serif;
-    --space-1: 4px; --space-2: 8px; --space-3: 12px;
-    --space-4: 16px; --space-5: 24px; --space-6: 32px;
-    --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px;
-    --shadow-card: 0 8px 0 rgba(38,51,74,.08), 0 14px 28px rgba(38,51,74,.10);
-    --motion-fast: 160ms ease;
-    --motion-standard: 240ms ease;
-
     --sky-top:#8FD3FF;
     --sky-bot:#EAF9FF;
     --sun:#FFD23F;
@@ -41,7 +22,12 @@
   html,body{margin:0;padding:0;height:100%;}
   body{
     font-family:'Nunito',sans-serif;
-    background: linear-gradient(180deg,var(--sky-top) 0%, var(--sky-bot) 60%);
+    background-color:#EAF9FF;
+    background-image:linear-gradient(rgba(234,249,255,0.42),rgba(234,249,255,0.58)),url('assets/backgrounds/background.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
     min-height:100vh;
     color:var(--plum);
     overflow-x:hidden;
@@ -107,7 +93,10 @@
 
   /* Mascot */
   .mascot-wrap{display:flex; justify-content:center; margin-bottom:8px;}
-  .mascot{font-size:88px; display:inline-block; animation:bob 2.6s ease-in-out infinite; filter:drop-shadow(0 8px 6px rgba(43,34,80,0.25));}
+  .mascot{width:clamp(112px, 24vw, 176px); height:auto; max-height:220px; object-fit:contain; display:block; animation:bob 2.6s ease-in-out infinite; filter:drop-shadow(0 8px 6px rgba(43,34,80,0.18));}
+  .lk-hero-mascot{width:clamp(132px, 30vw, 210px); max-height:250px;}
+  .mascot-wrap img{margin-inline:auto;}
+  @media (max-width:480px){.mascot{width:clamp(96px, 29vw, 132px); max-height:160px;}.lk-hero-mascot{width:clamp(112px, 34vw, 150px);max-height:180px;}}
   @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);} 50%{transform:translateY(-12px) rotate(2deg);}}
   .mascot.happy{animation:happy .6s ease 2;}
   @keyframes happy{0%{transform:scale(1) rotate(0);}30%{transform:scale(1.25) rotate(-8deg);}60%{transform:scale(1.15) rotate(8deg);}100%{transform:scale(1) rotate(0);}}
@@ -392,7 +381,12 @@
 
   /* ============ LINGOKIDS-STYLE HOME MAKEOVER ============ */
   body{
-    background: linear-gradient(180deg,#6C5CE7 0%, #8E7BFF 26%, #B79CFF 48%, #FFD9EC 78%, #FFF3D6 100%);
+    background-color:#EAF9FF;
+    background-image:linear-gradient(rgba(234,249,255,0.30),rgba(234,249,255,0.42)),url('assets/backgrounds/background.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
   }
   .home-sky .sun-glow{
     background:radial-gradient(circle, rgba(255,214,90,1) 0%, rgba(255,190,60,0.55) 55%, rgba(255,190,60,0) 75%);
@@ -420,11 +414,9 @@
   }
   .lk-brand{display:flex; align-items:center; gap:10px;}
   .lk-brand-mascot{
-    width:52px;height:52px;border-radius:50%;
-    background:linear-gradient(160deg,#FFFFFF,#F0EBFF);
-    display:flex;align-items:center;justify-content:center;
-    font-size:32px;
-    box-shadow:0 5px 0 rgba(43,34,80,0.18), 0 10px 16px rgba(43,34,80,0.2);
+    width:52px;height:52px;object-fit:contain;
+    display:block;flex:0 0 auto;
+    filter:drop-shadow(0 4px 5px rgba(43,34,80,0.18));
     animation:bob 3s ease-in-out infinite;
   }
   .lk-wordmark{
@@ -550,54 +542,6 @@
   }
   .icon-btn:hover, .sound-toggle-btn:hover{filter:brightness(1.08); transform:translateY(-2px);}
 
-
-/* --- Fox Adventure visual refresh (presentation-only overrides) --- */
-:root { color-scheme: light; }
-body { color: var(--color-ink); font-family: var(--font-body); }
-h1,h2,h3,.lk-hero-title,.lk-wordmark { font-family: var(--font-display); }
-.card, .choice-card, .lk-game-card {
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-}
-button, .btn, [role="button"], .choice-card {
-  touch-action: manipulation;
-}
-button, .btn { min-height: 44px; transition: transform var(--motion-fast), box-shadow var(--motion-fast); }
-button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
-.choice-card:focus-visible, a:focus-visible {
-  outline: 3px solid var(--color-teal);
-  outline-offset: 3px;
-}
-.mascot {
-  width: clamp(104px, 25vw, 180px);
-  height: auto;
-  object-fit: contain;
-  font-size: initial;
-  filter: drop-shadow(0 8px 6px rgba(43,34,80,.18));
-}
-.lk-hero-mascot { width: clamp(140px, 32vw, 220px); }
-.lk-brand-mascot {
-  object-fit: contain;
-  padding: 3px;
-  background: linear-gradient(160deg,#fff,#fff2df);
-}
-@media (hover:hover) {
-  button:hover, .btn:hover, .choice-card:hover { transform: translateY(-2px); }
-}
-@media (max-width: 600px) {
-  .card { width: min(100% - 24px, 520px); }
-  .choice-grid { gap: 12px; }
-  button, .btn { min-height: 48px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: .01ms !important;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -630,7 +574,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
 
     <div class="lk-header">
       <div class="lk-brand">
-        <img class="lk-brand-mascot" src="assets/fox/fox-neutral.png" alt="Word Adventure fox mascot">
+        <img class="lk-brand-mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async">
         <span class="lk-wordmark">Word <b>Adventure</b></span>
       </div>
       <div class="lk-header-pills">
@@ -639,7 +583,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
     </div>
 
     <div class="lk-hero">
-      <div class="lk-hero-mascot-wrap"><img class="mascot lk-hero-mascot" id="mascot-welcome" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="lk-hero-mascot-wrap"><img class="mascot lk-hero-mascot" id="mascot-welcome" src="assets/fox/fox-curious.png" data-base-src="assets/fox/fox-curious.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="lk-hero-bubble">
         <div class="lk-hero-title">Hi, friend! 👋</div>
         <div class="lk-hero-sub">What do you want to play today?</div>
@@ -686,7 +630,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-language">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your language</h2>
       <p class="tagline">Pick the language you want to play in.</p>
       <div class="choice-grid" id="language-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
@@ -697,7 +641,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-level">
     <button class="icon-btn home-btn" onclick="goTo('language')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="level-heading">Choose your level</h2>
       <div class="choice-grid" id="level-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
     </div>
@@ -707,7 +651,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-instructions">
     <button class="icon-btn home-btn" onclick="goTo('level')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="instr-title">How to play</h2>
       <p class="tagline" id="instr-text"></p>
       <div class="demo-row">
@@ -735,7 +679,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
         <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><img class="mascot" id="mascot-game" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-game" src="assets/fox/fox-sentence-builder.png" data-base-src="assets/fox/fox-sentence-builder.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="mascot-speech">Let's build this sentence!</div>
       <div class="sentence-target" id="sentence-target"></div>
       <div class="hint-line" id="hint-line">Tap a placed word to remove it. This question is worth <span id="q-marks-left">10</span> marks.</div>
@@ -754,7 +698,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-fillblank-mode">
     <button class="icon-btn home-btn" onclick="goTo('level')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="fillblank-mode-heading">Choose a mode</h2>
       <div class="choice-grid" id="fillblank-mode-grid"></div>
     </div>
@@ -764,7 +708,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-fillblank-instructions">
     <button class="icon-btn home-btn" onclick="goTo('fillblank-mode')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="fillblank-instr-title">How to play</h2>
       <p class="tagline" id="fillblank-instr-text"></p>
       <div class="btn-row">
@@ -782,7 +726,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
         <div class="progress-track"><div class="progress-fill" id="fillblank-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="fillblank-score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><img class="mascot" id="mascot-fillblank" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-fillblank" src="assets/fox/fox-story-blanks.png" data-base-src="assets/fox/fox-story-blanks.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="fillblank-speech">Pick the missing word!</div>
       <div class="story-text" id="fillblank-sentence"></div>
       <div class="hint-line" id="fillblank-hint-line"></div>
@@ -799,7 +743,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-detective-language">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your language</h2>
       <p class="tagline">Pick the language you want to play in.</p>
       <div class="choice-grid" id="detective-language-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
@@ -810,7 +754,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-detective-difficulty">
     <button class="icon-btn home-btn" onclick="goTo('detective-language')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="detective-difficulty-heading">Choose your difficulty</h2>
       <div class="choice-grid" id="detective-difficulty-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
     </div>
@@ -820,7 +764,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-detective-instructions">
     <button class="icon-btn home-btn" onclick="detectiveInstrBack()" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="detective-instr-title">How to play</h2>
       <p class="tagline" id="detective-instr-text"></p>
       <div class="btn-row">
@@ -838,7 +782,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
         <div class="progress-track"><div class="progress-fill" id="detective-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="detective-score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><img class="mascot" id="mascot-detective" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-detective" src="assets/fox/fox-word-detective.png" data-base-src="assets/fox/fox-word-detective.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="detective-speech">Crack the code!</div>
       <div class="detective-word-row">
         <div class="story-text detective-word" id="detective-word"></div>
@@ -861,7 +805,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-mathquiz-year">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">选择年级</h2>
       <p class="tagline">挑选你想挑战的数学题目！</p>
       <div class="choice-grid" id="mathquiz-year-grid" style="grid-template-columns:1fr 1fr;"></div>
@@ -872,7 +816,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-mathquiz-instructions">
     <button class="icon-btn home-btn" onclick="goTo('mathquiz-year')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">游戏玩法</h2>
       <p class="tagline">读一读情境和问题，然后点击正确的答案。每题最多可以尝试几次哦！</p>
       <div class="btn-row">
@@ -890,7 +834,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
         <div class="progress-track"><div class="progress-fill" id="mathquiz-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="mathquiz-score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><img class="mascot" id="mascot-mathquiz" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-mathquiz" src="assets/fox/fox-math-quiz.png" data-base-src="assets/fox/fox-math-quiz.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="mathquiz-speech">加油，你可以的！</div>
       <div class="mathquiz-scenario" id="mathquiz-scenario"></div>
       <div class="mathquiz-question" id="mathquiz-question"></div>
@@ -907,7 +851,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-vocab-mode">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose a Mode</h2>
       <p class="tagline">Match everyday words, or practise spelling tricky ones!</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr;">
@@ -924,7 +868,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-vocab-base">
     <button class="icon-btn home-btn" onclick="goTo('vocab-mode')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="vocab-base-heading">Which language do you know best?</h2>
       <p class="tagline">We'll show clues in this language.</p>
       <div class="choice-grid" id="vocab-base-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
@@ -935,7 +879,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-vocab-target">
     <button class="icon-btn home-btn" onclick="goTo('vocab-base')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="vocab-target-heading">Which language do you want to match?</h2>
       <div class="choice-grid" id="vocab-target-grid" style="grid-template-columns:1fr 1fr;"></div>
     </div>
@@ -945,7 +889,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-vocab-instructions">
     <button class="icon-btn home-btn" onclick="goTo('vocab-target')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="vocab-instr-title">How to play</h2>
       <p class="tagline" id="vocab-instr-text"></p>
       <div class="demo-row" id="vocab-demo-row"></div>
@@ -964,7 +908,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
         <div class="progress-track"><div class="progress-fill" id="vocab-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="vocab-score-pill">⭐ 0</span>
       </div>
-      <div class="mascot-wrap"><img class="mascot" id="mascot-vocab" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-vocab" src="assets/fox/fox-word-match.png" data-base-src="assets/fox/fox-word-match.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="vocab-speech">Tap a word, then tap its match!</div>
       <div id="vocab-dictation-banner" class="hint-line" style="display:none; text-align:center; background:#EFE9FF; border:2px dashed #8E7BFF; border-radius:14px; padding:8px 12px; margin-bottom:10px; font-weight:800; color:#4b3a9e;">✏️ 听写 Spelling / Ejaan Mode</div>
       <div id="vocab-bonus-banner" class="hint-line" style="display:none; text-align:center; background:#FFF3D6; border:2px dashed #E8A33D; border-radius:14px; padding:8px 12px; margin-bottom:10px; font-weight:800; color:#8a5a12;"></div>
@@ -986,7 +930,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-story-language">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your language</h2>
       <p class="tagline">Pick the language you want to play in.</p>
       <div class="choice-grid" id="story-language-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
@@ -997,7 +941,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-story-level">
     <button class="icon-btn home-btn" onclick="goTo('story-language')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="story-level-heading">Choose your level</h2>
       <div class="choice-grid" id="story-level-grid"></div>
     </div>
@@ -1007,7 +951,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-story-instructions">
     <button class="icon-btn home-btn" onclick="goTo('story-level')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="story-instr-title">How to play</h2>
       <p class="tagline" id="story-instr-text"></p>
       <div class="demo-row">
@@ -1033,7 +977,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
         <div class="progress-track"><div class="progress-fill" id="story-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="story-score-pill">⭐ 0</span>
       </div>
-      <div class="mascot-wrap"><img class="mascot" id="mascot-story" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-story" src="assets/fox/fox-story-blanks.png" data-base-src="assets/fox/fox-story-blanks.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="story-speech">Fill in the blanks!</div>
       <h3 style="text-align:center;" id="story-title"></h3>
       <div class="story-text" id="story-text"></div>
@@ -1051,7 +995,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-ringgit-role">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Ringgit Shop</h2>
       <p class="tagline">Do you want to be the Buyer, the Seller, or play with a friend?</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr 1fr;">
@@ -1066,7 +1010,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-ringgit-difficulty">
     <button class="icon-btn home-btn" onclick="goTo('ringgit-role')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your level</h2>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr 1fr;">
         <div class="choice-card" onclick="pickRinggitDifficulty('easy')"><span class="emoji">🌱</span>Easy</div>
@@ -1080,7 +1024,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-ringgit-instructions">
     <button class="icon-btn home-btn" onclick="goTo('ringgit-difficulty')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="ringgit-instr-title">How to play</h2>
       <p class="tagline" id="ringgit-instr-text"></p>
       <div class="btn-row">
@@ -1093,7 +1037,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-ringgit-buyer-game">
     <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot" id="mascot-ringgit-buyer" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-ringgit-buyer" src="assets/fox/fox-ringgit-shop.png" data-base-src="assets/fox/fox-ringgit-shop.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="mission-banner" id="ringgit-buyer-player-badge" style="display:none; background:#FFE9A8; color:#7a5b00; font-weight:800;"></div>
       <div class="mission-banner" id="ringgit-mission"></div>
       <div class="budget-banner" id="ringgit-budget-label"></div>
@@ -1113,7 +1057,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-ringgit-handoff">
     <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Great Shopping! 🛍️</h2>
       <p class="tagline" id="ringgit-handoff-text">Pass the device to Player 2 — the Seller!</p>
       <div class="btn-row">
@@ -1126,7 +1070,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-ringgit-seller-game">
     <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot" id="mascot-ringgit-seller" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-ringgit-seller" src="assets/fox/fox-ringgit-shop.png" data-base-src="assets/fox/fox-ringgit-shop.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="mission-banner" id="ringgit-seller-player-badge" style="display:none; background:#FFE9A8; color:#7a5b00; font-weight:800;"></div>
       <div style="text-align:center;" id="ringgit-seller-timer-wrap">
         <span class="pill stars-earned" id="ringgit-seller-timer" style="display:none;">⏱ 0s</span>
@@ -1152,7 +1096,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-math-language">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your language</h2>
       <p class="tagline">Pick the language you want to play in.</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr;">
@@ -1166,7 +1110,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-math-year">
     <button class="icon-btn home-btn" onclick="goTo('math-language')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="math-year-heading">Choose your year</h2>
       <div class="choice-grid" id="math-year-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
     </div>
@@ -1176,7 +1120,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <section class="screen" id="screen-math-instructions">
     <button class="icon-btn home-btn" onclick="goTo('math-year')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot"  src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="math-instr-title">How to play</h2>
       <p class="tagline" id="math-instr-text"></p>
       <p class="tagline" id="math-instr-note" style="font-size:12px; color:#8b84b8;"></p>
@@ -1195,7 +1139,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
         <div class="progress-track"><div class="progress-fill" id="math-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="math-score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><img class="mascot" id="mascot-math" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-math" src="assets/fox/fox-math-quiz.png" data-base-src="assets/fox/fox-math-quiz.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
 
       <div id="math-loading-wrap" style="display:none; text-align:center;">
         <div class="speech" id="math-loading-text">🤔 Pip is thinking of a question...</div>
@@ -1226,7 +1170,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
   <!-- RESULTS -->
   <section class="screen" id="screen-results">
     <div class="card">
-      <div class="mascot-wrap"><img class="mascot" id="mascot-results" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-results" src="assets/fox/fox-victory.png" data-base-src="assets/fox/fox-victory.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="grade-badge" id="grade-emoji">🏆</div>
       <div class="grade-label" id="grade-label">A+</div>
       <div class="grade-msg" id="grade-msg">Excellent!</div>
@@ -1249,7 +1193,7 @@ button:focus-visible, .btn:focus-visible, [role="button"]:focus-visible,
 <!-- QUIT CONFIRMATION MODAL -->
 <div class="modal-overlay" id="quit-modal-overlay">
   <div class="card modal-card">
-    <div class="mascot-wrap"><img class="mascot" id="quit-modal-mascot" src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" role="img"></div>
+    <div class="mascot-wrap"><img class="mascot" id="quit-modal-mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
     <p class="tagline" id="quit-modal-text" style="margin-top:0;">Stop playing now? Your score so far will be saved.</p>
     <div class="btn-row">
       <button class="btn green" id="quit-modal-cancel" onclick="closeQuitModal()">Keep Playing</button>
@@ -9741,5 +9685,62 @@ function makeClouds(){
 }
 makeClouds();
 </script>
+
+<script>
+/* Fox mascot artwork: keeps existing gameplay handlers and DOM IDs intact. */
+(function(){
+  const foxAssets = {
+    neutral: 'assets/fox/fox-neutral.png',
+    curious: 'assets/fox/fox-curious.png',
+    happy: 'assets/fox/fox-laugh.png',
+    think: 'assets/fox/fox-think.png',
+    sad: 'assets/fox/fox-sad.png',
+    victory: 'assets/fox/fox-victory.png'
+  };
+  function refreshMascot(img){
+    if (!img || !img.classList || !img.classList.contains('mascot')) return;
+    let state = 'neutral';
+    if (img.id === 'mascot-results') state = 'victory';
+    else if (img.classList.contains('sad')) state = 'sad';
+    else if (img.classList.contains('happy')) state = 'happy';
+    else if (img.dataset.foxThinking === 'true') state = 'think';
+    const next = state === 'neutral' ? (img.dataset.baseSrc || foxAssets.neutral) : foxAssets[state];
+    if (next && img.getAttribute('src') !== next) img.setAttribute('src', next);
+  }
+  function refreshAll(){
+    document.querySelectorAll('img.mascot').forEach(refreshMascot);
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    refreshAll();
+    document.querySelectorAll('img.mascot').forEach(function(img){
+      new MutationObserver(function(){ refreshMascot(img); })
+        .observe(img, {attributes:true, attributeFilter:['class','data-fox-thinking']});
+    });
+    /* Hint controls temporarily show the thinking fox; gameplay logic remains unchanged. */
+    document.addEventListener('click', function(event){
+      const control = event.target.closest('button,[role="button"]');
+      if (!control) return;
+      const label = ((control.textContent || '') + ' ' + (control.getAttribute('aria-label') || '') + ' ' + (control.id || '')).toLowerCase();
+      if (/hint|help|clue|think/.test(label)) {
+        const screen = control.closest('.screen');
+        const mascot = screen && screen.querySelector('img.mascot');
+        if (mascot) {
+          mascot.dataset.foxThinking = 'true';
+          refreshMascot(mascot);
+          window.setTimeout(function(){
+            if (mascot && mascot.isConnected) {
+              delete mascot.dataset.foxThinking;
+              refreshMascot(mascot);
+            }
+          }, 1800);
+        }
+      }
+    });
+  });
+  /* If this script runs after DOMContentLoaded, still initialise. */
+  if (document.readyState !== 'loading') refreshAll();
+})();
+</script>
+
 </body>
 </html>
