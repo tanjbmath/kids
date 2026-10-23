@@ -8,7 +8,7 @@ Project ID: `word-adventure-tanjb`
 Create the project in Firebase Console, register the existing GitHub Pages site as a Web app, and create Firestore in Production mode in `asia-southeast1` (Singapore). GitHub Pages remains the website host.
 
 ## Before deployment
-1. Install Firebase CLI: `npm install -g firebase-tools`
+1. Install a current Node.js LTS release and Firebase CLI: `npm install -g firebase-tools`
 2. Sign in: `firebase login`
 3. Select the project: `firebase use --add` and choose `word-adventure-tanjb`
 4. Enable Firebase Authentication's custom-token flow by deploying the functions (no Google provider is required).
