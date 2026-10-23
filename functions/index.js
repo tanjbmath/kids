@@ -61,7 +61,7 @@ exports.listStudentProfiles = onCall({ region: "asia-southeast1", enforceAppChec
  * Verifies a four-digit PIN server-side, throttles failed attempts, and returns a custom token.
  * PIN hashes are never sent to the browser.
  */
-exports.loginWithPin = onCall({ region: "asia-southeast1" }, async (request) => {
+exports.loginWithPin = onCall({ region: "asia-southeast1", enforceAppCheck: true }, async (request) => {
   const studentId = typeof request.data?.studentId === "string" ? request.data.studentId : "";
   const pin = request.data?.pin;
   if (!/^[A-Za-z0-9_-]{8,128}$/.test(studentId) || !validPin(pin)) {
@@ -114,7 +114,7 @@ exports.loginWithPin = onCall({ region: "asia-southeast1" }, async (request) => 
  * Records one result per unique attempt ID. The browser should generate a new random UUID
  * for each completed attempt and reuse it if retrying a failed network submission.
  */
-exports.recordGameResult = onCall({ region: "asia-southeast1" }, async (request) => {
+exports.recordGameResult = onCall({ region: "asia-southeast1", enforceAppCheck: true }, async (request) => {
   if (!request.auth || request.auth.token.role !== "student") {
     throw new HttpsError("unauthenticated", "Sign in with your student profile first.");
   }
