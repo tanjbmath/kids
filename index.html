@@ -9797,39 +9797,63 @@ makeClouds();
 </script>
 
 
+<style>
+  .wa-tabs{display:flex;gap:8px;margin:14px 0}.wa-tab{flex:1;border:0;border-radius:12px;padding:10px;font-weight:800;background:#edf0ff;color:#2B2250;cursor:pointer}.wa-tab.active{background:#6C7BFF;color:#fff}.wa-panel{display:none}.wa-panel.active{display:block}.wa-field input{width:100%;padding:12px;border:2px solid #c7ceff;border-radius:12px;font:inherit}.wa-profile-list{max-height:280px;overflow:auto;margin-top:12px}.wa-admin-row{display:flex;gap:8px;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e4e1f5}.wa-admin-row button{padding:7px 10px;font-size:13px}.wa-danger-link{margin-top:18px;color:#b53a31;background:none;border:0;text-decoration:underline;cursor:pointer;font-weight:700}
+</style>
 <div class="wa-modal-backdrop" id="wa-profile-modal" role="dialog" aria-modal="true" aria-labelledby="wa-profile-title" onclick="if(event.target===this)closeStudentPanel()">
   <div class="wa-modal">
     <button class="wa-close" type="button" onclick="closeStudentPanel()" aria-label="Close">×</button>
-    <h2 id="wa-profile-title">🎒 Student Profile</h2>
-    <p class="wa-muted">Choose your profile and enter your 4-digit PIN to save your progress across visits.</p>
-    <div id="wa-login-view">
-      <div class="wa-field"><label for="wa-student-select">Your profile</label><select id="wa-student-select"><option value="">Loading student profiles…</option></select></div>
-      <div class="wa-field"><label for="wa-student-pin">4-digit PIN</label><input id="wa-student-pin" class="wa-pin" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]{4}" placeholder="••••" type="password"></div>
-      <div id="wa-profile-status" class="wa-status">Connect your Firebase web app to enable student profiles.</div>
-      <div class="wa-actions"><button class="wa-action" id="wa-login-button" type="button" onclick="studentLogin()">Log in</button><button class="wa-action secondary" type="button" onclick="refreshStudentProfiles()">Refresh profiles</button></div>
-      <p class="wa-muted">Ask your teacher for your profile and PIN. Do not share your PIN with other students.</p>
+    <h2 id="wa-profile-title">🎒 My Profile</h2>
+    <div class="wa-tabs" id="wa-tabs">
+      <button class="wa-tab active" type="button" data-tab="student">Student</button>
+      <button class="wa-tab" type="button" data-tab="admin">Admin</button>
     </div>
-    <div id="wa-dashboard-view" style="display:none">
-      <p id="wa-welcome-name" class="wa-muted"></p>
-      <div class="wa-stats">
-        <div class="wa-stat"><strong id="wa-level">1</strong><span>LEVEL</span></div>
-        <div class="wa-stat"><strong id="wa-xp">0</strong><span>TOTAL XP</span></div>
-        <div class="wa-stat"><strong id="wa-attempts">0</strong><span>ATTEMPTS</span></div>
+    <div id="wa-profile-status" class="wa-status" aria-live="polite"></div>
+
+    <section class="wa-panel active" id="wa-student-panel">
+      <div id="wa-student-login">
+        <p class="wa-muted">Log in with your nickname and secret 4-digit PIN.</p>
+        <div class="wa-field"><label for="wa-nickname">Nickname</label><input id="wa-nickname" maxlength="30" autocomplete="username" placeholder="e.g. Clever Fox"></div>
+        <div class="wa-field"><label for="wa-student-pin">4-digit PIN</label><input id="wa-student-pin" class="wa-pin" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="current-password" placeholder="••••" type="password"></div>
+        <div class="wa-actions"><button class="wa-action" type="button" id="wa-login-button">Log in</button><button class="wa-action secondary" type="button" id="wa-show-create">Create profile</button></div>
       </div>
-      <div class="wa-section-title">🏅 Achievements</div><div id="wa-badges" class="wa-badge-row"></div>
-      <div class="wa-section-title">🎮 Game progress</div><div id="wa-game-stats"></div>
-      <div class="wa-section-title">🕘 Recent attempts</div><div id="wa-recent-attempts"></div>
-      <div class="wa-actions"><button class="wa-action secondary" type="button" onclick="refreshStudentDashboard()">Refresh progress</button><button class="wa-action danger" type="button" onclick="studentLogout()">Log out</button></div>
-    </div>
+      <div id="wa-student-create" style="display:none">
+        <p class="wa-muted">Choose a nickname and a 4-digit PIN you can remember. Ask an adult to help if needed.</p>
+        <div class="wa-field"><label for="wa-new-nickname">Nickname</label><input id="wa-new-nickname" maxlength="30" autocomplete="username" placeholder="e.g. Clever Fox"></div>
+        <div class="wa-field"><label for="wa-new-pin">Choose a 4-digit PIN</label><input id="wa-new-pin" class="wa-pin" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="new-password" placeholder="••••" type="password"></div>
+        <div class="wa-actions"><button class="wa-action" type="button" id="wa-create-button">Create and log in</button><button class="wa-action secondary" type="button" id="wa-show-login">Back</button></div>
+      </div>
+      <div id="wa-dashboard-view" style="display:none">
+        <p id="wa-welcome-name" class="wa-muted"></p>
+        <div class="wa-stats"><div class="wa-stat"><strong id="wa-level">1</strong><span>LEVEL</span></div><div class="wa-stat"><strong id="wa-xp">0</strong><span>TOTAL XP</span></div><div class="wa-stat"><strong id="wa-attempts">0</strong><span>ATTEMPTS</span></div></div>
+        <div class="wa-section-title">🏅 Achievements</div><div id="wa-badges" class="wa-badge-row"></div>
+        <div class="wa-section-title">🎮 Game progress</div><div id="wa-game-stats"></div>
+        <div class="wa-section-title">🕘 Recent attempts</div><div id="wa-recent-attempts"></div>
+        <div class="wa-actions"><button class="wa-action secondary" type="button" id="wa-refresh-dashboard">Refresh progress</button><button class="wa-action danger" type="button" id="wa-logout">Log out</button></div>
+        <button class="wa-danger-link" type="button" id="wa-delete-my-profile">Delete my profile</button>
+      </div>
+    </section>
+
+    <section class="wa-panel" id="wa-admin-panel">
+      <div id="wa-admin-login">
+        <p class="wa-muted">For the parent or teacher only.</p>
+        <div class="wa-field"><label for="wa-admin-password">Admin password</label><input id="wa-admin-password" autocomplete="current-password" type="password"></div>
+        <div class="wa-actions"><button class="wa-action" type="button" id="wa-admin-login-button">Open admin area</button></div>
+      </div>
+      <div id="wa-admin-dashboard" style="display:none">
+        <p class="wa-muted">Manage student profiles. PINs are never shown.</p>
+        <div class="wa-actions"><button class="wa-action secondary" type="button" id="wa-admin-refresh">Refresh profiles</button><button class="wa-action danger" type="button" id="wa-admin-logout">Log out</button></div>
+        <div id="wa-admin-profiles" class="wa-profile-list"></div>
+      </div>
+    </section>
   </div>
 </div>
 
-<!-- Firebase compat SDK: client config is public; never place service-account keys here. -->
+<!-- Firebase client configuration is public. Server secrets, including the admin password, never belong here. -->
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-functions-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check-compat.js"></script>
 <script>
 (function(){
   const firebaseConfig = {
@@ -9841,166 +9865,59 @@ makeClouds();
     appId: "1:535552104578:web:5cff72047941e19e743c9b",
     measurementId: "G-NR5ETQV0CS"
   };
-  const appCheckSiteKey = "REPLACE_WITH_RECAPTCHA_SITE_KEY";
-  let appReady = false, auth = null, db = null, functions = null, currentAttemptId = null;
-  let currentProfile = null, attemptStartedAt = Date.now(), lastAttemptPromise = null;
+  let auth, db, functions, currentProfile = null, isAdmin = false, currentAttemptId = null, attemptStartedAt = Date.now(), lastAttemptPromise = null;
   const $ = id => document.getElementById(id);
-  function uuid(){
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID().replace(/-/g,"");
-    return (Date.now().toString(36)+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)).slice(0,32);
+  const status = (message, error=false) => { const el=$("wa-profile-status"); el.textContent=message||""; el.classList.toggle("error",!!error); };
+  const pinValue = id => $(id).value.replace(/\D/g,"").slice(0,4);
+  const prettyMode = k => String(k||"").replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+  const escapeHtml = v => String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  function setStudentView(name){ $("wa-student-login").style.display=name==="login"?"":"none"; $("wa-student-create").style.display=name==="create"?"":"none"; $("wa-dashboard-view").style.display=name==="dashboard"?"":"none"; }
+  function setTab(tab){ document.querySelectorAll(".wa-tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab)); $("wa-student-panel").classList.toggle("active",tab==="student"); $("wa-admin-panel").classList.toggle("active",tab==="admin"); status(""); }
+  async function call(name,data){ return (await functions.httpsCallable(name)(data)).data; }
+  async function signIn(result, profile){ currentProfile=profile; isAdmin=false; await auth.signInWithCustomToken(result.token); await refreshDashboard(); setStudentView("dashboard"); }
+  async function loginStudent(){
+    const nickname=$("wa-nickname").value.trim(), pin=pinValue("wa-student-pin"); if(!nickname||pin.length!==4){status("Enter your nickname and all four PIN digits.",true);return;}
+    $("wa-login-button").disabled=true; try { const r=await call("loginStudent",{nickname,pin}); await signIn(r,{id:r.studentId,displayName:r.displayName}); status("Welcome back, "+r.displayName+"!"); } catch(e){status(e.message||"Could not log in.",true);} finally{$("wa-login-button").disabled=false;}
   }
-  function status(message,isError){
-    const el=$("wa-profile-status"); if(!el)return;
-    el.textContent=message; el.classList.toggle("error",!!isError);
-  }
-  function configured(){
-    return appReady && !firebaseConfig.apiKey.startsWith("REPLACE_") &&
-      !firebaseConfig.appId.startsWith("REPLACE_") && !appCheckSiteKey.startsWith("REPLACE_");
-  }
-  function init(){
-    const missing=[];
-    if(firebaseConfig.apiKey.startsWith("REPLACE_"))missing.push("Firebase web API key");
-    if(firebaseConfig.appId.startsWith("REPLACE_"))missing.push("Firebase web app ID");
-    if(appCheckSiteKey.startsWith("REPLACE_"))missing.push("App Check reCAPTCHA site key");
-    if(missing.length){status("Setup needed: add your "+missing.join(", ")+ " in the Firebase configuration section of index.html.");return;}
-    try{
-      if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-      firebase.appCheck().activate(appCheckSiteKey,true);
-      auth=firebase.auth(); db=firebase.firestore();
-      functions=firebase.app().functions("asia-southeast1");
-      auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(()=>{});
-      appReady=true;
-      auth.onAuthStateChanged(async user=>{
-        if(user && user.uid){
-          currentProfile={id:user.uid,displayName:user.displayName||"Student"};
-          showDashboardView();
-          await refreshStudentDashboard();
-        }else{
-          currentProfile=null; showLoginView();
-        }
-        updateProfileButton();
-      });
-      status("Connected. Choose your student profile and enter your PIN.");
-    }catch(e){status("Firebase could not initialise: "+(e.message||"check your configuration"),true);}
-  }
-  function showLoginView(){
-    $("wa-login-view").style.display="";
-    $("wa-dashboard-view").style.display="none";
-  }
-  function showDashboardView(){
-    $("wa-login-view").style.display="none";
-    $("wa-dashboard-view").style.display="";
-  }
-  function updateProfileButton(){
-    const b=document.querySelector(".wa-profile-pill");
-    if(!b)return;
-    b.classList.toggle("wa-logged-in",!!currentProfile);
-    b.textContent=currentProfile ? "👤 "+currentProfile.displayName : "👤 Student";
-  }
-  async function refreshProfiles(){
-    const select=$("wa-student-select");
-    if(!configured()){init();return;}
-    select.innerHTML='<option value="">Loading profiles…</option>';
-    try{
-      const res=await functions.httpsCallable("listStudentProfiles")({});
-      const profiles=(res.data&&res.data.profiles)||[];
-      select.innerHTML='<option value="">Choose your profile</option>';
-      profiles.forEach(p=>{
-        const o=document.createElement("option");o.value=p.id;o.textContent=p.displayName;select.appendChild(o);
-      });
-      if(!profiles.length)status("No student profiles have been created yet. Ask your teacher to create one.");
-      else status("Select your name and enter your 4-digit PIN.");
-    }catch(e){select.innerHTML='<option value="">Could not load profiles</option>';status("Could not load profiles: "+(e.message||"check Firebase setup and App Check"),true);}
-  }
-  async function login(){
-    if(!configured()){init();return;}
-    const studentId=$("wa-student-select").value, pin=$("wa-student-pin").value;
-    if(!studentId){status("Choose your profile first.",true);return;}
-    if(!/^[0-9]{4}$/.test(pin)){status("Enter all four digits of your PIN.",true);return;}
-    const button=$("wa-login-button");button.disabled=true;
-    try{
-      const res=await functions.httpsCallable("loginWithPin")({studentId,pin});
-      await auth.signInWithCustomToken(res.data.token);
-      $("wa-student-pin").value="";
-      currentProfile={id:res.data.studentId,displayName:res.data.displayName};
-      status("Welcome back, "+currentProfile.displayName+"!");
-      await refreshStudentDashboard();
-    }catch(e){status(e.message||"Login failed. Check your PIN and try again.",true);}
-    finally{button.disabled=false;}
+  async function createStudent(){
+    const nickname=$("wa-new-nickname").value.trim(), pin=pinValue("wa-new-pin"); if(!nickname||pin.length!==4){status("Choose a nickname and all four PIN digits.",true);return;}
+    $("wa-create-button").disabled=true; try { const r=await call("createStudentProfile",{nickname,pin}); await signIn(r,{id:r.studentId,displayName:r.displayName}); status("Your profile is ready!"); } catch(e){status(e.message||"Could not create the profile.",true);} finally{$("wa-create-button").disabled=false;}
   }
   async function refreshDashboard(){
-    if(!currentProfile||!db)return;
-    try{
-      const ref=db.collection("students").doc(currentProfile.id);
-      const snap=await ref.get();
-      if(!snap.exists){status("Student profile could not be found.",true);return;}
-      const d=snap.data(), xp=d.totalXp||0;
+    if(!currentProfile||!db) return;
+    try {
+      const ref=db.collection("students").doc(currentProfile.id), snap=await ref.get(); if(!snap.exists){status("This profile no longer exists.",true);return;}
+      const d=snap.data(), xp=d.totalXp||0, stats=d.gameStats||{};
       $("wa-welcome-name").textContent="Welcome back, "+(d.displayName||currentProfile.displayName)+"!";
-      $("wa-level").textContent=String(Math.floor(xp/100)+1);
-      $("wa-xp").textContent=String(xp);
-      $("wa-attempts").textContent=String(d.totalAttempts||0);
-      const badges=[];
-      if((d.totalAttempts||0)>=1)badges.push("🌱 First Steps");
-      if((d.totalAttempts||0)>=10)badges.push("🎯 10 Attempts");
-      if((d.totalAttempts||0)>=50)badges.push("🏆 50 Attempts");
-      if(xp>=100)badges.push("⭐ 100 XP");
-      if(xp>=500)badges.push("💎 500 XP");
-      const stats=d.gameStats||{};
-      Object.keys(stats).forEach(k=>{if((stats[k].attempts||0)>=5)badges.push("🎮 "+k+" ×5");});
-      $("wa-badges").innerHTML=badges.length?badges.map(b=>'<span class="wa-badge">'+escapeHtml(b)+'</span>').join(""):'<span class="wa-muted">Play a game to earn your first achievement.</span>';
-      const statEntries=Object.entries(stats).sort((a,b)=>(b[1].attempts||0)-(a[1].attempts||0));
-      $("wa-game-stats").innerHTML=statEntries.length?statEntries.map(([k,v])=>'<div class="wa-attempt-row"><span>'+escapeHtml(prettyMode(k))+'</span><span><b>'+(v.attempts||0)+'</b> plays · best '+(v.bestScore||0)+'</span></div>').join(""):'<p class="wa-muted">No games completed yet.</p>';
+      $("wa-level").textContent=String(Math.floor(xp/100)+1); $("wa-xp").textContent=String(xp); $("wa-attempts").textContent=String(d.totalAttempts||0);
+      const badges=[]; if((d.totalAttempts||0)>=1)badges.push("🌱 First Steps"); if((d.totalAttempts||0)>=10)badges.push("🎯 10 Attempts"); if(xp>=100)badges.push("⭐ 100 XP"); if(xp>=500)badges.push("💎 500 XP");
+      $("wa-badges").innerHTML=badges.length?badges.map(b=>'<span class="wa-badge">'+escapeHtml(b)+"</span>").join(""):'<span class="wa-muted">Play a game to earn your first achievement.</span>';
+      $("wa-game-stats").innerHTML=Object.entries(stats).length?Object.entries(stats).map(([k,v])=>'<div class="wa-attempt-row"><span>'+escapeHtml(prettyMode(k))+'</span><span><b>'+(v.attempts||0)+"</b> plays · best "+(v.bestScore||0)+"</span></div>").join(""):'<p class="wa-muted">No games completed yet.</p>';
       const attempts=await ref.collection("attempts").orderBy("completedAt","desc").limit(10).get();
-      $("wa-recent-attempts").innerHTML=attempts.empty?'<p class="wa-muted">Your completed games will appear here.</p>':attempts.docs.map(doc=>{
-        const a=doc.data(), date=a.completedAt&&a.completedAt.toDate?a.completedAt.toDate().toLocaleDateString():"";
-        return '<div class="wa-attempt-row"><span>'+escapeHtml(prettyMode(a.gameMode))+'<br><span class="wa-muted">'+date+'</span></span><span><b>'+a.score+'/'+a.maxScore+'</b><br><span class="wa-muted">+'+(a.xpAwarded||0)+' XP</span></span></div>';
-      }).join("");
-      showDashboardView();
-    }catch(e){status("Could not load saved progress: "+(e.message||"try again"),true);}
+      $("wa-recent-attempts").innerHTML=attempts.empty?'<p class="wa-muted">Your completed games will appear here.</p>':attempts.docs.map(doc=>{const a=doc.data(),date=a.completedAt?.toDate?a.completedAt.toDate().toLocaleDateString():"";return '<div class="wa-attempt-row"><span>'+escapeHtml(prettyMode(a.gameMode))+'<br><span class="wa-muted">'+date+"</span></span><span><b>"+a.score+"/"+a.maxScore+'</b><br><span class="wa-muted">+'+(a.xpAwarded||0)+" XP</span></span></div>";}).join("");
+    } catch(e){status("Could not load progress: "+(e.message||"try again"),true);}
   }
-  function escapeHtml(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-  function prettyMode(k){return String(k).replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase());}
-  async function logout(){
-    if(auth)await auth.signOut();
-    currentProfile=null;showLoginView();updateProfileButton();status("You have logged out.");
+  async function adminLogin(){
+    const password=$("wa-admin-password").value; if(!password){status("Enter the admin password.",true);return;}
+    $("wa-admin-login-button").disabled=true; try { const r=await call("adminLogin",{password}); await auth.signInWithCustomToken(r.token); isAdmin=true; currentProfile=null; $("wa-admin-password").value=""; $("wa-admin-login").style.display="none"; $("wa-admin-dashboard").style.display=""; await refreshAdmin(); status("Admin area opened."); } catch(e){status(e.message||"Could not open admin area.",true);} finally{$("wa-admin-login-button").disabled=false;}
   }
-  function recordAttempt(data){
-    if(!currentProfile||!functions)return Promise.resolve({saved:false,reason:"not-logged-in"});
-    if(lastAttemptPromise)return lastAttemptPromise;
-    const attemptId=currentAttemptId||(currentAttemptId=uuid());
-    const maxScore=Number.isFinite(data.maxScore)&&data.maxScore>0?data.maxScore:100;
-    const score=Math.max(0,Math.min(maxScore,Number(data.score)||0));
-    lastAttemptPromise=functions.httpsCallable("recordGameResult")({
-      attemptId,gameMode:data.gameMode,score,maxScore,
-      correct:data.correct||0,incorrect:data.incorrect||0,hintsUsed:data.hintsUsed||0,
-      durationSeconds:Math.max(0,Math.round((Date.now()-attemptStartedAt)/1000))
-    }).then(async res=>{
-      status(res.data&&res.data.duplicate?"This result was already saved.":"Progress saved to your profile.");
-      await refreshDashboard();return {saved:true,...res.data};
-    }).catch(e=>{status("Your result could not be saved: "+(e.message||"check your connection"),true);return {saved:false,error:e.message};})
-      .finally(()=>{lastAttemptPromise=null;});
-    return lastAttemptPromise;
+  async function refreshAdmin(){
+    if(!isAdmin)return; try { const r=await call("adminListStudents",{}); const box=$("wa-admin-profiles"); box.innerHTML=r.students.length?r.students.map(s=>'<div class="wa-admin-row"><span><b>'+escapeHtml(s.displayName)+"</b><br><small>"+s.totalAttempts+" plays · "+s.totalXp+' XP</small></span><span><button type="button" data-reset="'+s.id+'">Reset PIN</button><button type="button" data-delete="'+s.id+'">Delete</button></span></div>').join(""):'<p class="wa-muted">No student profiles yet.</p>'; } catch(e){status(e.message||"Could not load profiles.",true);}
   }
-  window.WAStudent={
-    beginAttempt(){currentAttemptId=uuid();attemptStartedAt=Date.now();lastAttemptPromise=null;},
-    recordAttempt
-  };
-  window.openStudentPanel=async function(){
-    $("wa-profile-modal").classList.add("open");
-    if(currentProfile){showDashboardView();await refreshDashboard();}
-    else{showLoginView();await refreshProfiles();}
-  };
+  async function resetPin(id){ const pin=prompt("Enter a new 4-digit PIN:"); if(pin===null)return; if(!/^\d{4}$/.test(pin)){status("PIN must be exactly four digits.",true);return;} try {await call("adminResetStudentPin",{studentId:id,pin});status("PIN updated.");}catch(e){status(e.message||"Could not reset PIN.",true);} }
+  async function deleteStudent(id){ if(!confirm("Delete this student profile and all saved progress? This cannot be undone."))return; const adminPassword=prompt("Type the admin password to confirm deletion:"); if(adminPassword===null)return; try {await call("adminDeleteStudent",{studentId:id,adminPassword});status("Profile deleted.");await refreshAdmin();}catch(e){status(e.message||"Could not delete profile.",true);} }
+  async function deleteMyProfile(){ if(!confirm("Delete your profile and all saved progress? An adult must confirm this."))return; const adminPassword=prompt("Ask an adult to type the admin password:"); if(adminPassword===null)return; try {await call("deleteMyProfile",{adminPassword});await auth.signOut();currentProfile=null;setStudentView("login");status("Your profile was deleted.");}catch(e){status(e.message||"Could not delete profile.",true);} }
+  function logout(){ auth.signOut(); currentProfile=null;isAdmin=false;setStudentView("login");$("wa-admin-login").style.display="";$("wa-admin-dashboard").style.display="none";status("You have logged out."); }
+  function uuid(){return crypto.randomUUID?crypto.randomUUID().replace(/-/g,""):(Date.now().toString(36)+Math.random().toString(36).slice(2)).slice(0,32);}
+  function recordAttempt(data){ if(!currentProfile||!functions)return Promise.resolve({saved:false,reason:"not-logged-in"}); if(lastAttemptPromise)return lastAttemptPromise; const attemptId=currentAttemptId||(currentAttemptId=uuid()),maxScore=Number.isFinite(data.maxScore)&&data.maxScore>0?data.maxScore:100,score=Math.max(0,Math.min(maxScore,Number(data.score)||0)); lastAttemptPromise=call("recordGameResult",{attemptId,gameMode:data.gameMode,score,maxScore,correct:data.correct||0,incorrect:data.incorrect||0,hintsUsed:data.hintsUsed||0,durationSeconds:Math.max(0,Math.round((Date.now()-attemptStartedAt)/1000))}).then(async r=>{status(r.duplicate?"This result was already saved.":"Progress saved to your profile.");await refreshDashboard();return {saved:true,...r};}).catch(e=>{status("Your result could not be saved: "+(e.message||"check your connection"),true);return {saved:false,error:e.message};}).finally(()=>lastAttemptPromise=null);return lastAttemptPromise; }
+  window.WAStudent={beginAttempt(){currentAttemptId=uuid();attemptStartedAt=Date.now();lastAttemptPromise=null;},recordAttempt};
+  window.openStudentPanel=async function(){ $("wa-profile-modal").classList.add("open"); if(isAdmin){setTab("admin");await refreshAdmin();}else{setTab("student");setStudentView(currentProfile?"dashboard":"login");if(currentProfile)await refreshDashboard();} };
   window.closeStudentPanel=()=> $("wa-profile-modal").classList.remove("open");
-  window.refreshStudentProfiles=refreshProfiles;
-  window.studentLogin=login;
-  window.refreshStudentDashboard=refreshDashboard;
-  window.studentLogout=logout;
-  $("wa-student-pin").addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4);});
-  $("wa-student-pin").addEventListener("keydown",e=>{if(e.key==="Enter")login();});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")window.closeStudentPanel();});
-  init();
+  document.querySelectorAll(".wa-tab").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
+  ["wa-student-pin","wa-new-pin"].forEach(id=>$(id).addEventListener("input",e=>e.target.value=e.target.value.replace(/\D/g,"").slice(0,4)));
+  $("wa-login-button").addEventListener("click",loginStudent);$("wa-create-button").addEventListener("click",createStudent);$("wa-show-create").addEventListener("click",()=>{setStudentView("create");status("");});$("wa-show-login").addEventListener("click",()=>{setStudentView("login");status("");});$("wa-refresh-dashboard").addEventListener("click",refreshDashboard);$("wa-logout").addEventListener("click",logout);$("wa-delete-my-profile").addEventListener("click",deleteMyProfile);$("wa-admin-login-button").addEventListener("click",adminLogin);$("wa-admin-refresh").addEventListener("click",refreshAdmin);$("wa-admin-logout").addEventListener("click",logout);$("wa-admin-profiles").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.reset)resetPin(b.dataset.reset);if(b.dataset.delete)deleteStudent(b.dataset.delete);});
+  try { firebase.initializeApp(firebaseConfig); auth=firebase.auth();db=firebase.firestore();functions=firebase.app().functions("asia-southeast1");auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});auth.onAuthStateChanged(async user=>{if(!user){currentProfile=null;isAdmin=false;return;}const claims=await user.getIdTokenResult().then(r=>r.claims).catch(()=>({}));if(claims.role==="admin"){isAdmin=true;currentProfile=null;} }); } catch(e){status("Firebase could not initialise: "+(e.message||"check configuration"),true);}
 })();
 </script>
-
 </body>
 </html>
