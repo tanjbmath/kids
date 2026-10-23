@@ -585,6 +585,27 @@
 .wa-close{float:right;border:0;background:#F0EDFF;color:#4C3DB4;border-radius:50%;width:34px;height:34px;font-size:18px;font-weight:900;cursor:pointer}
 @media(max-width:480px){.wa-modal{padding:18px;border-radius:20px}.wa-stats{gap:6px}.wa-stat strong{font-size:19px}}
 
+
+  /* Mobile background fix: keep the forest artwork covering the viewport while the document scrolls.
+     A fixed background on body can stop painting below the first screen in mobile browsers. */
+  @media (max-width:599px){
+    html,body{height:auto;min-height:100%;background-color:#EAF9FF;}
+    body{background-image:none;background-attachment:scroll;}
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      background-image:linear-gradient(rgba(234,249,255,0.30),rgba(234,249,255,0.42)),url('assets/backgrounds/background.png');
+      background-size:cover;
+      background-position:center top;
+      background-repeat:no-repeat;
+    }
+    .app{position:relative;z-index:2;}
+    .sound-toggle-btn{z-index:60;}
+  }
+
 </style>
 <style id="responsive-layout-overrides">
   /* Responsive layout and touch-safe controls */
