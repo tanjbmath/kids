@@ -553,7 +553,39 @@
 
     /* User preference: remove all cloud and bird decorations, including any static remnants. */
     .home-sky .cloud-shape, .home-sky .bird, .cloud { display:none !important; animation:none !important; }
-    </style>
+    
+/* Student profile and gamification UI */
+.wa-profile-pill{border:0;border-radius:999px;background:#fff;color:#2B2250;padding:9px 13px;font:800 13px 'Nunito',sans-serif;box-shadow:0 3px 0 rgba(43,34,80,.12);cursor:pointer}
+.wa-profile-pill:hover{transform:translateY(-1px)}
+.wa-profile-pill.wa-logged-in{background:#DDFBEA}
+.wa-modal-backdrop{position:fixed;inset:0;background:rgba(31,24,66,.56);z-index:10000;display:none;align-items:center;justify-content:center;padding:16px}
+.wa-modal-backdrop.open{display:flex}
+.wa-modal{width:min(100%,480px);max-height:min(88vh,760px);overflow:auto;background:#fff;border-radius:24px;padding:22px;box-shadow:0 20px 70px rgba(0,0,0,.28)}
+.wa-modal h2{margin:0 0 6px;color:#2B2250;font-size:25px}
+.wa-muted{color:#756E95;font-size:13px;line-height:1.45}
+.wa-field{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.wa-field label{font-size:13px;font-weight:900;color:#2B2250}
+.wa-field select,.wa-field input{width:100%;border:2px solid #E5E0F5;border-radius:12px;padding:12px 13px;font:700 16px 'Nunito',sans-serif;color:#2B2250;background:#fff}
+.wa-pin{letter-spacing:.35em;text-align:center;font-size:24px!important;max-width:180px}
+.wa-action{border:0;border-radius:13px;padding:12px 16px;font:900 15px 'Nunito',sans-serif;cursor:pointer;background:#6C5CE7;color:#fff}
+.wa-action.secondary{background:#F0EDFF;color:#4C3DB4}
+.wa-action.danger{background:#FFE9EC;color:#A12B48}
+.wa-action:disabled{opacity:.5;cursor:not-allowed}
+.wa-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.wa-status{padding:10px 12px;border-radius:12px;background:#F3F0FF;color:#4C3DB4;font-size:13px;font-weight:800;margin:12px 0}
+.wa-status.error{background:#FFF0F0;color:#A12B48}
+.wa-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
+.wa-stat{background:#F5F2FF;border-radius:14px;padding:12px 8px;text-align:center}
+.wa-stat strong{display:block;font-size:22px;color:#4C3DB4;line-height:1.2}
+.wa-stat span{font-size:11px;font-weight:900;color:#756E95}
+.wa-section-title{font-size:14px;font-weight:1000;margin:16px 0 8px;color:#2B2250}
+.wa-attempt-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #EEEAF8;font-size:13px}
+.wa-badge-row{display:flex;flex-wrap:wrap;gap:7px}
+.wa-badge{background:#FFF4CE;border:1px solid #F2D77C;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:900;color:#775200}
+.wa-close{float:right;border:0;background:#F0EDFF;color:#4C3DB4;border-radius:50%;width:34px;height:34px;font-size:18px;font-weight:900;cursor:pointer}
+@media(max-width:480px){.wa-modal{padding:18px;border-radius:20px}.wa-stats{gap:6px}.wa-stat strong{font-size:19px}}
+
+</style>
 </head>
 <body>
 <button class="sound-toggle-btn" onclick="toggleSound()" aria-label="Toggle sound">🔊</button>
@@ -590,6 +622,7 @@
       </div>
       <div class="lk-header-pills">
         <span class="lk-pill">🔥 3</span>
+        <button class="wa-profile-pill" type="button" onclick="openStudentPanel()">👤 Student</button>
       </div>
     </div>
 
@@ -7079,6 +7112,7 @@ function toggleSound(){
 
 /* ---------------- NAV ---------------- */
 function goTo(name){
+  if (name === "game" || /-game$/.test(name)) { if (window.WAStudent) window.WAStudent.beginAttempt(); }
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById("screen-"+name).classList.add("active");
   window.scrollTo({top:0, behavior:"smooth"});
@@ -7293,8 +7327,8 @@ function startVocabGame(){
   state.vocabWrong = 0;
   state.vocabFirstTry = 0;
   state.vocabRetried = 0;
-  state.vocabMarksPerPair = Math.round((100/pool.length) * 10) / 10; // 10 marks each pair
-  state.vocabTotalPossible = Math.round(pool.length * state.vocabMarksPerPair);
+  state.vocabMarksPerPair = Math.round((50/pool.length) * 10) / 10; // hinted round contributes up to 50 marks
+  state.vocabTotalPossible = 100; // fixed total: hinted round 50 + no-hints round 50
   state.vocabHintsDisabled = false;
   state.vocabBonusEligible = false;
   state.vocabBonusActive = false;
@@ -7437,7 +7471,7 @@ function selectVocabTile(side, idx){
     updateVocabTopBar();
     if(state.matchedCount>=state.vocabPairs.length){
       if(!state.vocabBonusActive){
-        state.vocabBonusEligible = state.vocabScore > 90;
+        state.vocabBonusEligible = state.vocabScore > 45;
       } else {
         state.vocabBonusDone = true;
         state.vocabBonusActive = false;
@@ -7507,7 +7541,7 @@ function startVocabBonusRound(){
   state.selection = null;
   state.wrongCounts = {};
   state.matchedCount = 0;
-  state.vocabTotalPossible += Math.round(state.vocabPairs.length * state.vocabMarksPerPair);
+  // Keep the displayed maximum fixed at 100; the no-hints round contributes the remaining 50 marks.
   document.getElementById("vocab-grid-wrap").style.display = "";
   document.getElementById("vocab-review-wrap").style.display = "none";
   const banner = document.getElementById("vocab-bonus-banner");
@@ -7555,6 +7589,7 @@ function showVocabResults(){
   btn2.onclick = ()=>goTo("vocab-base");
   btn3.onclick = ()=>goTo("welcome");
 
+  window.WAStudent.recordAttempt({gameMode:"word-match",score:state.vocabScore,maxScore:100,correct:state.matchedCount,incorrect:state.vocabWrong,hintsUsed:state.vocabHintsDisabled?0:1});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -7793,6 +7828,7 @@ function showStoryResults(){
   btn2.onclick = ()=>goTo("story-level");
   btn3.onclick = ()=>goTo("welcome");
 
+  window.WAStudent.recordAttempt({gameMode:"story-blanks",score:state.storyScore,maxScore:total||100,correct:state.storyCorrectCount,incorrect:state.storyWrongCount,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -8300,6 +8336,7 @@ function showTwoPlayerResults(){
   btn2.onclick = ()=>goTo("ringgit-difficulty");
   btn3.onclick = ()=>goTo("welcome");
 
+  window.WAStudent.recordAttempt({gameMode:"ringgit-shop",score:state.ringgitPendingScore,maxScore:100,correct:0,incorrect:0,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -8340,6 +8377,7 @@ function showRinggitResults(score){
   btn2.onclick = ()=>goTo("ringgit-difficulty");
   btn3.onclick = ()=>goTo("welcome");
 
+  window.WAStudent.recordAttempt({gameMode:"ringgit-shop",score:score,maxScore:100,correct:0,incorrect:0,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -8570,6 +8608,7 @@ function showMathResults(){
   btn2.onclick = ()=>goTo("math-year");
   btn3.onclick = ()=>goTo("welcome");
 
+  window.WAStudent.recordAttempt({gameMode:"math-quiz",score:score,maxScore:maxPossible||100,correct:state.mathCorrectCount,incorrect:state.mathWrongCount,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -8824,6 +8863,7 @@ function showResults(){
   btn2.textContent = "🌐 Change Level";
   btn2.onclick = ()=>goTo("level");
   btn3.onclick = ()=>goTo("welcome");
+  window.WAStudent.recordAttempt({gameMode:"sentence-builder",score:score,maxScore:maxPossible||100,correct:state.correctCount,incorrect:state.wrongCount,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -9091,6 +9131,7 @@ function showFillBlankResults(){
   btn2.textContent = "🌐 Change Mode";
   btn2.onclick = ()=>goTo("fillblank-mode");
   btn3.onclick = ()=>goTo("welcome");
+  window.WAStudent.recordAttempt({gameMode:"fill-in-the-blank",score:score,maxScore:maxPossible||100,correct:state.fillBlankCorrectCount,incorrect:state.fillBlankWrongCount,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -9455,6 +9496,7 @@ function showDetectiveResults(){
   btn2.textContent = "🌐 Change Difficulty";
   btn2.onclick = ()=> goTo(state.detectiveLang === "zh" ? "detective-language" : "detective-difficulty");
   btn3.onclick = ()=>goTo("welcome");
+  window.WAStudent.recordAttempt({gameMode:"word-detective",score:score,maxScore:maxPossible||100,correct:state.detectiveCorrectCount,incorrect:state.detectiveWrongCount,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -9639,6 +9681,7 @@ function showMathQuizResults(){
   btn2.textContent = "🌐 Change Year";
   btn2.onclick = ()=> goTo("mathquiz-year");
   btn3.onclick = ()=>goTo("welcome");
+  window.WAStudent.recordAttempt({gameMode:"math-quiz",score:score,maxScore:maxPossible||100,correct:state.mathQuizCorrectCount,incorrect:state.mathQuizWrongCount,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
@@ -9750,6 +9793,210 @@ makeClouds();
   });
   /* If this script runs after DOMContentLoaded, still initialise. */
   if (document.readyState !== 'loading') refreshAll();
+})();
+</script>
+
+
+<div class="wa-modal-backdrop" id="wa-profile-modal" role="dialog" aria-modal="true" aria-labelledby="wa-profile-title" onclick="if(event.target===this)closeStudentPanel()">
+  <div class="wa-modal">
+    <button class="wa-close" type="button" onclick="closeStudentPanel()" aria-label="Close">×</button>
+    <h2 id="wa-profile-title">🎒 Student Profile</h2>
+    <p class="wa-muted">Choose your profile and enter your 4-digit PIN to save your progress across visits.</p>
+    <div id="wa-login-view">
+      <div class="wa-field"><label for="wa-student-select">Your profile</label><select id="wa-student-select"><option value="">Loading student profiles…</option></select></div>
+      <div class="wa-field"><label for="wa-student-pin">4-digit PIN</label><input id="wa-student-pin" class="wa-pin" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]{4}" placeholder="••••" type="password"></div>
+      <div id="wa-profile-status" class="wa-status">Connect your Firebase web app to enable student profiles.</div>
+      <div class="wa-actions"><button class="wa-action" id="wa-login-button" type="button" onclick="studentLogin()">Log in</button><button class="wa-action secondary" type="button" onclick="refreshStudentProfiles()">Refresh profiles</button></div>
+      <p class="wa-muted">Ask your teacher for your profile and PIN. Do not share your PIN with other students.</p>
+    </div>
+    <div id="wa-dashboard-view" style="display:none">
+      <p id="wa-welcome-name" class="wa-muted"></p>
+      <div class="wa-stats">
+        <div class="wa-stat"><strong id="wa-level">1</strong><span>LEVEL</span></div>
+        <div class="wa-stat"><strong id="wa-xp">0</strong><span>TOTAL XP</span></div>
+        <div class="wa-stat"><strong id="wa-attempts">0</strong><span>ATTEMPTS</span></div>
+      </div>
+      <div class="wa-section-title">🏅 Achievements</div><div id="wa-badges" class="wa-badge-row"></div>
+      <div class="wa-section-title">🎮 Game progress</div><div id="wa-game-stats"></div>
+      <div class="wa-section-title">🕘 Recent attempts</div><div id="wa-recent-attempts"></div>
+      <div class="wa-actions"><button class="wa-action secondary" type="button" onclick="refreshStudentDashboard()">Refresh progress</button><button class="wa-action danger" type="button" onclick="studentLogout()">Log out</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase compat SDK: client config is public; never place service-account keys here. -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-functions-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check-compat.js"></script>
+<script>
+(function(){
+  const firebaseConfig = {
+    apiKey: "REPLACE_WITH_FIREBASE_WEB_API_KEY",
+    authDomain: "word-adventure-tanjb.firebaseapp.com",
+    projectId: "word-adventure-tanjb",
+    appId: "REPLACE_WITH_FIREBASE_WEB_APP_ID",
+    messagingSenderId: "REPLACE_WITH_FIREBASE_MESSAGING_SENDER_ID"
+  };
+  const appCheckSiteKey = "REPLACE_WITH_RECAPTCHA_SITE_KEY";
+  let appReady = false, auth = null, db = null, functions = null, currentAttemptId = null;
+  let currentProfile = null, attemptStartedAt = Date.now(), lastAttemptPromise = null;
+  const $ = id => document.getElementById(id);
+  function uuid(){
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID().replace(/-/g,"");
+    return (Date.now().toString(36)+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)).slice(0,32);
+  }
+  function status(message,isError){
+    const el=$("wa-profile-status"); if(!el)return;
+    el.textContent=message; el.classList.toggle("error",!!isError);
+  }
+  function configured(){
+    return appReady && !firebaseConfig.apiKey.startsWith("REPLACE_") &&
+      !firebaseConfig.appId.startsWith("REPLACE_") && !appCheckSiteKey.startsWith("REPLACE_");
+  }
+  function init(){
+    const missing=[];
+    if(firebaseConfig.apiKey.startsWith("REPLACE_"))missing.push("Firebase web API key");
+    if(firebaseConfig.appId.startsWith("REPLACE_"))missing.push("Firebase web app ID");
+    if(appCheckSiteKey.startsWith("REPLACE_"))missing.push("App Check reCAPTCHA site key");
+    if(missing.length){status("Setup needed: add your "+missing.join(", ")+ " in the Firebase configuration section of index.html.");return;}
+    try{
+      if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+      firebase.appCheck().activate(appCheckSiteKey,true);
+      auth=firebase.auth(); db=firebase.firestore();
+      functions=firebase.app().functions("asia-southeast1");
+      auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(()=>{});
+      appReady=true;
+      auth.onAuthStateChanged(async user=>{
+        if(user && user.uid){
+          currentProfile={id:user.uid,displayName:user.displayName||"Student"};
+          showDashboardView();
+          await refreshStudentDashboard();
+        }else{
+          currentProfile=null; showLoginView();
+        }
+        updateProfileButton();
+      });
+      status("Connected. Choose your student profile and enter your PIN.");
+    }catch(e){status("Firebase could not initialise: "+(e.message||"check your configuration"),true);}
+  }
+  function showLoginView(){
+    $("wa-login-view").style.display="";
+    $("wa-dashboard-view").style.display="none";
+  }
+  function showDashboardView(){
+    $("wa-login-view").style.display="none";
+    $("wa-dashboard-view").style.display="";
+  }
+  function updateProfileButton(){
+    const b=document.querySelector(".wa-profile-pill");
+    if(!b)return;
+    b.classList.toggle("wa-logged-in",!!currentProfile);
+    b.textContent=currentProfile ? "👤 "+currentProfile.displayName : "👤 Student";
+  }
+  async function refreshProfiles(){
+    const select=$("wa-student-select");
+    if(!configured()){init();return;}
+    select.innerHTML='<option value="">Loading profiles…</option>';
+    try{
+      const res=await functions.httpsCallable("listStudentProfiles")({});
+      const profiles=(res.data&&res.data.profiles)||[];
+      select.innerHTML='<option value="">Choose your profile</option>';
+      profiles.forEach(p=>{
+        const o=document.createElement("option");o.value=p.id;o.textContent=p.displayName;select.appendChild(o);
+      });
+      if(!profiles.length)status("No student profiles have been created yet. Ask your teacher to create one.");
+      else status("Select your name and enter your 4-digit PIN.");
+    }catch(e){select.innerHTML='<option value="">Could not load profiles</option>';status("Could not load profiles: "+(e.message||"check Firebase setup and App Check"),true);}
+  }
+  async function login(){
+    if(!configured()){init();return;}
+    const studentId=$("wa-student-select").value, pin=$("wa-student-pin").value;
+    if(!studentId){status("Choose your profile first.",true);return;}
+    if(!/^[0-9]{4}$/.test(pin)){status("Enter all four digits of your PIN.",true);return;}
+    const button=$("wa-login-button");button.disabled=true;
+    try{
+      const res=await functions.httpsCallable("loginWithPin")({studentId,pin});
+      await auth.signInWithCustomToken(res.data.token);
+      $("wa-student-pin").value="";
+      currentProfile={id:res.data.studentId,displayName:res.data.displayName};
+      status("Welcome back, "+currentProfile.displayName+"!");
+      await refreshStudentDashboard();
+    }catch(e){status(e.message||"Login failed. Check your PIN and try again.",true);}
+    finally{button.disabled=false;}
+  }
+  async function refreshDashboard(){
+    if(!currentProfile||!db)return;
+    try{
+      const ref=db.collection("students").doc(currentProfile.id);
+      const snap=await ref.get();
+      if(!snap.exists){status("Student profile could not be found.",true);return;}
+      const d=snap.data(), xp=d.totalXp||0;
+      $("wa-welcome-name").textContent="Welcome back, "+(d.displayName||currentProfile.displayName)+"!";
+      $("wa-level").textContent=String(Math.floor(xp/100)+1);
+      $("wa-xp").textContent=String(xp);
+      $("wa-attempts").textContent=String(d.totalAttempts||0);
+      const badges=[];
+      if((d.totalAttempts||0)>=1)badges.push("🌱 First Steps");
+      if((d.totalAttempts||0)>=10)badges.push("🎯 10 Attempts");
+      if((d.totalAttempts||0)>=50)badges.push("🏆 50 Attempts");
+      if(xp>=100)badges.push("⭐ 100 XP");
+      if(xp>=500)badges.push("💎 500 XP");
+      const stats=d.gameStats||{};
+      Object.keys(stats).forEach(k=>{if((stats[k].attempts||0)>=5)badges.push("🎮 "+k+" ×5");});
+      $("wa-badges").innerHTML=badges.length?badges.map(b=>'<span class="wa-badge">'+escapeHtml(b)+'</span>').join(""):'<span class="wa-muted">Play a game to earn your first achievement.</span>';
+      const statEntries=Object.entries(stats).sort((a,b)=>(b[1].attempts||0)-(a[1].attempts||0));
+      $("wa-game-stats").innerHTML=statEntries.length?statEntries.map(([k,v])=>'<div class="wa-attempt-row"><span>'+escapeHtml(prettyMode(k))+'</span><span><b>'+(v.attempts||0)+'</b> plays · best '+(v.bestScore||0)+'</span></div>').join(""):'<p class="wa-muted">No games completed yet.</p>';
+      const attempts=await ref.collection("attempts").orderBy("completedAt","desc").limit(10).get();
+      $("wa-recent-attempts").innerHTML=attempts.empty?'<p class="wa-muted">Your completed games will appear here.</p>':attempts.docs.map(doc=>{
+        const a=doc.data(), date=a.completedAt&&a.completedAt.toDate?a.completedAt.toDate().toLocaleDateString():"";
+        return '<div class="wa-attempt-row"><span>'+escapeHtml(prettyMode(a.gameMode))+'<br><span class="wa-muted">'+date+'</span></span><span><b>'+a.score+'/'+a.maxScore+'</b><br><span class="wa-muted">+'+(a.xpAwarded||0)+' XP</span></span></div>';
+      }).join("");
+      showDashboardView();
+    }catch(e){status("Could not load saved progress: "+(e.message||"try again"),true);}
+  }
+  function escapeHtml(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function prettyMode(k){return String(k).replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase());}
+  async function logout(){
+    if(auth)await auth.signOut();
+    currentProfile=null;showLoginView();updateProfileButton();status("You have logged out.");
+  }
+  function recordAttempt(data){
+    if(!currentProfile||!functions)return Promise.resolve({saved:false,reason:"not-logged-in"});
+    if(lastAttemptPromise)return lastAttemptPromise;
+    const attemptId=currentAttemptId||(currentAttemptId=uuid());
+    const maxScore=Number.isFinite(data.maxScore)&&data.maxScore>0?data.maxScore:100;
+    const score=Math.max(0,Math.min(maxScore,Number(data.score)||0));
+    lastAttemptPromise=functions.httpsCallable("recordGameResult")({
+      attemptId,gameMode:data.gameMode,score,maxScore,
+      correct:data.correct||0,incorrect:data.incorrect||0,hintsUsed:data.hintsUsed||0,
+      durationSeconds:Math.max(0,Math.round((Date.now()-attemptStartedAt)/1000))
+    }).then(async res=>{
+      status(res.data&&res.data.duplicate?"This result was already saved.":"Progress saved to your profile.");
+      await refreshDashboard();return {saved:true,...res.data};
+    }).catch(e=>{status("Your result could not be saved: "+(e.message||"check your connection"),true);return {saved:false,error:e.message};})
+      .finally(()=>{lastAttemptPromise=null;});
+    return lastAttemptPromise;
+  }
+  window.WAStudent={
+    beginAttempt(){currentAttemptId=uuid();attemptStartedAt=Date.now();lastAttemptPromise=null;},
+    recordAttempt
+  };
+  window.openStudentPanel=async function(){
+    $("wa-profile-modal").classList.add("open");
+    if(currentProfile){showDashboardView();await refreshDashboard();}
+    else{showLoginView();await refreshProfiles();}
+  };
+  window.closeStudentPanel=()=> $("wa-profile-modal").classList.remove("open");
+  window.refreshStudentProfiles=refreshProfiles;
+  window.studentLogin=login;
+  window.refreshStudentDashboard=refreshDashboard;
+  window.studentLogout=logout;
+  $("wa-student-pin").addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4);});
+  $("wa-student-pin").addEventListener("keydown",e=>{if(e.key==="Enter")login();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")window.closeStudentPanel();});
+  init();
 })();
 </script>
 
