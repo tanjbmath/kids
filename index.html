@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Word Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -585,6 +585,74 @@
 .wa-close{float:right;border:0;background:#F0EDFF;color:#4C3DB4;border-radius:50%;width:34px;height:34px;font-size:18px;font-weight:900;cursor:pointer}
 @media(max-width:480px){.wa-modal{padding:18px;border-radius:20px}.wa-stats{gap:6px}.wa-stat strong{font-size:19px}}
 
+</style>
+<style id="responsive-layout-overrides">
+  /* Responsive layout and touch-safe controls */
+  html{height:100%;width:100%;-webkit-text-size-adjust:100%;}
+  body{min-height:100vh;min-height:100dvh;width:100%;overflow-x:hidden;}
+  .app{width:min(100%,960px);min-height:100vh;min-height:100dvh;margin-inline:auto;padding:clamp(16px,2.5vw,32px) clamp(16px,3vw,36px) calc(100px + env(safe-area-inset-bottom,0px));}
+  .screen,.card,.top-bar,.vocab-grid,.choice-grid,.lk-grid{min-width:0;}
+  .card{width:100%;}
+  img,svg,video,canvas{max-width:100%;height:auto;}
+  .sound-toggle-btn{top:auto;right:auto;left:calc(16px + env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:52px;height:52px;z-index:60;touch-action:manipulation;}
+
+  /* Tablets: retain generous game space while reducing side padding. */
+  @media (min-width:600px) and (max-width:1023px){
+    .app{width:min(100%,820px);padding-inline:clamp(20px,4vw,32px);}
+    .card{padding:26px 22px;}
+    .lk-game{min-height:190px;}
+    .vocab-tile,.bank-tile,.placed-tile{min-height:48px;}
+  }
+
+  /* Phones: one comfortable column, scrollable content and 44px targets. */
+  @media (max-width:599px){
+    body{background-attachment:scroll;}
+    .app{width:100%;padding:12px 12px calc(96px + env(safe-area-inset-bottom,0px));}
+    .card{border-radius:24px;padding:20px 14px;}
+    .top-bar{align-items:flex-start;flex-wrap:wrap;gap:8px;}
+    .top-bar .progress-track{order:3;flex:1 0 100%;margin:0;}
+    .pill{padding:8px 12px;}
+    .choice-grid,.lk-grid{gap:10px;}
+    .choice-card{padding:16px 8px;font-size:16px;}
+    .choice-card .emoji{font-size:36px;}
+    .lk-header{gap:8px;align-items:flex-start;}
+    .lk-brand{min-width:0;gap:7px;}
+    .lk-brand-mascot{width:42px;height:42px;}
+    .lk-wordmark{font-size:20px;}
+    .lk-pill{padding:7px 10px;font-size:13px;}
+    .lk-hero{gap:10px;margin-bottom:14px;}
+    .lk-hero-mascot{width:76px;height:76px;font-size:54px;border-width:4px;}
+    .lk-hero-bubble{padding:12px 14px;border-radius:20px;}
+    .lk-hero-title{font-size:20px;}
+    .lk-hero-sub{font-size:13px;}
+    .lk-game{min-height:146px;border-radius:22px;padding:16px 9px 14px;gap:8px;border-width:4px;}
+    .lk-game-badge{width:58px;height:58px;font-size:32px;border-radius:20px;}
+    .lk-game-title{font-size:17px;}
+    .lk-wide{min-height:100px;padding:14px 16px;gap:12px;}
+    .lk-wide .lk-game-badge{width:54px;height:54px;font-size:30px;}
+    .vocab-grid{gap:8px;}
+    .vocab-tile{min-height:52px;padding:12px 7px;font-size:14px;}
+    .word-bank{gap:8px;}
+    .bank-tile,.placed-tile{min-height:48px;padding:11px 13px;font-size:16px;}
+    .btn{min-height:48px;padding:13px 22px;font-size:18px;}
+    .icon-btn{width:48px;height:48px;}
+    .story-text{padding:13px 12px;font-size:16px;line-height:2.1;}
+    .detective-word-row{gap:8px;}
+    .detective-word-row .story-text{font-size:23px;}
+    .money-tile.coin{width:58px;height:58px;}
+    .money-tile.note{width:82px;height:48px;}
+    .stat-grid{gap:8px;margin:18px 0;}
+    .stat{padding:11px 5px;}
+    .wa-modal-backdrop{padding:12px;}
+    .wa-modal{max-height:calc(100dvh - 24px);}
+  }
+  @media (max-width:359px){
+    .app{padding-inline:8px;}
+    .card{padding-inline:10px;}
+    .lk-wordmark{font-size:18px;}
+    .lk-game-title{font-size:16px;}
+    .vocab-tile{font-size:13px;}
+  }
 </style>
 </head>
 <body>
