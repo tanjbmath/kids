@@ -47,7 +47,7 @@ function safeEqualHex(a, b) {
  * Public profile picker. Only returns display names and opaque IDs; never returns PIN data.
  * Configure Firebase App Check before public deployment to reduce automated abuse.
  */
-exports.listStudentProfiles = onCall({ region: "asia-southeast1" }, async () => {
+exports.listStudentProfiles = onCall({ region: "asia-southeast1", enforceAppCheck: true }, async () => {
   const snap = await db.collection("students").where("active", "==", true).orderBy("displayName").limit(500).get();
   return {
     profiles: snap.docs.map((doc) => ({
