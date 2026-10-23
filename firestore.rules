@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /students/{studentId} {
+      allow read: if request.auth != null && request.auth.uid == studentId;
+      allow write: if false;
+      match /attempts/{attemptId} {
+        allow read: if request.auth != null && request.auth.uid == studentId;
+        allow write: if false;
+      }
+    }
+    // PIN hashes, salts and lockout state are server-only, including for the student.
+    match /studentSecrets/{studentId} {
+      allow read, write: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
