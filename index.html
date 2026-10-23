@@ -8608,7 +8608,7 @@ function showMathResults(){
   btn2.onclick = ()=>goTo("math-year");
   btn3.onclick = ()=>goTo("welcome");
 
-  window.WAStudent.recordAttempt({gameMode:"math-quiz",score:score,maxScore:maxPossible||100,correct:state.mathCorrectCount,incorrect:state.mathWrongCount,hintsUsed:0});
+  window.WAStudent.recordAttempt({gameMode:"math-word-problems",score:score,maxScore:maxPossible||100,correct:state.mathCorrectCount,incorrect:state.mathWrongCount,hintsUsed:0});
   goTo("results");
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
