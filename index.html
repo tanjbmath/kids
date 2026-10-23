@@ -7227,8 +7227,8 @@ function startVocabGame(){
   state.vocabWrong = 0;
   state.vocabFirstTry = 0;
   state.vocabRetried = 0;
-  state.vocabMarksPerPair = Math.round((100/pool.length) * 10) / 10; // 10 marks each pair
-  state.vocabTotalPossible = Math.round(pool.length * state.vocabMarksPerPair);
+  state.vocabMarksPerPair = Math.round((50/pool.length) * 10) / 10; // hinted round contributes at most 50 marks
+  state.vocabTotalPossible = 100; // fixed total: hinted round 50 + no-hints round 50
   state.vocabHintsDisabled = false;
   state.vocabBonusEligible = false;
   state.vocabBonusActive = false;
@@ -7371,7 +7371,7 @@ function selectVocabTile(side, idx){
     updateVocabTopBar();
     if(state.matchedCount>=state.vocabPairs.length){
       if(!state.vocabBonusActive){
-        state.vocabBonusEligible = state.vocabScore > 90;
+        state.vocabBonusEligible = state.vocabScore > 45;
       } else {
         state.vocabBonusDone = true;
         state.vocabBonusActive = false;
@@ -7441,7 +7441,7 @@ function startVocabBonusRound(){
   state.selection = null;
   state.wrongCounts = {};
   state.matchedCount = 0;
-  state.vocabTotalPossible += Math.round(state.vocabPairs.length * state.vocabMarksPerPair);
+  // Total stays fixed at 100. The no-hints round contributes the remaining 50 marks.
   document.getElementById("vocab-grid-wrap").style.display = "";
   document.getElementById("vocab-review-wrap").style.display = "none";
   const banner = document.getElementById("vocab-bonus-banner");
