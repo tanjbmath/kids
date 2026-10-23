@@ -69,30 +69,33 @@ exports.loginWithPin = onCall({ region: "asia-southeast1" }, async (request) => 
   }
 
   const ref = db.collection("students").doc(studentId);
+  const secretRef = db.collection("studentSecrets").doc(studentId);
   const result = await db.runTransaction(async (tx) => {
-    const snap = await tx.get(ref);
-    if (!snap.exists || snap.get("active") !== true) {
+    const [snap, secretSnap] = await Promise.all([tx.get(ref), tx.get(secretRef)]);
+    if (!snap.exists || snap.get("active") !== true || !secretSnap.exists) {
       return { ok: false, reason: "invalid" };
     }
 
     const data = snap.data();
+    const secret = secretSnap.data();
     const now = Date.now();
-    const lockedUntil = data.pinLockedUntil?.toMillis?.() || 0;
+    const lockedUntil = secret.pinLockedUntil?.toMillis?.() || 0;
     if (lockedUntil > now) return { ok: false, reason: "locked" };
 
-    const expected = pinHash(pin, data.pinSalt || "");
-    if (!safeEqualHex(expected, data.pinHash || "")) {
-      const attempts = (data.failedPinAttempts || 0) + 1;
+    const expected = pinHash(pin, secret.pinSalt || "");
+    if (!safeEqualHex(expected, secret.pinHash || "")) {
+      const attempts = (secret.failedPinAttempts || 0) + 1;
       const update = { failedPinAttempts: attempts };
       if (attempts >= MAX_PIN_ATTEMPTS) {
         update.pinLockedUntil = Timestamp.fromMillis(now + LOCK_MINUTES * 60 * 1000);
         update.failedPinAttempts = 0;
       }
-      tx.update(ref, update);
+      tx.update(secretRef, update);
       return { ok: false, reason: attempts >= MAX_PIN_ATTEMPTS ? "locked" : "invalid" };
     }
 
-    tx.update(ref, { failedPinAttempts: 0, pinLockedUntil: null, lastLoginAt: FieldValue.serverTimestamp() });
+    tx.update(secretRef, { failedPinAttempts: 0, pinLockedUntil: null });
+    tx.update(ref, { lastLoginAt: FieldValue.serverTimestamp() });
     return { ok: true, displayName: data.displayName };
   });
 
