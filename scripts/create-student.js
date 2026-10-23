@@ -33,18 +33,21 @@ const auth = getAuth();
   await db.collection("students").doc(studentId).set({
     displayName,
     nameKey,
-    pinSalt: salt,
-    pinHash: hash,
     active: true,
     totalAttempts: 0,
     totalXp: 0,
     dailyXpDate: "",
     dailyXp: 0,
     gameStats: {},
-    failedPinAttempts: 0,
-    pinLockedUntil: null,
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp()
+  });
+  await db.collection("studentSecrets").doc(studentId).set({
+    pinSalt: salt,
+    pinHash: hash,
+    failedPinAttempts: 0,
+    pinLockedUntil: null,
+    createdAt: FieldValue.serverTimestamp()
   });
   console.log("Created student profile:", displayName, "ID:", studentId);
   console.log("Keep the student's PIN private; it cannot be recovered from the stored hash.");
