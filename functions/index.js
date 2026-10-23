@@ -136,13 +136,9 @@ exports.adminDeleteStudent = onCall(functionsOptions(), async (request) => {
   const ref = db.collection("students").doc(studentId);
   const snap = await ref.get();
   if (!snap.exists) throw new HttpsError("not-found", "Profile not found.");
-  await db.runTransaction(async (tx) => {
-    const fresh = await tx.get(ref);
-    if (!fresh.exists) return;
-    tx.delete(db.collection("studentNames").doc(fresh.get("nameKey")));
-    tx.delete(db.collection("studentSecrets").doc(studentId));
-    tx.delete(ref);
-  });
+  await db.collection("studentNames").doc(snap.get("nameKey")).delete();
+  await db.collection("studentSecrets").doc(studentId).delete();
+  await db.recursiveDelete(ref);
   await getAuth().deleteUser(studentId).catch(() => {});
   return { ok: true };
 });
@@ -153,13 +149,9 @@ exports.deleteMyProfile = onCall(functionsOptions(), async (request) => {
   const ref = db.collection("students").doc(studentId);
   const snap = await ref.get();
   if (!snap.exists) throw new HttpsError("not-found", "Profile not found.");
-  await db.runTransaction(async (tx) => {
-    const fresh = await tx.get(ref);
-    if (!fresh.exists) return;
-    tx.delete(db.collection("studentNames").doc(fresh.get("nameKey")));
-    tx.delete(db.collection("studentSecrets").doc(studentId));
-    tx.delete(ref);
-  });
+  await db.collection("studentNames").doc(snap.get("nameKey")).delete();
+  await db.collection("studentSecrets").doc(studentId).delete();
+  await db.recursiveDelete(ref);
   await getAuth().deleteUser(studentId).catch(() => {});
   return { ok: true };
 });
