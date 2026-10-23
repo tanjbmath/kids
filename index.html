@@ -22,7 +22,12 @@
   html,body{margin:0;padding:0;height:100%;}
   body{
     font-family:'Nunito',sans-serif;
-    background: linear-gradient(180deg,var(--sky-top) 0%, var(--sky-bot) 60%);
+    background-color:#EAF9FF;
+    background-image:linear-gradient(rgba(234,249,255,0.42),rgba(234,249,255,0.58)),url('assets/backgrounds/background.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
     min-height:100vh;
     color:var(--plum);
     overflow-x:hidden;
@@ -88,7 +93,10 @@
 
   /* Mascot */
   .mascot-wrap{display:flex; justify-content:center; margin-bottom:8px;}
-  .mascot{font-size:88px; display:inline-block; animation:bob 2.6s ease-in-out infinite; filter:drop-shadow(0 8px 6px rgba(43,34,80,0.25));}
+  .mascot{width:clamp(112px, 24vw, 176px); height:auto; max-height:220px; object-fit:contain; display:block; animation:bob 2.6s ease-in-out infinite; filter:drop-shadow(0 8px 6px rgba(43,34,80,0.18));}
+  .lk-hero-mascot{width:clamp(132px, 30vw, 210px); max-height:250px;}
+  .mascot-wrap img{margin-inline:auto;}
+  @media (max-width:480px){.mascot{width:clamp(96px, 29vw, 132px); max-height:160px;}.lk-hero-mascot{width:clamp(112px, 34vw, 150px);max-height:180px;}}
   @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);} 50%{transform:translateY(-12px) rotate(2deg);}}
   .mascot.happy{animation:happy .6s ease 2;}
   @keyframes happy{0%{transform:scale(1) rotate(0);}30%{transform:scale(1.25) rotate(-8deg);}60%{transform:scale(1.15) rotate(8deg);}100%{transform:scale(1) rotate(0);}}
@@ -373,7 +381,12 @@
 
   /* ============ LINGOKIDS-STYLE HOME MAKEOVER ============ */
   body{
-    background: linear-gradient(180deg,#6C5CE7 0%, #8E7BFF 26%, #B79CFF 48%, #FFD9EC 78%, #FFF3D6 100%);
+    background-color:#EAF9FF;
+    background-image:linear-gradient(rgba(234,249,255,0.30),rgba(234,249,255,0.42)),url('assets/backgrounds/background.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
   }
   .home-sky .sun-glow{
     background:radial-gradient(circle, rgba(255,214,90,1) 0%, rgba(255,190,60,0.55) 55%, rgba(255,190,60,0) 75%);
@@ -401,11 +414,9 @@
   }
   .lk-brand{display:flex; align-items:center; gap:10px;}
   .lk-brand-mascot{
-    width:52px;height:52px;border-radius:50%;
-    background:linear-gradient(160deg,#FFFFFF,#F0EBFF);
-    display:flex;align-items:center;justify-content:center;
-    font-size:32px;
-    box-shadow:0 5px 0 rgba(43,34,80,0.18), 0 10px 16px rgba(43,34,80,0.2);
+    width:52px;height:52px;object-fit:contain;
+    display:block;flex:0 0 auto;
+    filter:drop-shadow(0 4px 5px rgba(43,34,80,0.18));
     animation:bob 3s ease-in-out infinite;
   }
   .lk-wordmark{
@@ -531,7 +542,18 @@
   }
   .icon-btn:hover, .sound-toggle-btn:hover{filter:brightness(1.08); transform:translateY(-2px);}
 
-</style>
+
+
+/* User preference: keep the background still by removing animated clouds and birds. */
+.home-sky .cloud-shape,
+.home-sky .bird {
+  display: none !important;
+  animation: none !important;
+}
+
+    /* User preference: remove all cloud and bird decorations, including any static remnants. */
+    .home-sky .cloud-shape, .home-sky .bird, .cloud { display:none !important; animation:none !important; }
+    </style>
 </head>
 <body>
 <button class="sound-toggle-btn" onclick="toggleSound()" aria-label="Toggle sound">🔊</button>
@@ -563,7 +585,7 @@
 
     <div class="lk-header">
       <div class="lk-brand">
-        <span class="lk-brand-mascot">🐼</span>
+        <img class="lk-brand-mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async">
         <span class="lk-wordmark">Word <b>Adventure</b></span>
       </div>
       <div class="lk-header-pills">
@@ -572,7 +594,7 @@
     </div>
 
     <div class="lk-hero">
-      <div class="lk-hero-mascot-wrap"><span class="mascot lk-hero-mascot" id="mascot-welcome">🐼</span></div>
+      <div class="lk-hero-mascot-wrap"><img class="mascot lk-hero-mascot" id="mascot-welcome" src="assets/fox/fox-curious.png" data-base-src="assets/fox/fox-curious.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="lk-hero-bubble">
         <div class="lk-hero-title">Hi, friend! 👋</div>
         <div class="lk-hero-sub">What do you want to play today?</div>
@@ -619,7 +641,7 @@
   <section class="screen" id="screen-language">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your language</h2>
       <p class="tagline">Pick the language you want to play in.</p>
       <div class="choice-grid" id="language-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
@@ -630,7 +652,7 @@
   <section class="screen" id="screen-level">
     <button class="icon-btn home-btn" onclick="goTo('language')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="level-heading">Choose your level</h2>
       <div class="choice-grid" id="level-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
     </div>
@@ -640,7 +662,7 @@
   <section class="screen" id="screen-instructions">
     <button class="icon-btn home-btn" onclick="goTo('level')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="instr-title">How to play</h2>
       <p class="tagline" id="instr-text"></p>
       <div class="demo-row">
@@ -668,7 +690,7 @@
         <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><span class="mascot" id="mascot-game">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-game" src="assets/fox/fox-sentence-builder.png" data-base-src="assets/fox/fox-sentence-builder.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="mascot-speech">Let's build this sentence!</div>
       <div class="sentence-target" id="sentence-target"></div>
       <div class="hint-line" id="hint-line">Tap a placed word to remove it. This question is worth <span id="q-marks-left">10</span> marks.</div>
@@ -687,7 +709,7 @@
   <section class="screen" id="screen-fillblank-mode">
     <button class="icon-btn home-btn" onclick="goTo('level')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="fillblank-mode-heading">Choose a mode</h2>
       <div class="choice-grid" id="fillblank-mode-grid"></div>
     </div>
@@ -697,7 +719,7 @@
   <section class="screen" id="screen-fillblank-instructions">
     <button class="icon-btn home-btn" onclick="goTo('fillblank-mode')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="fillblank-instr-title">How to play</h2>
       <p class="tagline" id="fillblank-instr-text"></p>
       <div class="btn-row">
@@ -715,7 +737,7 @@
         <div class="progress-track"><div class="progress-fill" id="fillblank-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="fillblank-score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><span class="mascot" id="mascot-fillblank">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-fillblank" src="assets/fox/fox-story-blanks.png" data-base-src="assets/fox/fox-story-blanks.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="fillblank-speech">Pick the missing word!</div>
       <div class="story-text" id="fillblank-sentence"></div>
       <div class="hint-line" id="fillblank-hint-line"></div>
@@ -732,7 +754,7 @@
   <section class="screen" id="screen-detective-language">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your language</h2>
       <p class="tagline">Pick the language you want to play in.</p>
       <div class="choice-grid" id="detective-language-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
@@ -743,7 +765,7 @@
   <section class="screen" id="screen-detective-difficulty">
     <button class="icon-btn home-btn" onclick="goTo('detective-language')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="detective-difficulty-heading">Choose your difficulty</h2>
       <div class="choice-grid" id="detective-difficulty-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
     </div>
@@ -753,7 +775,7 @@
   <section class="screen" id="screen-detective-instructions">
     <button class="icon-btn home-btn" onclick="detectiveInstrBack()" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="detective-instr-title">How to play</h2>
       <p class="tagline" id="detective-instr-text"></p>
       <div class="btn-row">
@@ -771,7 +793,7 @@
         <div class="progress-track"><div class="progress-fill" id="detective-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="detective-score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><span class="mascot" id="mascot-detective">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-detective" src="assets/fox/fox-word-detective.png" data-base-src="assets/fox/fox-word-detective.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="detective-speech">Crack the code!</div>
       <div class="detective-word-row">
         <div class="story-text detective-word" id="detective-word"></div>
@@ -794,7 +816,7 @@
   <section class="screen" id="screen-mathquiz-year">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">选择年级</h2>
       <p class="tagline">挑选你想挑战的数学题目！</p>
       <div class="choice-grid" id="mathquiz-year-grid" style="grid-template-columns:1fr 1fr;"></div>
@@ -805,7 +827,7 @@
   <section class="screen" id="screen-mathquiz-instructions">
     <button class="icon-btn home-btn" onclick="goTo('mathquiz-year')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">游戏玩法</h2>
       <p class="tagline">读一读情境和问题，然后点击正确的答案。每题最多可以尝试几次哦！</p>
       <div class="btn-row">
@@ -823,7 +845,7 @@
         <div class="progress-track"><div class="progress-fill" id="mathquiz-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="mathquiz-score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><span class="mascot" id="mascot-mathquiz">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-mathquiz" src="assets/fox/fox-math-quiz.png" data-base-src="assets/fox/fox-math-quiz.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="mathquiz-speech">加油，你可以的！</div>
       <div class="mathquiz-scenario" id="mathquiz-scenario"></div>
       <div class="mathquiz-question" id="mathquiz-question"></div>
@@ -840,7 +862,7 @@
   <section class="screen" id="screen-vocab-mode">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose a Mode</h2>
       <p class="tagline">Match everyday words, or practise spelling tricky ones!</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr;">
@@ -857,7 +879,7 @@
   <section class="screen" id="screen-vocab-base">
     <button class="icon-btn home-btn" onclick="goTo('vocab-mode')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="vocab-base-heading">Which language do you know best?</h2>
       <p class="tagline">We'll show clues in this language.</p>
       <div class="choice-grid" id="vocab-base-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
@@ -868,7 +890,7 @@
   <section class="screen" id="screen-vocab-target">
     <button class="icon-btn home-btn" onclick="goTo('vocab-base')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="vocab-target-heading">Which language do you want to match?</h2>
       <div class="choice-grid" id="vocab-target-grid" style="grid-template-columns:1fr 1fr;"></div>
     </div>
@@ -878,7 +900,7 @@
   <section class="screen" id="screen-vocab-instructions">
     <button class="icon-btn home-btn" onclick="goTo('vocab-target')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="vocab-instr-title">How to play</h2>
       <p class="tagline" id="vocab-instr-text"></p>
       <div class="demo-row" id="vocab-demo-row"></div>
@@ -897,7 +919,7 @@
         <div class="progress-track"><div class="progress-fill" id="vocab-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="vocab-score-pill">⭐ 0</span>
       </div>
-      <div class="mascot-wrap"><span class="mascot" id="mascot-vocab">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-vocab" src="assets/fox/fox-word-match.png" data-base-src="assets/fox/fox-word-match.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="vocab-speech">Tap a word, then tap its match!</div>
       <div id="vocab-dictation-banner" class="hint-line" style="display:none; text-align:center; background:#EFE9FF; border:2px dashed #8E7BFF; border-radius:14px; padding:8px 12px; margin-bottom:10px; font-weight:800; color:#4b3a9e;">✏️ 听写 Spelling / Ejaan Mode</div>
       <div id="vocab-bonus-banner" class="hint-line" style="display:none; text-align:center; background:#FFF3D6; border:2px dashed #E8A33D; border-radius:14px; padding:8px 12px; margin-bottom:10px; font-weight:800; color:#8a5a12;"></div>
@@ -919,7 +941,7 @@
   <section class="screen" id="screen-story-language">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your language</h2>
       <p class="tagline">Pick the language you want to play in.</p>
       <div class="choice-grid" id="story-language-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
@@ -930,7 +952,7 @@
   <section class="screen" id="screen-story-level">
     <button class="icon-btn home-btn" onclick="goTo('story-language')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="story-level-heading">Choose your level</h2>
       <div class="choice-grid" id="story-level-grid"></div>
     </div>
@@ -940,7 +962,7 @@
   <section class="screen" id="screen-story-instructions">
     <button class="icon-btn home-btn" onclick="goTo('story-level')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="story-instr-title">How to play</h2>
       <p class="tagline" id="story-instr-text"></p>
       <div class="demo-row">
@@ -966,7 +988,7 @@
         <div class="progress-track"><div class="progress-fill" id="story-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="story-score-pill">⭐ 0</span>
       </div>
-      <div class="mascot-wrap"><span class="mascot" id="mascot-story">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-story" src="assets/fox/fox-story-blanks.png" data-base-src="assets/fox/fox-story-blanks.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="speech" id="story-speech">Fill in the blanks!</div>
       <h3 style="text-align:center;" id="story-title"></h3>
       <div class="story-text" id="story-text"></div>
@@ -984,7 +1006,7 @@
   <section class="screen" id="screen-ringgit-role">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Ringgit Shop</h2>
       <p class="tagline">Do you want to be the Buyer, the Seller, or play with a friend?</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr 1fr;">
@@ -999,7 +1021,7 @@
   <section class="screen" id="screen-ringgit-difficulty">
     <button class="icon-btn home-btn" onclick="goTo('ringgit-role')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your level</h2>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr 1fr;">
         <div class="choice-card" onclick="pickRinggitDifficulty('easy')"><span class="emoji">🌱</span>Easy</div>
@@ -1013,7 +1035,7 @@
   <section class="screen" id="screen-ringgit-instructions">
     <button class="icon-btn home-btn" onclick="goTo('ringgit-difficulty')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="ringgit-instr-title">How to play</h2>
       <p class="tagline" id="ringgit-instr-text"></p>
       <div class="btn-row">
@@ -1026,7 +1048,7 @@
   <section class="screen" id="screen-ringgit-buyer-game">
     <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot" id="mascot-ringgit-buyer">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-ringgit-buyer" src="assets/fox/fox-ringgit-shop.png" data-base-src="assets/fox/fox-ringgit-shop.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="mission-banner" id="ringgit-buyer-player-badge" style="display:none; background:#FFE9A8; color:#7a5b00; font-weight:800;"></div>
       <div class="mission-banner" id="ringgit-mission"></div>
       <div class="budget-banner" id="ringgit-budget-label"></div>
@@ -1046,7 +1068,7 @@
   <section class="screen" id="screen-ringgit-handoff">
     <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Great Shopping! 🛍️</h2>
       <p class="tagline" id="ringgit-handoff-text">Pass the device to Player 2 — the Seller!</p>
       <div class="btn-row">
@@ -1059,7 +1081,7 @@
   <section class="screen" id="screen-ringgit-seller-game">
     <button class="icon-btn home-btn" onclick="quitRinggitGame()" aria-label="Stop and exit">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot" id="mascot-ringgit-seller">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-ringgit-seller" src="assets/fox/fox-ringgit-shop.png" data-base-src="assets/fox/fox-ringgit-shop.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="mission-banner" id="ringgit-seller-player-badge" style="display:none; background:#FFE9A8; color:#7a5b00; font-weight:800;"></div>
       <div style="text-align:center;" id="ringgit-seller-timer-wrap">
         <span class="pill stars-earned" id="ringgit-seller-timer" style="display:none;">⏱ 0s</span>
@@ -1085,7 +1107,7 @@
   <section class="screen" id="screen-math-language">
     <button class="icon-btn home-btn" onclick="goTo('welcome')" aria-label="Home">🏠</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;">Choose your language</h2>
       <p class="tagline">Pick the language you want to play in.</p>
       <div class="choice-grid" style="grid-template-columns:1fr 1fr;">
@@ -1099,7 +1121,7 @@
   <section class="screen" id="screen-math-year">
     <button class="icon-btn home-btn" onclick="goTo('math-language')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="math-year-heading">Choose your year</h2>
       <div class="choice-grid" id="math-year-grid" style="grid-template-columns:1fr 1fr 1fr;"></div>
     </div>
@@ -1109,7 +1131,7 @@
   <section class="screen" id="screen-math-instructions">
     <button class="icon-btn home-btn" onclick="goTo('math-year')" aria-label="Back">⬅</button>
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <h2 style="text-align:center;" id="math-instr-title">How to play</h2>
       <p class="tagline" id="math-instr-text"></p>
       <p class="tagline" id="math-instr-note" style="font-size:12px; color:#8b84b8;"></p>
@@ -1128,7 +1150,7 @@
         <div class="progress-track"><div class="progress-fill" id="math-progress-fill" style="width:0%"></div></div>
         <span class="pill stars-earned" id="math-score-pill">🏅 0/100</span>
       </div>
-      <div class="mascot-wrap"><span class="mascot" id="mascot-math">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-math" src="assets/fox/fox-math-quiz.png" data-base-src="assets/fox/fox-math-quiz.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
 
       <div id="math-loading-wrap" style="display:none; text-align:center;">
         <div class="speech" id="math-loading-text">🤔 Pip is thinking of a question...</div>
@@ -1159,7 +1181,7 @@
   <!-- RESULTS -->
   <section class="screen" id="screen-results">
     <div class="card">
-      <div class="mascot-wrap"><span class="mascot" id="mascot-results">🐼</span></div>
+      <div class="mascot-wrap"><img class="mascot" id="mascot-results" src="assets/fox/fox-victory.png" data-base-src="assets/fox/fox-victory.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
       <div class="grade-badge" id="grade-emoji">🏆</div>
       <div class="grade-label" id="grade-label">A+</div>
       <div class="grade-msg" id="grade-msg">Excellent!</div>
@@ -1182,7 +1204,7 @@
 <!-- QUIT CONFIRMATION MODAL -->
 <div class="modal-overlay" id="quit-modal-overlay">
   <div class="card modal-card">
-    <div class="mascot-wrap"><span class="mascot" id="quit-modal-mascot">🐼</span></div>
+    <div class="mascot-wrap"><img class="mascot" id="quit-modal-mascot" src="assets/fox/fox-neutral.png" data-base-src="assets/fox/fox-neutral.png" alt="Friendly fox mascot" loading="eager" decoding="async"></div>
     <p class="tagline" id="quit-modal-text" style="margin-top:0;">Stop playing now? Your score so far will be saved.</p>
     <div class="btn-row">
       <button class="btn green" id="quit-modal-cancel" onclick="closeQuitModal()">Keep Playing</button>
@@ -1479,7 +1501,12 @@ const BANK = {
       {topic:"Mountain", tokens:["We","climbed","a","tall","mountain"]},
       {topic:"Island", tokens:["The","island","has","white","sand"]},
       {topic:"Umbrella", tokens:["I","carry","an","umbrella","today"]},
-      {topic:"Storm", tokens:["The","storm","was","very","loud"]}
+      {topic:"Storm", tokens:["The","storm","was","very","loud"]},
+      {topic:"Sports Day", tokens:["Sports","Day","is","very","fun"]},
+      {topic:"Barber", tokens:["I","got","a","haircut"]},
+      {topic:"Bus", tokens:["We","take","the","school","bus"]},
+      {topic:"Moon", tokens:["The","moon","is","round","tonight"]},
+      {topic:"Lantern", tokens:["I","hold","a","red","lantern"]}
     ],
     2:[
       {topic:"Family", tokens:["My","family","and","I","live","happily","together"]},
@@ -1611,7 +1638,12 @@ const BANK = {
       {topic:"Mountain", tokens:["After","a","long","climb","we","reached","the","mountain","top"]},
       {topic:"Island", tokens:["We","took","a","boat","to","the","beautiful","island"]},
       {topic:"Umbrella", tokens:["I","opened","my","umbrella","because","it","started","to","rain"]},
-      {topic:"Storm", tokens:["The","strong","wind","and","heavy","rain","damaged","the","old","fence"]}
+      {topic:"Storm", tokens:["The","strong","wind","and","heavy","rain","damaged","the","old","fence"]},
+      {topic:"Sports Day", tokens:["Our","class","won","the","relay","race"]},
+      {topic:"Barber", tokens:["The","barber","cut","my","hair","very","neatly"]},
+      {topic:"Bus", tokens:["The","bus","stops","at","our","school","every","morning"]},
+      {topic:"Moon", tokens:["We","looked","at","the","bright","moon","and","stars"]},
+      {topic:"Lantern", tokens:["Children","carry","colourful","lanterns","during","the","festival"]}
     ]
   },
   ms:{
@@ -1745,7 +1777,12 @@ const BANK = {
       {topic:"Mountain", tokens:["Kami","mendaki","gunung","yang","tinggi"]},
       {topic:"Island", tokens:["Pulau","itu","berpasir","putih"]},
       {topic:"Umbrella", tokens:["Saya","bawa","payung","hari","ini"]},
-      {topic:"Storm", tokens:["Ribut","itu","sangat","kuat"]}
+      {topic:"Storm", tokens:["Ribut","itu","sangat","kuat"]},
+      {topic:"Sports Day", tokens:["Hari","Sukan","sangat","seronok"]},
+      {topic:"Barber", tokens:["Saya","bergunting","rambut"]},
+      {topic:"Bus", tokens:["Kami","naik","bas","sekolah"]},
+      {topic:"Moon", tokens:["Bulan","bulat","malam","ini"]},
+      {topic:"Lantern", tokens:["Saya","pegang","tanglung","merah"]}
     ],
     2:[
       {topic:"Family", tokens:["Keluarga","saya","sangat","gembira","tinggal","bersama-sama"]},
@@ -1877,7 +1914,12 @@ const BANK = {
       {topic:"Mountain", tokens:["Selepas","pendakian","yang","panjang","kami","sampai","ke","puncak","gunung"]},
       {topic:"Island", tokens:["Kami","menaiki","bot","ke","pulau","yang","indah"]},
       {topic:"Umbrella", tokens:["Saya","membuka","payung","kerana","hujan","mula","turun"]},
-      {topic:"Storm", tokens:["Angin","kencang","dan","hujan","lebat","merosakkan","pagar","lama"]}
+      {topic:"Storm", tokens:["Angin","kencang","dan","hujan","lebat","merosakkan","pagar","lama"]},
+      {topic:"Sports Day", tokens:["Kelas","kami","memenangi","perlumbaan","lari","berganti-ganti"]},
+      {topic:"Barber", tokens:["Tukang","gunting","memotong","rambut","saya","dengan","kemas"]},
+      {topic:"Bus", tokens:["Bas","berhenti","di","sekolah","kami","setiap","pagi"]},
+      {topic:"Moon", tokens:["Kami","melihat","bulan","dan","bintang","yang","terang"]},
+      {topic:"Lantern", tokens:["Kanak-kanak","membawa","tanglung","berwarna-warni","semasa","perayaan"]}
     ]
   },
   zh:{
@@ -2011,7 +2053,12 @@ const BANK = {
       {topic:"Mountain", tokens:["我们","爬","上","高山"]},
       {topic:"Island", tokens:["小岛","有","白色的","沙滩"]},
       {topic:"Umbrella", tokens:["我","今天","带","雨伞"]},
-      {topic:"Storm", tokens:["暴风雨","很","大"]}
+      {topic:"Storm", tokens:["暴风雨","很","大"]},
+      {topic:"Sports Day", tokens:["运动会","很","好玩"]},
+      {topic:"Barber", tokens:["我","剪","了","头发"]},
+      {topic:"Bus", tokens:["我们","坐","校车"]},
+      {topic:"Moon", tokens:["今晚","月亮","很","圆"]},
+      {topic:"Lantern", tokens:["我","提","着","红灯笼"]}
     ],
     2:[
       {topic:"Family", tokens:["我的","家人","和","我","住在一起","很","开心"]},
@@ -2143,7 +2190,12 @@ const BANK = {
       {topic:"Mountain", tokens:["爬","了","很","久","我们","终于","到达","山顶"]},
       {topic:"Island", tokens:["我们","坐","船","去","美丽的","小岛"]},
       {topic:"Umbrella", tokens:["开始","下雨","了","我","打开","雨伞"]},
-      {topic:"Storm", tokens:["强风","和","大雨","破坏","了","旧","篱笆"]}
+      {topic:"Storm", tokens:["强风","和","大雨","破坏","了","旧","篱笆"]},
+      {topic:"Sports Day", tokens:["我们班","赢","了","接力赛"]},
+      {topic:"Barber", tokens:["理发师","把","我的","头发","剪","得","很","整齐"]},
+      {topic:"Bus", tokens:["校车","每天早上","停","在","我们","学校"]},
+      {topic:"Moon", tokens:["我们","看","明亮的","月亮","和","星星"]},
+      {topic:"Lantern", tokens:["孩子们","在","节日","提","着","彩色的","灯笼"]}
     ]
   }
 };
@@ -3061,27 +3113,7 @@ const WORD_BANK = [
 {topic:"Actions", en:"sneeze", ms:"bersin", zh:"打喷嚏"},
 {topic:"Actions", en:"stir", ms:"mengacau", zh:"搅拌"},
 {topic:"Actions", en:"sweep", ms:"menyapu", zh:"扫地"},
-{topic:"Actions", en:"yawn", ms:"menguap", zh:"打哈欠"},
-  {topic:"Transport", en:"anchor", ms:"sauh", zh:"锚"},
-  {topic:"Kitchen", en:"ladle", ms:"senduk", zh:"汤勺"},
-  {topic:"Outdoor", en:"rope", ms:"tali", zh:"绳子"},
-  {topic:"Nature", en:"feather", ms:"bulu", zh:"羽毛"},
-  {topic:"Exploration", en:"binoculars", ms:"teropong", zh:"双筒望远镜"},
-  {topic:"Science", en:"thermometer", ms:"termometer", zh:"温度计"},
-  {topic:"Personal care", en:"comb", ms:"sikat", zh:"梳子"},
-  {topic:"Household", en:"sponge", ms:"span", zh:"海绵"},
-  {topic:"Furniture", en:"drawer", ms:"laci", zh:"抽屉"},
-  {topic:"Clothing", en:"pocket", ms:"poket", zh:"口袋"},
-  {topic:"Stationery", en:"paperclip", ms:"klip kertas", zh:"回形针"},
-  {topic:"Stationery", en:"stapler", ms:"mesin stapler", zh:"订书机"},
-  {topic:"Clothing", en:"zipper", ms:"zip", zh:"拉链"},
-  {topic:"Crafts", en:"ribbon", ms:"reben", zh:"丝带"},
-  {topic:"Outdoor", en:"hammock", ms:"buaian gantung", zh:"吊床"},
-  {topic:"Science", en:"magnet", ms:"besi berani", zh:"磁铁"},
-  {topic:"Electrical items", en:"plug", ms:"palam", zh:"插头"},
-  {topic:"Electrical items", en:"socket", ms:"soket", zh:"插座"},
-  {topic:"Machines", en:"pulley", ms:"takal", zh:"滑轮"},
-  {topic:"Machines", en:"gear", ms:"roda gigi", zh:"齿轮"}
+{topic:"Actions", en:"yawn", ms:"menguap", zh:"打哈欠"}
 ];
 
 const MATH_QUESTION_BANK = [
@@ -4793,7 +4825,7 @@ const MATH_QUESTION_BANK = [
 // Word category map for Fill in the Blank distractor generation (same part-of-speech/semantic group).
 const TOKEN_CATEGORY = (function(){
   const TOPIC_TO_CATEGORY = {"Actions": "VERB", "Animals": "NOUN_ANIMAL", "Bakery": "NOUN_FOOD", "Beach": "NOUN_PLACE", "Birds": "NOUN_ANIMAL", "Body": "NOUN_BODY", "Camping": "NOUN_OBJECT", "Celebrations": "NOUN_ABSTRACT", "Classroom Items": "NOUN_OBJECT", "Cleanliness": "NOUN_OBJECT", "Clothes": "NOUN_OBJECT", "Colours": "ADJECTIVE", "Community Helpers": "NOUN_PERSON", "Daily routines": "VERB", "Days": "NOUN_TIME", "Descriptions": "ADJECTIVE", "Directions": "ADVERB", "Drinks": "NOUN_FOOD", "Emotions": "ADJECTIVE", "Family": "NOUN_PERSON", "Farm Animals": "NOUN_ANIMAL", "Feelings": "ADJECTIVE", "Food": "NOUN_FOOD", "Friends": "NOUN_PERSON", "Fruits": "NOUN_FOOD", "Greetings": "GREETING", "Household Items": "NOUN_OBJECT", "Insects": "NOUN_ANIMAL", "Kitchen": "NOUN_OBJECT", "Money": "NOUN_OBJECT", "Musical Instruments": "NOUN_OBJECT", "Nature": "NOUN_NATURE", "Numbers": "NUMBER", "Objects": "NOUN_OBJECT", "Occupations": "NOUN_PERSON", "Places": "NOUN_PLACE", "Playground": "NOUN_OBJECT", "Questions": "QUESTION", "Safety": "NOUN_OBJECT", "School": "NOUN_OBJECT", "School Subjects": "NOUN_ABSTRACT", "Sea Creatures": "NOUN_ANIMAL", "Seasons": "NOUN_TIME", "Shapes": "NOUN_OBJECT", "Space": "NOUN_NATURE", "Sports": "NOUN_ABSTRACT", "Sports Equipment": "NOUN_OBJECT", "Technology": "NOUN_OBJECT", "Time": "NOUN_TIME", "Tools": "NOUN_OBJECT", "Toys": "NOUN_OBJECT", "Transport": "NOUN_OBJECT", "Travel": "NOUN_OBJECT", "Vegetables": "NOUN_FOOD", "Weather": "NOUN_NATURE"};
-  const MANUAL = {"en": {"a": "DETERMINER", "after": "PREPOSITION", "afternoons": "NOUN_TIME", "air": "NOUN_NATURE", "all": "DETERMINER", "always": "ADVERB", "and": "CONJUNCTION", "apples": "NOUN_FOOD", "are": "VERB_BE", "around": "PREPOSITION", "as": "CONJUNCTION", "at": "PREPOSITION", "ate": "VERB", "away": "ADVERB", "bag": "NOUN_OBJECT", "basket": "NOUN_OBJECT", "because": "CONJUNCTION", "become": "VERB", "before": "PREPOSITION", "beside": "PREPOSITION", "best": "ADJECTIVE", "birds": "NOUN_ANIMAL", "blew": "VERB", "bloom": "VERB", "books": "NOUN_OBJECT", "borrow": "VERB", "breakfast": "NOUN_FOOD", "bright": "ADJECTIVE", "brightly": "ADVERB", "brush": "VERB", "building": "NOUN_PLACE", "can": "MODAL", "carefully": "ADVERB", "cartoons": "NOUN_OBJECT", "chairs": "NOUN_OBJECT", "class": "NOUN_ABSTRACT", "classes": "NOUN_ABSTRACT", "classmates": "NOUN_PERSON", "classroom": "NOUN_PLACE", "climbing": "VERB", "collected": "VERB", "collects": "VERB", "colourful": "ADJECTIVE", "colours": "NOUN_ABSTRACT", "cookies": "NOUN_FOOD", "cooking": "VERB", "cooks": "VERB", "counted": "VERB", "countries": "NOUN_PLACE", "cross": "VERB", "curry": "NOUN_FOOD", "cute": "ADJECTIVE", "daily": "ADVERB", "day": "NOUN_TIME", "decorated": "VERB", "different": "ADJECTIVE", "difficult": "ADJECTIVE", "dining": "ADJECTIVE", "dinner": "NOUN_FOOD", "drawing": "VERB", "drawings": "NOUN_OBJECT", "dress": "NOUN_OBJECT", "drinks": "NOUN_FOOD", "during": "PREPOSITION", "each": "DETERMINER", "early": "ADVERB", "enjoy": "VERB", "enjoys": "VERB", "every": "DETERMINER", "everyone": "NOUN_PERSON", "eyes": "NOUN_BODY", "face": "NOUN_BODY", "feed": "VERB", "feel": "VERB", "fifteen": "NUMBER", "fills": "VERB", "flowers": "NOUN_NATURE", "flowing": "VERB", "for": "PREPOSITION", "free": "ADJECTIVE", "fresh": "ADJECTIVE", "fried": "ADJECTIVE", "friends": "NOUN_PERSON", "from": "PREPOSITION", "fruits": "NOUN_FOOD", "games": "NOUN_ABSTRACT", "gently": "ADVERB", "go": "VERB", "going": "VERB", "good": "ADJECTIVE", "grandparents": "NOUN_PERSON", "grills": "VERB", "hands": "NOUN_BODY", "happily": "ADVERB", "has": "VERB_BE", "have": "VERB_BE", "he": "PRONOUN", "health": "NOUN_ABSTRACT", "heavily": "ADVERB", "helped": "VERB", "helps": "VERB", "her": "PRONOUN", "high": "ADJECTIVE", "his": "PRONOUN", "holidays": "NOUN_TIME", "home": "ADVERB", "homework": "NOUN_ABSTRACT", "hopping": "VERB", "i": "PRONOUN", "in": "PREPOSITION", "invited": "VERB", "is": "VERB_BE", "it": "PRONOUN", "jackets": "NOUN_OBJECT", "keep": "VERB", "kind": "ADJECTIVE", "landed": "VERB", "last": "ADJECTIVE", "leaves": "NOUN_NATURE", "lesson": "NOUN_ABSTRACT", "like": "VERB", "likes": "VERB", "listening": "VERB", "little": "ADJECTIVE", "live": "VERB", "looks": "VERB", "love": "VERB", "lunch": "NOUN_FOOD", "made": "VERB", "make": "VERB", "mangoes": "NOUN_FOOD", "match": "NOUN_ABSTRACT", "me": "PRONOUN", "meal": "NOUN_FOOD", "mixed": "ADJECTIVE", "models": "NOUN_OBJECT", "monkeys": "NOUN_ANIMAL", "month": "NOUN_TIME", "mother": "NOUN_PERSON", "museum": "NOUN_PLACE", "must": "MODAL", "my": "PRONOUN", "near": "PREPOSITION", "neighbour": "NOUN_PERSON", "neighbours": "NOUN_PERSON", "nests": "NOUN_NATURE", "on": "PREPOSITION", "other": "DETERMINER", "our": "PRONOUN", "outside": "ADVERB", "pack": "VERB", "painted": "VERB", "party": "NOUN_ABSTRACT", "pens": "NOUN_OBJECT", "pet": "NOUN_ANIMAL", "picnics": "NOUN_ABSTRACT", "pictures": "NOUN_OBJECT", "plants": "NOUN_NATURE", "practices": "VERB", "pretty": "ADJECTIVE", "quickly": "ADVERB", "raining": "VERB", "round": "ADJECTIVE", "runner": "NOUN_PERSON", "runs": "VERB", "school": "NOUN_PLACE", "seashells": "NOUN_NATURE", "see": "VERB", "she": "PRONOUN", "shelf": "NOUN_OBJECT", "should": "MODAL", "single": "ADJECTIVE", "slowly": "ADVERB", "soft": "ADJECTIVE", "stamps": "NOUN_OBJECT", "starts": "VERB", "story": "NOUN_OBJECT", "students": "NOUN_PERSON", "tasty": "ADJECTIVE", "taught": "VERB", "team": "NOUN_PERSON", "teeth": "NOUN_BODY", "the": "DETERMINER", "their": "PRONOUN", "there": "DETERMINER", "this": "PRONOUN", "time": "NOUN_TIME", "times": "NOUN_TIME", "to": "PREPOSITION", "today": "NOUN_TIME", "together": "ADVERB", "tonight": "NOUN_TIME", "toy": "NOUN_OBJECT", "toys": "NOUN_OBJECT", "trains": "NOUN_OBJECT", "trees": "NOUN_NATURE", "twenty": "NUMBER", "us": "PRONOUN", "vegetables": "NOUN_FOOD", "very": "ADVERB", "visit": "VERB", "wake": "VERB", "walls": "NOUN_OBJECT", "want": "VERB", "was": "VERB_BE", "waters": "NOUN_FOOD", "we": "PRONOUN", "weather": "NOUN_NATURE", "weekend": "NOUN_TIME", "weekends": "NOUN_TIME", "wind": "NOUN_NATURE", "with": "PREPOSITION", "won": "VERB", "wore": "VERB", "world": "NOUN_PLACE", "year": "NOUN_TIME", "went": "VERB", "bought": "VERB", "got": "VERB", "nice": "ADJECTIVE", "celebrate": "VERB", "feeds": "VERB", "cows": "NOUN_ANIMAL", "quietly": "ADVERB", "exercise": "VERB", "sweep": "VERB", "floor": "NOUN_OBJECT", "recycle": "VERB", "paper": "NOUN_OBJECT", "boxes": "NOUN_OBJECT", "friendly": "ADJECTIVE", "kindly": "ADVERB", "falls": "VERB", "softly": "ADVERB", "pitch": "VERB", "turn": "VERB", "corner": "NOUN_PLACE", "visited": "VERB", "gentle": "ADJECTIVE", "posted": "VERB", "letter": "NOUN_OBJECT", "practise": "VERB", "fire": "NOUN_NATURE", "drills": "NOUN_ABSTRACT", "wait": "VERB", "light": "NOUN_OBJECT", "say": "VERB", "please": "ADVERB", "work": "VERB", "well": "ADVERB", "tell": "VERB", "truth": "NOUN_ABSTRACT", "works": "VERB", "town": "NOUN_PLACE", "things": "NOUN_OBJECT", "saved": "VERB", "money": "NOUN_OBJECT", "sang": "VERB", "song": "NOUN_OBJECT", "ice": "NOUN_FOOD", "cream": "NOUN_FOOD", "celebrates": "VERB", "joy": "NOUN_ABSTRACT", "laughter": "NOUN_ABSTRACT", "wakes": "VERB", "animals": "NOUN_ANIMAL", "bees": "NOUN_ANIMAL", "butterflies": "NOUN_ANIMAL", "stars": "NOUN_NATURE", "shine": "VERB", "built": "VERB", "sandcastle": "NOUN_OBJECT", "comics": "NOUN_OBJECT", "dishes": "NOUN_OBJECT", "plastic": "NOUN_OBJECT", "protect": "VERB", "earth": "NOUN_NATURE", "willing": "ADJECTIVE", "parents": "NOUN_PERSON", "teachers": "NOUN_PERSON", "fell": "VERB", "strongly": "ADVERB", "pitched": "VERB", "cooked": "VERB", "outdoors": "ADVERB", "then": "ADVERB", "traffic": "NOUN_ABSTRACT", "elephants": "NOUN_ANIMAL", "tigers": "NOUN_ANIMAL", "grows": "VERB", "took": "VERB", "care": "NOUN_ABSTRACT", "of": "PREPOSITION", "patients": "NOUN_PERSON", "stay": "VERB", "safe": "ADJECTIVE", "crossing": "VERB", "you": "PRONOUN", "politely": "ADVERB", "even": "ADVERB", "hard": "ADJECTIVE", "safely": "ADVERB"}, "ms": {"abang": "NOUN_PERSON", "ada": "VERB_BE", "adalah": "VERB_BE", "adik": "NOUN_PERSON", "ali": "NOUN_PERSON", "angin": "NOUN_NATURE", "anjing": "NOUN_ANIMAL", "antara": "PREPOSITION", "arnab": "NOUN_ANIMAL", "awal": "ADVERB", "ayah": "NOUN_PERSON", "ayahnya": "NOUN_PERSON", "bahagia": "ADJECTIVE", "baharu": "ADJECTIVE", "baik": "ADJECTIVE", "baju": "NOUN_OBJECT", "bakul": "NOUN_OBJECT", "basuh": "VERB", "beg": "NOUN_OBJECT", "belas": "NUMBER", "berbentuk": "VERB", "berhati-hati": "ADVERB", "berkelah": "VERB", "berlatih": "VERB", "bermula": "VERB", "bersama": "ADVERB", "bersama-sama": "ADVERB", "berwarna": "ADJECTIVE", "berwarna-warni": "ADJECTIVE", "biji": "NOUN_OBJECT", "biliknya": "NOUN_PLACE", "binaannya": "NOUN_OBJECT", "boleh": "MODAL", "buah-buahan": "NOUN_FOOD", "bulan": "NOUN_TIME", "bulat": "ADJECTIVE", "bunga-bunga": "NOUN_NATURE", "burung": "NOUN_ANIMAL", "burung-burung": "NOUN_ANIMAL", "cerita": "NOUN_OBJECT", "cikgu": "NOUN_PERSON", "comel": "ADJECTIVE", "cuaca": "NOUN_NATURE", "cuti": "NOUN_TIME", "dalam": "PREPOSITION", "dan": "CONJUNCTION", "dari": "PREPOSITION", "datuk": "NOUN_PERSON", "daun-daun": "NOUN_NATURE", "dekat": "PREPOSITION", "dengan": "PREPOSITION", "di": "PREPOSITION", "dia": "PRONOUN", "dihiasi": "VERB", "dinding": "NOUN_OBJECT", "dunia": "NOUN_PLACE", "gambar": "NOUN_OBJECT", "goreng": "ADJECTIVE", "gosok": "VERB", "guru": "NOUN_PERSON", "hari": "NOUN_TIME", "hinggap": "VERB", "hujan": "NOUN_NATURE", "hujung": "NOUN_TIME", "ibu": "NOUN_PERSON", "ikan": "NOUN_ANIMAL", "indah": "ADJECTIVE", "ini": "PRONOUN", "itu": "PRONOUN", "jadinya": "VERB", "jambu": "NOUN_FOOD", "jiran": "NOUN_PERSON", "jiran-jiran": "NOUN_PERSON", "juga": "ADVERB", "kali": "NOUN_TIME", "kami": "PRONOUN", "kari": "NOUN_FOOD", "kartun": "NOUN_OBJECT", "kasut": "NOUN_OBJECT", "kawan": "NOUN_PERSON", "kawan-kawan": "NOUN_PERSON", "kawannya": "NOUN_PERSON", "ke": "PREPOSITION", "kebersihan": "NOUN_ABSTRACT", "kelas": "NOUN_ABSTRACT", "kelihatan": "VERB", "keluarga": "NOUN_PERSON", "kerana": "CONJUNCTION", "keranjang": "NOUN_OBJECT", "kerja": "NOUN_ABSTRACT", "kesihatan": "NOUN_ABSTRACT", "kucing": "NOUN_ANIMAL", "kulit": "NOUN_OBJECT", "lagu": "NOUN_OBJECT", "lain": "DETERMINER", "langit": "NOUN_NATURE", "lapang": "ADJECTIVE", "lebat": "ADJECTIVE", "lembut": "ADJECTIVE", "lepas": "PREPOSITION", "luar": "ADVERB", "lukis": "VERB", "lukisan": "NOUN_OBJECT", "mahu": "MODAL", "main": "VERB", "mainan": "NOUN_OBJECT", "masa": "NOUN_TIME", "matahari": "NOUN_NATURE", "mekar": "VERB", "melawat": "VERB", "melintas": "VERB", "memakai": "VERB", "membuat": "VERB", "memenuhi": "VERB", "meminjam": "VERB", "mempunyai": "VERB_BE", "mengemas": "VERB", "mengumpul": "VERB", "meniup": "VERB", "menjadi": "VERB", "menjaga": "VERB", "menjemput": "VERB", "menolong": "VERB", "menyimpan": "VERB", "minuman": "NOUN_FOOD", "model": "NOUN_OBJECT", "monyet-monyet": "NOUN_ANIMAL", "muka": "NOUN_BODY", "musim": "NOUN_TIME", "muzium": "NOUN_PLACE", "nampak": "VERB", "negara": "NOUN_PLACE", "orang": "NOUN_PERSON", "pada": "PREPOSITION", "pasukan": "NOUN_PERSON", "pelajaran": "NOUN_ABSTRACT", "pelangi": "NOUN_NATURE", "pelari": "NOUN_PERSON", "pelbagai": "DETERMINER", "peliharaan": "NOUN_ANIMAL", "pelukis": "NOUN_PERSON", "perlawanan": "NOUN_ABSTRACT", "perlu": "MODAL", "permainan": "NOUN_ABSTRACT", "pokok": "NOUN_NATURE", "pukul": "NOUN_TIME", "puluh": "NUMBER", "rak": "NOUN_OBJECT", "rakan": "NOUN_PERSON", "rakan-rakan": "NOUN_PERSON", "rasa": "VERB", "saling": "ADVERB", "sama": "ADJECTIVE", "sangat": "ADVERB", "sarang": "NOUN_NATURE", "sarapan": "NOUN_FOOD", "saya": "PRONOUN", "sayang": "VERB", "sayur-sayuran": "NOUN_FOOD", "sebagai": "PREPOSITION", "sebelum": "PREPOSITION", "sebuah": "DETERMINER", "sedang": "ADVERB", "sedikit": "ADVERB", "seekor": "DETERMINER", "segar": "ADJECTIVE", "sekarang": "NOUN_TIME", "sekelas": "NOUN_PERSON", "sekeliling": "PREPOSITION", "sekolah": "NOUN_PLACE", "selalu": "ADVERB", "selepas": "PREPOSITION", "semasa": "PREPOSITION", "semua": "DETERMINER", "sentiasa": "ADVERB", "seorang": "DETERMINER", "sepak": "VERB", "setiap": "DETERMINER", "siapkan": "VERB", "suka": "VERB", "susah": "ADJECTIVE", "tahun": "NOUN_TIME", "tangan": "NOUN_BODY", "tengah": "PREPOSITION", "tepi": "PREPOSITION", "terang": "ADJECTIVE", "terdapat": "VERB_BE", "tinggal": "VERB", "tumbuh": "VERB", "turun": "VERB", "udara": "NOUN_NATURE", "untuk": "PREPOSITION", "waktu": "NOUN_TIME", "warna": "NOUN_ABSTRACT", "yang": "DETERMINER", "jadi": "NOUN_ABSTRACT", "dapat": "VERB", "meraikan": "VERB", "bersenam": "VERB", "menyapu": "VERB", "lantai": "NOUN_OBJECT", "mengitar": "VERB", "semula": "ADVERB", "mesra": "ADJECTIVE", "berterima": "VERB", "kasih": "NOUN_ABSTRACT", "kepada": "PREPOSITION", "mendirikan": "VERB", "belok": "VERB", "selekoh": "NOUN_PLACE", "surat": "NOUN_OBJECT", "latihan": "NOUN_ABSTRACT", "kebakaran": "NOUN_NATURE", "tunggu": "VERB", "cakap": "VERB", "bekerja": "VERB", "benar": "ADJECTIVE", "keledar": "NOUN_OBJECT", "bandar": "NOUN_PLACE", "membeli": "VERB", "wang": "NOUN_OBJECT", "aiskrim": "NOUN_FOOD", "pesta": "NOUN_ABSTRACT", "tawa": "NOUN_ABSTRACT", "haiwannya": "NOUN_ANIMAL", "sekitar": "PREPOSITION", "bintang-bintang": "NOUN_NATURE", "bersinar": "VERB", "kerang": "NOUN_NATURE", "pasir": "NOUN_NATURE", "komik": "NOUN_OBJECT", "badan": "NOUN_BODY", "mangkuk": "NOUN_OBJECT", "kertas": "NOUN_OBJECT", "plastik": "NOUN_OBJECT", "melindungi": "VERB", "bumi": "NOUN_NATURE", "sudi": "ADJECTIVE", "bapa": "NOUN_PERSON", "bertiup": "VERB", "kencang": "ADJECTIVE", "terus": "ADVERB", "kemudian": "ADVERB", "isyarat": "NOUN_OBJECT", "pesakit": "NOUN_PERSON", "penuh": "ADJECTIVE", "kekal": "VERB", "selamat": "ADJECTIVE", "lihat": "VERB", "berkata": "VERB", "terima": "VERB", "sopan": "ADJECTIVE", "walaupun": "CONJUNCTION", "ia": "PRONOUN", "sukar": "ADJECTIVE", "sungguh": "ADVERB"}, "zh": {"一个": "DETERMINER", "一只": "DETERMINER", "一家人": "NOUN_PERSON", "一起": "ADVERB", "一起玩": "VERB", "七种": "NUMBER", "三本": "NUMBER", "上学": "VERB", "上星期六": "NOUN_TIME", "下雨": "VERB", "世界各地的": "ADJECTIVE", "两只": "NUMBER", "两支": "NUMBER", "为了": "PREPOSITION", "也": "ADVERB", "书包": "NOUN_OBJECT", "书本": "NOUN_OBJECT", "二十个": "NUMBER", "二十五个": "NUMBER", "互相": "ADVERB", "五只": "NUMBER", "五颜六色的": "ADJECTIVE", "人": "NOUN_PERSON", "今年": "NOUN_TIME", "今天": "NOUN_TIME", "今晚": "NOUN_TIME", "从": "PREPOSITION", "他": "PRONOUN", "会": "MODAL", "住在": "VERB", "住在一起": "VERB", "保持": "VERB", "借": "VERB", "假期": "NOUN_TIME", "做功课": "VERB", "做完": "VERB", "做饭": "VERB", "停在": "VERB", "健康": "NOUN_ABSTRACT", "充满了": "VERB", "八点": "NOUN_TIME", "六把": "NUMBER", "刷牙": "VERB", "功课": "NOUN_ABSTRACT", "十个": "NUMBER", "十五个": "NUMBER", "午餐": "NOUN_FOOD", "博物馆": "NOUN_PLACE", "卡通": "NOUN_OBJECT", "卧室的": "ADJECTIVE", "去": "VERB", "参观": "VERB", "又": "CONJUNCTION", "可爱": "ADJECTIVE", "吃了": "VERB", "吃早餐": "VERB", "吃饭前": "NOUN_TIME", "同学": "NOUN_PERSON", "后": "PREPOSITION", "吹走了": "VERB", "周围": "PREPOSITION", "周末": "NOUN_TIME", "和": "CONJUNCTION", "咖喱": "NOUN_FOOD", "喂": "VERB", "喜欢": "VERB", "喝冷饮": "VERB", "四张": "NUMBER", "因为": "CONJUNCTION", "图画": "NOUN_OBJECT", "圆的": "ADJECTIVE", "在": "PREPOSITION", "在公园里": "NOUN_PLACE", "在困难时": "NOUN_TIME", "在晚饭前": "NOUN_TIME", "在树上": "NOUN_PLACE", "在校园里": "NOUN_PLACE", "在海边": "NOUN_PLACE", "在空闲时间": "NOUN_TIME", "坐在": "VERB", "墙上": "NOUN_PLACE", "墙壁": "NOUN_OBJECT", "外套": "NOUN_OBJECT", "外面": "NOUN_PLACE", "大家": "NOUN_PERSON", "大雨": "NOUN_NATURE", "大风": "NOUN_NATURE", "天气": "NOUN_NATURE", "她": "PRONOUN", "她的": "PRONOUN", "好": "ADJECTIVE", "好吃的": "ADJECTIVE", "学校的": "ADJECTIVE", "宠物": "NOUN_ANIMAL", "家里": "NOUN_PLACE", "小兔子": "NOUN_ANIMAL", "小妹妹": "NOUN_PERSON", "小心": "ADVERB", "小鸟": "NOUN_ANIMAL", "帮": "VERB", "常常": "ADVERB", "应该": "MODAL", "开心地": "ADVERB", "彩色的": "ADJECTIVE", "很": "ADVERB", "很冷": "ADJECTIVE", "很快地": "ADVERB", "必须": "MODAL", "快乐": "ADJECTIVE", "想": "VERB", "感到": "VERB", "慢慢地": "ADVERB", "成为": "VERB", "我": "PRONOUN", "我们": "PRONOUN", "我们班": "NOUN_PERSON", "我们的": "PRONOUN", "我的": "PRONOUN", "所有": "DETERMINER", "打篮球": "VERB", "把": "PREPOSITION", "捡了": "VERB", "搭建": "VERB", "收拾好": "VERB", "收集": "VERB", "放在": "VERB", "放学后": "NOUN_TIME", "故事书": "NOUN_OBJECT", "教": "VERB", "教室的": "ADJECTIVE", "数了": "VERB", "新的": "ADJECTIVE", "新鲜的": "ADJECTIVE", "早早": "ADVERB", "早餐": "NOUN_FOOD", "时": "CONJUNCTION", "明亮": "ADJECTIVE", "星期天": "NOUN_TIME", "昨天下午": "NOUN_TIME", "是": "VERB_BE", "晚饭前": "NOUN_TIME", "晴朗": "ADJECTIVE", "最好的": "ADJECTIVE", "有": "VERB_BE", "有点": "ADVERB", "朋友们": "NOUN_PERSON", "来参加": "VERB", "来看": "VERB", "来自": "VERB", "架子上": "NOUN_PLACE", "树叶": "NOUN_NATURE", "校鞋": "NOUN_OBJECT", "模型": "NOUN_OBJECT", "正在": "ADVERB", "每个": "DETERMINER", "每个周末": "NOUN_TIME", "每个星期": "NOUN_TIME", "每个月": "NOUN_TIME", "每天": "NOUN_TIME", "每天傍晚": "NOUN_TIME", "每天早上": "NOUN_TIME", "每晚": "NOUN_TIME", "每次": "NOUN_TIME", "河边": "NOUN_PLACE", "洗手": "VERB", "淡绿色": "ADJECTIVE", "混合成": "VERB", "清晨": "NOUN_TIME", "游戏": "NOUN_ABSTRACT", "漆成": "VERB", "炎热的": "ADJECTIVE", "炒饭": "NOUN_FOOD", "烤饼干": "VERB", "烤鱼": "NOUN_FOOD", "煮": "VERB", "煮了": "VERB", "爬上": "VERB", "爱": "VERB", "爷爷奶奶": "NOUN_PERSON", "猴子们": "NOUN_ANIMAL", "玩具": "NOUN_OBJECT", "玩耍": "VERB", "球队": "NOUN_PERSON", "生日会": "NOUN_ABSTRACT", "用积木": "NOUN_OBJECT", "白色的": "ADJECTIVE", "的": "DETERMINER", "的时候": "CONJUNCTION", "盛开": "VERB", "看书": "VERB", "看见": "VERB", "看起来": "VERB", "睡觉前": "NOUN_TIME", "科学课": "NOUN_ABSTRACT", "空气": "NOUN_NATURE", "穿了": "VERB", "窗边": "NOUN_PLACE", "筑巢": "VERB", "篮子里的": "ADJECTIVE", "粉红色的": "ADJECTIVE", "红苹果": "NOUN_FOOD", "练习": "VERB", "给植物": "NOUN_NATURE", "绿树": "NOUN_NATURE", "美丽地": "ADVERB", "美丽的": "ADJECTIVE", "美味的": "ADJECTIVE", "美术课": "NOUN_ABSTRACT", "脚踏车": "NOUN_OBJECT", "脸": "NOUN_BODY", "色彩鲜艳的": "ADJECTIVE", "花上": "NOUN_NATURE", "花园里": "NOUN_PLACE", "蓝色的": "ADJECTIVE", "衣服": "NOUN_OBJECT", "让": "VERB", "贴满了": "VERB", "赢了": "VERB", "足球赛": "NOUN_ABSTRACT", "跑得": "VERB", "跑得快的": "ADJECTIVE", "跳来跳去": "VERB", "轻柔的": "ADJECTIVE", "轻轻地": "ADVERB", "过": "VERB", "这个": "PRONOUN", "这只": "PRONOUN", "邀请": "VERB", "邻居": "NOUN_PERSON", "邻居们": "NOUN_PERSON", "都": "ADVERB", "野餐": "NOUN_ABSTRACT", "长在": "VERB", "附近": "PREPOSITION", "音乐课": "NOUN_ABSTRACT", "颜色": "NOUN_ABSTRACT", "风": "NOUN_NATURE", "餐桌": "NOUN_OBJECT", "饭": "NOUN_FOOD", "马路": "NOUN_PLACE", "高高地": "ADVERB", "高高的": "ADJECTIVE", "鲜红色": "ADJECTIVE", "黄色的": "ADJECTIVE", "善良": "ADJECTIVE", "了": "DETERMINER", "收到": "VERB", "一份": "DETERMINER", "每年": "NOUN_TIME", "庆祝": "VERB", "他的": "PRONOUN", "海里": "NOUN_PLACE", "安静地": "ADVERB", "运动": "VERB", "扫地": "VERB", "回收": "VERB", "纸箱": "NOUN_OBJECT", "友善": "ADJECTIVE", "搭": "VERB", "转角": "NOUN_PLACE", "处": "NOUN_PLACE", "左转": "VERB", "温柔": "ADJECTIVE", "寄": "VERB", "信": "NOUN_OBJECT", "消防": "NOUN_ABSTRACT", "演习": "NOUN_ABSTRACT", "等": "VERB", "绿灯": "NOUN_OBJECT", "总是": "ADVERB", "请": "ADVERB", "合作": "VERB", "得好": "ADVERB", "实话": "NOUN_ABSTRACT", "戴": "VERB", "城里": "NOUN_PLACE", "当": "VERB", "善良的": "ADJECTIVE", "知识": "NOUN_ABSTRACT", "存钱": "VERB", "一双": "DETERMINER", "那天": "NOUN_TIME", "派对": "NOUN_ABSTRACT", "地": "DETERMINER", "早": "ADVERB", "动物": "NOUN_ANIMAL", "花朵": "NOUN_NATURE", "飞舞": "VERB", "夜晚": "NOUN_TIME", "闪闪发光": "VERB", "捡": "VERB", "还": "CONJUNCTION", "堆": "VERB", "沙堡": "NOUN_OBJECT", "漫画": "NOUN_OBJECT", "身体": "NOUN_BODY", "碗碟": "NOUN_OBJECT", "纸张": "NOUN_OBJECT", "塑料": "NOUN_OBJECT", "来": "VERB", "保护": "VERB", "地球": "NOUN_NATURE", "乐意": "ADJECTIVE", "帮忙": "VERB", "父母": "NOUN_PERSON", "得": "DETERMINER", "很大": "ADJECTIVE", "刮": "VERB", "猛": "ADJECTIVE", "户外": "NOUN_PLACE", "晚餐": "NOUN_FOOD", "直走": "VERB", "然后": "CONJUNCTION", "右转": "VERB", "看到": "VERB", "种": "VERB", "细心": "ADVERB", "照顾": "VERB", "病人": "NOUN_PERSON", "以": "CONJUNCTION", "安全": "ADJECTIVE", "前": "PREPOSITION", "停下": "VERB", "看看": "VERB", "礼貌": "NOUN_ABSTRACT", "即使": "CONJUNCTION", "难": "ADJECTIVE", "安全地": "ADVERB"}};
+  const MANUAL = {"en": {"a": "DETERMINER", "after": "PREPOSITION", "afternoons": "NOUN_TIME", "air": "NOUN_NATURE", "all": "DETERMINER", "always": "ADVERB", "and": "CONJUNCTION", "apples": "NOUN_FOOD", "are": "VERB_BE", "around": "PREPOSITION", "as": "CONJUNCTION", "at": "PREPOSITION", "ate": "VERB", "away": "ADVERB", "bag": "NOUN_OBJECT", "basket": "NOUN_OBJECT", "because": "CONJUNCTION", "become": "VERB", "before": "PREPOSITION", "beside": "PREPOSITION", "best": "ADJECTIVE", "birds": "NOUN_ANIMAL", "blew": "VERB", "bloom": "VERB", "books": "NOUN_OBJECT", "borrow": "VERB", "breakfast": "NOUN_FOOD", "bright": "ADJECTIVE", "brightly": "ADVERB", "brush": "VERB", "building": "NOUN_PLACE", "can": "MODAL", "carefully": "ADVERB", "cartoons": "NOUN_OBJECT", "chairs": "NOUN_OBJECT", "class": "NOUN_ABSTRACT", "classes": "NOUN_ABSTRACT", "classmates": "NOUN_PERSON", "classroom": "NOUN_PLACE", "climbing": "VERB", "collected": "VERB", "collects": "VERB", "colourful": "ADJECTIVE", "colours": "NOUN_ABSTRACT", "cookies": "NOUN_FOOD", "cooking": "VERB", "cooks": "VERB", "counted": "VERB", "countries": "NOUN_PLACE", "cross": "VERB", "curry": "NOUN_FOOD", "cute": "ADJECTIVE", "daily": "ADVERB", "day": "NOUN_TIME", "decorated": "VERB", "different": "ADJECTIVE", "difficult": "ADJECTIVE", "dining": "ADJECTIVE", "dinner": "NOUN_FOOD", "drawing": "VERB", "drawings": "NOUN_OBJECT", "dress": "NOUN_OBJECT", "drinks": "NOUN_FOOD", "during": "PREPOSITION", "each": "DETERMINER", "early": "ADVERB", "enjoy": "VERB", "enjoys": "VERB", "every": "DETERMINER", "everyone": "NOUN_PERSON", "eyes": "NOUN_BODY", "face": "NOUN_BODY", "feed": "VERB", "feel": "VERB", "fifteen": "NUMBER", "fills": "VERB", "flowers": "NOUN_NATURE", "flowing": "VERB", "for": "PREPOSITION", "free": "ADJECTIVE", "fresh": "ADJECTIVE", "fried": "ADJECTIVE", "friends": "NOUN_PERSON", "from": "PREPOSITION", "fruits": "NOUN_FOOD", "games": "NOUN_ABSTRACT", "gently": "ADVERB", "go": "VERB", "going": "VERB", "good": "ADJECTIVE", "grandparents": "NOUN_PERSON", "grills": "VERB", "hands": "NOUN_BODY", "happily": "ADVERB", "has": "VERB_BE", "have": "VERB_BE", "he": "PRONOUN", "health": "NOUN_ABSTRACT", "heavily": "ADVERB", "helped": "VERB", "helps": "VERB", "her": "PRONOUN", "high": "ADJECTIVE", "his": "PRONOUN", "holidays": "NOUN_TIME", "home": "ADVERB", "homework": "NOUN_ABSTRACT", "hopping": "VERB", "i": "PRONOUN", "in": "PREPOSITION", "invited": "VERB", "is": "VERB_BE", "it": "PRONOUN", "jackets": "NOUN_OBJECT", "keep": "VERB", "kind": "ADJECTIVE", "landed": "VERB", "last": "ADJECTIVE", "leaves": "NOUN_NATURE", "lesson": "NOUN_ABSTRACT", "like": "VERB", "likes": "VERB", "listening": "VERB", "little": "ADJECTIVE", "live": "VERB", "looks": "VERB", "love": "VERB", "lunch": "NOUN_FOOD", "made": "VERB", "make": "VERB", "mangoes": "NOUN_FOOD", "match": "NOUN_ABSTRACT", "me": "PRONOUN", "meal": "NOUN_FOOD", "mixed": "ADJECTIVE", "models": "NOUN_OBJECT", "monkeys": "NOUN_ANIMAL", "month": "NOUN_TIME", "mother": "NOUN_PERSON", "museum": "NOUN_PLACE", "must": "MODAL", "my": "PRONOUN", "near": "PREPOSITION", "neighbour": "NOUN_PERSON", "neighbours": "NOUN_PERSON", "nests": "NOUN_NATURE", "on": "PREPOSITION", "other": "DETERMINER", "our": "PRONOUN", "outside": "ADVERB", "pack": "VERB", "painted": "VERB", "party": "NOUN_ABSTRACT", "pens": "NOUN_OBJECT", "pet": "NOUN_ANIMAL", "picnics": "NOUN_ABSTRACT", "pictures": "NOUN_OBJECT", "plants": "NOUN_NATURE", "practices": "VERB", "pretty": "ADJECTIVE", "quickly": "ADVERB", "raining": "VERB", "round": "ADJECTIVE", "runner": "NOUN_PERSON", "runs": "VERB", "school": "NOUN_PLACE", "seashells": "NOUN_NATURE", "see": "VERB", "she": "PRONOUN", "shelf": "NOUN_OBJECT", "should": "MODAL", "single": "ADJECTIVE", "slowly": "ADVERB", "soft": "ADJECTIVE", "stamps": "NOUN_OBJECT", "starts": "VERB", "story": "NOUN_OBJECT", "students": "NOUN_PERSON", "tasty": "ADJECTIVE", "taught": "VERB", "team": "NOUN_PERSON", "teeth": "NOUN_BODY", "the": "DETERMINER", "their": "PRONOUN", "there": "DETERMINER", "this": "PRONOUN", "time": "NOUN_TIME", "times": "NOUN_TIME", "to": "PREPOSITION", "today": "NOUN_TIME", "together": "ADVERB", "tonight": "NOUN_TIME", "toy": "NOUN_OBJECT", "toys": "NOUN_OBJECT", "trains": "NOUN_OBJECT", "trees": "NOUN_NATURE", "twenty": "NUMBER", "us": "PRONOUN", "vegetables": "NOUN_FOOD", "very": "ADVERB", "visit": "VERB", "wake": "VERB", "walls": "NOUN_OBJECT", "want": "VERB", "was": "VERB_BE", "waters": "NOUN_FOOD", "we": "PRONOUN", "weather": "NOUN_NATURE", "weekend": "NOUN_TIME", "weekends": "NOUN_TIME", "wind": "NOUN_NATURE", "with": "PREPOSITION", "won": "VERB", "wore": "VERB", "world": "NOUN_PLACE", "year": "NOUN_TIME", "went": "VERB", "bought": "VERB", "got": "VERB", "nice": "ADJECTIVE", "celebrate": "VERB", "feeds": "VERB", "cows": "NOUN_ANIMAL", "quietly": "ADVERB", "exercise": "VERB", "sweep": "VERB", "floor": "NOUN_OBJECT", "recycle": "VERB", "paper": "NOUN_OBJECT", "boxes": "NOUN_OBJECT", "friendly": "ADJECTIVE", "kindly": "ADVERB", "falls": "VERB", "softly": "ADVERB", "pitch": "VERB", "turn": "VERB", "corner": "NOUN_PLACE", "visited": "VERB", "gentle": "ADJECTIVE", "posted": "VERB", "letter": "NOUN_OBJECT", "practise": "VERB", "fire": "NOUN_NATURE", "drills": "NOUN_ABSTRACT", "wait": "VERB", "light": "NOUN_OBJECT", "say": "VERB", "please": "ADVERB", "work": "VERB", "well": "ADVERB", "tell": "VERB", "truth": "NOUN_ABSTRACT", "works": "VERB", "town": "NOUN_PLACE", "things": "NOUN_OBJECT", "saved": "VERB", "money": "NOUN_OBJECT", "sang": "VERB", "song": "NOUN_OBJECT", "ice": "NOUN_FOOD", "cream": "NOUN_FOOD", "celebrates": "VERB", "joy": "NOUN_ABSTRACT", "laughter": "NOUN_ABSTRACT", "wakes": "VERB", "animals": "NOUN_ANIMAL", "bees": "NOUN_ANIMAL", "butterflies": "NOUN_ANIMAL", "stars": "NOUN_NATURE", "shine": "VERB", "built": "VERB", "sandcastle": "NOUN_OBJECT", "comics": "NOUN_OBJECT", "dishes": "NOUN_OBJECT", "plastic": "NOUN_OBJECT", "protect": "VERB", "earth": "NOUN_NATURE", "willing": "ADJECTIVE", "parents": "NOUN_PERSON", "teachers": "NOUN_PERSON", "fell": "VERB", "strongly": "ADVERB", "pitched": "VERB", "cooked": "VERB", "outdoors": "ADVERB", "then": "ADVERB", "traffic": "NOUN_ABSTRACT", "elephants": "NOUN_ANIMAL", "tigers": "NOUN_ANIMAL", "grows": "VERB", "took": "VERB", "care": "NOUN_ABSTRACT", "of": "PREPOSITION", "patients": "NOUN_PERSON", "stay": "VERB", "safe": "ADJECTIVE", "crossing": "VERB", "you": "PRONOUN", "politely": "ADVERB", "even": "ADVERB", "hard": "ADJECTIVE", "safely": "ADVERB", "sports": "NOUN_ABSTRACT", "fun": "ADJECTIVE", "haircut": "NOUN_ABSTRACT", "relay": "NOUN_ABSTRACT", "race": "NOUN_ABSTRACT", "barber": "NOUN_PERSON", "neatly": "ADVERB", "stops": "VERB", "looked": "VERB", "children": "NOUN_PERSON", "lanterns": "NOUN_OBJECT"}, "ms": {"abang": "NOUN_PERSON", "ada": "VERB_BE", "adalah": "VERB_BE", "adik": "NOUN_PERSON", "ali": "NOUN_PERSON", "angin": "NOUN_NATURE", "anjing": "NOUN_ANIMAL", "antara": "PREPOSITION", "arnab": "NOUN_ANIMAL", "awal": "ADVERB", "ayah": "NOUN_PERSON", "ayahnya": "NOUN_PERSON", "bahagia": "ADJECTIVE", "baharu": "ADJECTIVE", "baik": "ADJECTIVE", "baju": "NOUN_OBJECT", "bakul": "NOUN_OBJECT", "basuh": "VERB", "beg": "NOUN_OBJECT", "belas": "NUMBER", "berbentuk": "VERB", "berhati-hati": "ADVERB", "berkelah": "VERB", "berlatih": "VERB", "bermula": "VERB", "bersama": "ADVERB", "bersama-sama": "ADVERB", "berwarna": "ADJECTIVE", "berwarna-warni": "ADJECTIVE", "biji": "NOUN_OBJECT", "biliknya": "NOUN_PLACE", "binaannya": "NOUN_OBJECT", "boleh": "MODAL", "buah-buahan": "NOUN_FOOD", "bulan": "NOUN_TIME", "bulat": "ADJECTIVE", "bunga-bunga": "NOUN_NATURE", "burung": "NOUN_ANIMAL", "burung-burung": "NOUN_ANIMAL", "cerita": "NOUN_OBJECT", "cikgu": "NOUN_PERSON", "comel": "ADJECTIVE", "cuaca": "NOUN_NATURE", "cuti": "NOUN_TIME", "dalam": "PREPOSITION", "dan": "CONJUNCTION", "dari": "PREPOSITION", "datuk": "NOUN_PERSON", "daun-daun": "NOUN_NATURE", "dekat": "PREPOSITION", "dengan": "PREPOSITION", "di": "PREPOSITION", "dia": "PRONOUN", "dihiasi": "VERB", "dinding": "NOUN_OBJECT", "dunia": "NOUN_PLACE", "gambar": "NOUN_OBJECT", "goreng": "ADJECTIVE", "gosok": "VERB", "guru": "NOUN_PERSON", "hari": "NOUN_TIME", "hinggap": "VERB", "hujan": "NOUN_NATURE", "hujung": "NOUN_TIME", "ibu": "NOUN_PERSON", "ikan": "NOUN_ANIMAL", "indah": "ADJECTIVE", "ini": "PRONOUN", "itu": "PRONOUN", "jadinya": "VERB", "jambu": "NOUN_FOOD", "jiran": "NOUN_PERSON", "jiran-jiran": "NOUN_PERSON", "juga": "ADVERB", "kali": "NOUN_TIME", "kami": "PRONOUN", "kari": "NOUN_FOOD", "kartun": "NOUN_OBJECT", "kasut": "NOUN_OBJECT", "kawan": "NOUN_PERSON", "kawan-kawan": "NOUN_PERSON", "kawannya": "NOUN_PERSON", "ke": "PREPOSITION", "kebersihan": "NOUN_ABSTRACT", "kelas": "NOUN_ABSTRACT", "kelihatan": "VERB", "keluarga": "NOUN_PERSON", "kerana": "CONJUNCTION", "keranjang": "NOUN_OBJECT", "kerja": "NOUN_ABSTRACT", "kesihatan": "NOUN_ABSTRACT", "kucing": "NOUN_ANIMAL", "kulit": "NOUN_OBJECT", "lagu": "NOUN_OBJECT", "lain": "DETERMINER", "langit": "NOUN_NATURE", "lapang": "ADJECTIVE", "lebat": "ADJECTIVE", "lembut": "ADJECTIVE", "lepas": "PREPOSITION", "luar": "ADVERB", "lukis": "VERB", "lukisan": "NOUN_OBJECT", "mahu": "MODAL", "main": "VERB", "mainan": "NOUN_OBJECT", "masa": "NOUN_TIME", "matahari": "NOUN_NATURE", "mekar": "VERB", "melawat": "VERB", "melintas": "VERB", "memakai": "VERB", "membuat": "VERB", "memenuhi": "VERB", "meminjam": "VERB", "mempunyai": "VERB_BE", "mengemas": "VERB", "mengumpul": "VERB", "meniup": "VERB", "menjadi": "VERB", "menjaga": "VERB", "menjemput": "VERB", "menolong": "VERB", "menyimpan": "VERB", "minuman": "NOUN_FOOD", "model": "NOUN_OBJECT", "monyet-monyet": "NOUN_ANIMAL", "muka": "NOUN_BODY", "musim": "NOUN_TIME", "muzium": "NOUN_PLACE", "nampak": "VERB", "negara": "NOUN_PLACE", "orang": "NOUN_PERSON", "pada": "PREPOSITION", "pasukan": "NOUN_PERSON", "pelajaran": "NOUN_ABSTRACT", "pelangi": "NOUN_NATURE", "pelari": "NOUN_PERSON", "pelbagai": "DETERMINER", "peliharaan": "NOUN_ANIMAL", "pelukis": "NOUN_PERSON", "perlawanan": "NOUN_ABSTRACT", "perlu": "MODAL", "permainan": "NOUN_ABSTRACT", "pokok": "NOUN_NATURE", "pukul": "NOUN_TIME", "puluh": "NUMBER", "rak": "NOUN_OBJECT", "rakan": "NOUN_PERSON", "rakan-rakan": "NOUN_PERSON", "rasa": "VERB", "saling": "ADVERB", "sama": "ADJECTIVE", "sangat": "ADVERB", "sarang": "NOUN_NATURE", "sarapan": "NOUN_FOOD", "saya": "PRONOUN", "sayang": "VERB", "sayur-sayuran": "NOUN_FOOD", "sebagai": "PREPOSITION", "sebelum": "PREPOSITION", "sebuah": "DETERMINER", "sedang": "ADVERB", "sedikit": "ADVERB", "seekor": "DETERMINER", "segar": "ADJECTIVE", "sekarang": "NOUN_TIME", "sekelas": "NOUN_PERSON", "sekeliling": "PREPOSITION", "sekolah": "NOUN_PLACE", "selalu": "ADVERB", "selepas": "PREPOSITION", "semasa": "PREPOSITION", "semua": "DETERMINER", "sentiasa": "ADVERB", "seorang": "DETERMINER", "sepak": "VERB", "setiap": "DETERMINER", "siapkan": "VERB", "suka": "VERB", "susah": "ADJECTIVE", "tahun": "NOUN_TIME", "tangan": "NOUN_BODY", "tengah": "PREPOSITION", "tepi": "PREPOSITION", "terang": "ADJECTIVE", "terdapat": "VERB_BE", "tinggal": "VERB", "tumbuh": "VERB", "turun": "VERB", "udara": "NOUN_NATURE", "untuk": "PREPOSITION", "waktu": "NOUN_TIME", "warna": "NOUN_ABSTRACT", "yang": "DETERMINER", "jadi": "NOUN_ABSTRACT", "dapat": "VERB", "meraikan": "VERB", "bersenam": "VERB", "menyapu": "VERB", "lantai": "NOUN_OBJECT", "mengitar": "VERB", "semula": "ADVERB", "mesra": "ADJECTIVE", "berterima": "VERB", "kasih": "NOUN_ABSTRACT", "kepada": "PREPOSITION", "mendirikan": "VERB", "belok": "VERB", "selekoh": "NOUN_PLACE", "surat": "NOUN_OBJECT", "latihan": "NOUN_ABSTRACT", "kebakaran": "NOUN_NATURE", "tunggu": "VERB", "cakap": "VERB", "bekerja": "VERB", "benar": "ADJECTIVE", "keledar": "NOUN_OBJECT", "bandar": "NOUN_PLACE", "membeli": "VERB", "wang": "NOUN_OBJECT", "aiskrim": "NOUN_FOOD", "pesta": "NOUN_ABSTRACT", "tawa": "NOUN_ABSTRACT", "haiwannya": "NOUN_ANIMAL", "sekitar": "PREPOSITION", "bintang-bintang": "NOUN_NATURE", "bersinar": "VERB", "kerang": "NOUN_NATURE", "pasir": "NOUN_NATURE", "komik": "NOUN_OBJECT", "badan": "NOUN_BODY", "mangkuk": "NOUN_OBJECT", "kertas": "NOUN_OBJECT", "plastik": "NOUN_OBJECT", "melindungi": "VERB", "bumi": "NOUN_NATURE", "sudi": "ADJECTIVE", "bapa": "NOUN_PERSON", "bertiup": "VERB", "kencang": "ADJECTIVE", "terus": "ADVERB", "kemudian": "ADVERB", "isyarat": "NOUN_OBJECT", "pesakit": "NOUN_PERSON", "penuh": "ADJECTIVE", "kekal": "VERB", "selamat": "ADJECTIVE", "lihat": "VERB", "berkata": "VERB", "terima": "VERB", "sopan": "ADJECTIVE", "walaupun": "CONJUNCTION", "ia": "PRONOUN", "sukar": "ADJECTIVE", "sungguh": "ADVERB", "sukan": "NOUN_ABSTRACT", "seronok": "ADJECTIVE", "bergunting": "VERB", "naik": "VERB", "pegang": "VERB", "memenangi": "VERB", "perlumbaan": "NOUN_ABSTRACT", "berganti-ganti": "ADJECTIVE", "kemas": "ADJECTIVE", "kanak-kanak": "NOUN_PERSON"}, "zh": {"一个": "DETERMINER", "一只": "DETERMINER", "一家人": "NOUN_PERSON", "一起": "ADVERB", "一起玩": "VERB", "七种": "NUMBER", "三本": "NUMBER", "上学": "VERB", "上星期六": "NOUN_TIME", "下雨": "VERB", "世界各地的": "ADJECTIVE", "两只": "NUMBER", "两支": "NUMBER", "为了": "PREPOSITION", "也": "ADVERB", "书包": "NOUN_OBJECT", "书本": "NOUN_OBJECT", "二十个": "NUMBER", "二十五个": "NUMBER", "互相": "ADVERB", "五只": "NUMBER", "五颜六色的": "ADJECTIVE", "人": "NOUN_PERSON", "今年": "NOUN_TIME", "今天": "NOUN_TIME", "今晚": "NOUN_TIME", "从": "PREPOSITION", "他": "PRONOUN", "会": "MODAL", "住在": "VERB", "住在一起": "VERB", "保持": "VERB", "借": "VERB", "假期": "NOUN_TIME", "做功课": "VERB", "做完": "VERB", "做饭": "VERB", "停在": "VERB", "健康": "NOUN_ABSTRACT", "充满了": "VERB", "八点": "NOUN_TIME", "六把": "NUMBER", "刷牙": "VERB", "功课": "NOUN_ABSTRACT", "十个": "NUMBER", "十五个": "NUMBER", "午餐": "NOUN_FOOD", "博物馆": "NOUN_PLACE", "卡通": "NOUN_OBJECT", "卧室的": "ADJECTIVE", "去": "VERB", "参观": "VERB", "又": "CONJUNCTION", "可爱": "ADJECTIVE", "吃了": "VERB", "吃早餐": "VERB", "吃饭前": "NOUN_TIME", "同学": "NOUN_PERSON", "后": "PREPOSITION", "吹走了": "VERB", "周围": "PREPOSITION", "周末": "NOUN_TIME", "和": "CONJUNCTION", "咖喱": "NOUN_FOOD", "喂": "VERB", "喜欢": "VERB", "喝冷饮": "VERB", "四张": "NUMBER", "因为": "CONJUNCTION", "图画": "NOUN_OBJECT", "圆的": "ADJECTIVE", "在": "PREPOSITION", "在公园里": "NOUN_PLACE", "在困难时": "NOUN_TIME", "在晚饭前": "NOUN_TIME", "在树上": "NOUN_PLACE", "在校园里": "NOUN_PLACE", "在海边": "NOUN_PLACE", "在空闲时间": "NOUN_TIME", "坐在": "VERB", "墙上": "NOUN_PLACE", "墙壁": "NOUN_OBJECT", "外套": "NOUN_OBJECT", "外面": "NOUN_PLACE", "大家": "NOUN_PERSON", "大雨": "NOUN_NATURE", "大风": "NOUN_NATURE", "天气": "NOUN_NATURE", "她": "PRONOUN", "她的": "PRONOUN", "好": "ADJECTIVE", "好吃的": "ADJECTIVE", "学校的": "ADJECTIVE", "宠物": "NOUN_ANIMAL", "家里": "NOUN_PLACE", "小兔子": "NOUN_ANIMAL", "小妹妹": "NOUN_PERSON", "小心": "ADVERB", "小鸟": "NOUN_ANIMAL", "帮": "VERB", "常常": "ADVERB", "应该": "MODAL", "开心地": "ADVERB", "彩色的": "ADJECTIVE", "很": "ADVERB", "很冷": "ADJECTIVE", "很快地": "ADVERB", "必须": "MODAL", "快乐": "ADJECTIVE", "想": "VERB", "感到": "VERB", "慢慢地": "ADVERB", "成为": "VERB", "我": "PRONOUN", "我们": "PRONOUN", "我们班": "NOUN_PERSON", "我们的": "PRONOUN", "我的": "PRONOUN", "所有": "DETERMINER", "打篮球": "VERB", "把": "PREPOSITION", "捡了": "VERB", "搭建": "VERB", "收拾好": "VERB", "收集": "VERB", "放在": "VERB", "放学后": "NOUN_TIME", "故事书": "NOUN_OBJECT", "教": "VERB", "教室的": "ADJECTIVE", "数了": "VERB", "新的": "ADJECTIVE", "新鲜的": "ADJECTIVE", "早早": "ADVERB", "早餐": "NOUN_FOOD", "时": "CONJUNCTION", "明亮": "ADJECTIVE", "星期天": "NOUN_TIME", "昨天下午": "NOUN_TIME", "是": "VERB_BE", "晚饭前": "NOUN_TIME", "晴朗": "ADJECTIVE", "最好的": "ADJECTIVE", "有": "VERB_BE", "有点": "ADVERB", "朋友们": "NOUN_PERSON", "来参加": "VERB", "来看": "VERB", "来自": "VERB", "架子上": "NOUN_PLACE", "树叶": "NOUN_NATURE", "校鞋": "NOUN_OBJECT", "模型": "NOUN_OBJECT", "正在": "ADVERB", "每个": "DETERMINER", "每个周末": "NOUN_TIME", "每个星期": "NOUN_TIME", "每个月": "NOUN_TIME", "每天": "NOUN_TIME", "每天傍晚": "NOUN_TIME", "每天早上": "NOUN_TIME", "每晚": "NOUN_TIME", "每次": "NOUN_TIME", "河边": "NOUN_PLACE", "洗手": "VERB", "淡绿色": "ADJECTIVE", "混合成": "VERB", "清晨": "NOUN_TIME", "游戏": "NOUN_ABSTRACT", "漆成": "VERB", "炎热的": "ADJECTIVE", "炒饭": "NOUN_FOOD", "烤饼干": "VERB", "烤鱼": "NOUN_FOOD", "煮": "VERB", "煮了": "VERB", "爬上": "VERB", "爱": "VERB", "爷爷奶奶": "NOUN_PERSON", "猴子们": "NOUN_ANIMAL", "玩具": "NOUN_OBJECT", "玩耍": "VERB", "球队": "NOUN_PERSON", "生日会": "NOUN_ABSTRACT", "用积木": "NOUN_OBJECT", "白色的": "ADJECTIVE", "的": "DETERMINER", "的时候": "CONJUNCTION", "盛开": "VERB", "看书": "VERB", "看见": "VERB", "看起来": "VERB", "睡觉前": "NOUN_TIME", "科学课": "NOUN_ABSTRACT", "空气": "NOUN_NATURE", "穿了": "VERB", "窗边": "NOUN_PLACE", "筑巢": "VERB", "篮子里的": "ADJECTIVE", "粉红色的": "ADJECTIVE", "红苹果": "NOUN_FOOD", "练习": "VERB", "给植物": "NOUN_NATURE", "绿树": "NOUN_NATURE", "美丽地": "ADVERB", "美丽的": "ADJECTIVE", "美味的": "ADJECTIVE", "美术课": "NOUN_ABSTRACT", "脚踏车": "NOUN_OBJECT", "脸": "NOUN_BODY", "色彩鲜艳的": "ADJECTIVE", "花上": "NOUN_NATURE", "花园里": "NOUN_PLACE", "蓝色的": "ADJECTIVE", "衣服": "NOUN_OBJECT", "让": "VERB", "贴满了": "VERB", "赢了": "VERB", "足球赛": "NOUN_ABSTRACT", "跑得": "VERB", "跑得快的": "ADJECTIVE", "跳来跳去": "VERB", "轻柔的": "ADJECTIVE", "轻轻地": "ADVERB", "过": "VERB", "这个": "PRONOUN", "这只": "PRONOUN", "邀请": "VERB", "邻居": "NOUN_PERSON", "邻居们": "NOUN_PERSON", "都": "ADVERB", "野餐": "NOUN_ABSTRACT", "长在": "VERB", "附近": "PREPOSITION", "音乐课": "NOUN_ABSTRACT", "颜色": "NOUN_ABSTRACT", "风": "NOUN_NATURE", "餐桌": "NOUN_OBJECT", "饭": "NOUN_FOOD", "马路": "NOUN_PLACE", "高高地": "ADVERB", "高高的": "ADJECTIVE", "鲜红色": "ADJECTIVE", "黄色的": "ADJECTIVE", "善良": "ADJECTIVE", "了": "DETERMINER", "收到": "VERB", "一份": "DETERMINER", "每年": "NOUN_TIME", "庆祝": "VERB", "他的": "PRONOUN", "海里": "NOUN_PLACE", "安静地": "ADVERB", "运动": "VERB", "扫地": "VERB", "回收": "VERB", "纸箱": "NOUN_OBJECT", "友善": "ADJECTIVE", "搭": "VERB", "转角": "NOUN_PLACE", "处": "NOUN_PLACE", "左转": "VERB", "温柔": "ADJECTIVE", "寄": "VERB", "信": "NOUN_OBJECT", "消防": "NOUN_ABSTRACT", "演习": "NOUN_ABSTRACT", "等": "VERB", "绿灯": "NOUN_OBJECT", "总是": "ADVERB", "请": "ADVERB", "合作": "VERB", "得好": "ADVERB", "实话": "NOUN_ABSTRACT", "戴": "VERB", "城里": "NOUN_PLACE", "当": "VERB", "善良的": "ADJECTIVE", "知识": "NOUN_ABSTRACT", "存钱": "VERB", "一双": "DETERMINER", "那天": "NOUN_TIME", "派对": "NOUN_ABSTRACT", "地": "DETERMINER", "早": "ADVERB", "动物": "NOUN_ANIMAL", "花朵": "NOUN_NATURE", "飞舞": "VERB", "夜晚": "NOUN_TIME", "闪闪发光": "VERB", "捡": "VERB", "还": "CONJUNCTION", "堆": "VERB", "沙堡": "NOUN_OBJECT", "漫画": "NOUN_OBJECT", "身体": "NOUN_BODY", "碗碟": "NOUN_OBJECT", "纸张": "NOUN_OBJECT", "塑料": "NOUN_OBJECT", "来": "VERB", "保护": "VERB", "地球": "NOUN_NATURE", "乐意": "ADJECTIVE", "帮忙": "VERB", "父母": "NOUN_PERSON", "得": "DETERMINER", "很大": "ADJECTIVE", "刮": "VERB", "猛": "ADJECTIVE", "户外": "NOUN_PLACE", "晚餐": "NOUN_FOOD", "直走": "VERB", "然后": "CONJUNCTION", "右转": "VERB", "看到": "VERB", "种": "VERB", "细心": "ADVERB", "照顾": "VERB", "病人": "NOUN_PERSON", "以": "CONJUNCTION", "安全": "ADJECTIVE", "前": "PREPOSITION", "停下": "VERB", "看看": "VERB", "礼貌": "NOUN_ABSTRACT", "即使": "CONJUNCTION", "难": "ADJECTIVE", "安全地": "ADVERB", "运动会": "NOUN_ABSTRACT", "好玩": "ADJECTIVE", "剪": "VERB", "校车": "NOUN_OBJECT", "圆": "ADJECTIVE", "提": "VERB", "着": "DETERMINER", "红灯笼": "NOUN_OBJECT", "接力赛": "NOUN_ABSTRACT", "理发师": "NOUN_PERSON", "整齐": "ADJECTIVE", "明亮的": "ADJECTIVE", "孩子们": "NOUN_PERSON"}};
   const map = {en:{}, ms:{}, zh:{}};
   ["en","ms","zh"].forEach(function(lang){
     WORD_BANK.forEach(function(e){ map[lang][e[lang].toLowerCase()] = TOPIC_TO_CATEGORY[e.topic]; });
@@ -4810,6 +4842,17 @@ const TOKEN_CATEGORY = (function(){
 // (English word -> [Malay, Chinese]; Malay word -> [English, Chinese]; Chinese word -> [English, Malay]).
 const TOKEN_GLOSS = {
   en:{
+    "sports":["sukan", "运动"],
+    "fun":["seronok", "好玩"],
+    "haircut":["gunting rambut", "理发"],
+    "relay":["berganti-ganti", "接力"],
+    "race":["perlumbaan", "比赛"],
+    "barber":["tukang gunting", "理发师"],
+    "neatly":["dengan kemas", "整齐地"],
+    "stops":["berhenti", "停"],
+    "looked":["melihat", "看了"],
+    "children":["kanak-kanak", "孩子们"],
+    "lanterns":["tanglung", "灯笼"],
     "a":["satu", "一个"],
     "about":["tentang", "关于"],
     "after":["selepas", "之后"],
@@ -5163,6 +5206,16 @@ const TOKEN_GLOSS = {
     "you":["anda", "你"]
   },
   ms:{
+    "sukan":["sports", "运动"],
+    "seronok":["fun", "好玩"],
+    "bergunting":["get a haircut", "理发"],
+    "naik":["ride/board", "搭乘"],
+    "pegang":["hold", "拿着"],
+    "memenangi":["win", "赢"],
+    "perlumbaan":["race", "比赛"],
+    "berganti-ganti":["relay", "接力"],
+    "kemas":["neat", "整齐"],
+    "kanak-kanak":["children", "孩子们"],
     "ada":["have/there is", "有"],
     "adalah":["is/are", "是"],
     "adik":["younger sibling", "弟弟妹妹"],
@@ -5432,6 +5485,19 @@ const TOKEN_GLOSS = {
     "sungguh":["really", "真的"]
   },
   zh:{
+    "运动会":["sports day", "hari sukan"],
+    "好玩":["fun", "seronok"],
+    "剪":["cut", "gunting"],
+    "校车":["school bus", "bas sekolah"],
+    "圆":["round", "bulat"],
+    "提":["carry", "bawa"],
+    "着":["(ongoing marker)", "(penanda)"],
+    "红灯笼":["red lantern", "tanglung merah"],
+    "接力赛":["relay race", "perlumbaan lari berganti-ganti"],
+    "理发师":["barber", "tukang gunting"],
+    "整齐":["neat", "kemas"],
+    "明亮的":["bright", "terang"],
+    "孩子们":["children", "kanak-kanak"],
     "一个":["a/one", "satu"],
     "一份":["a (portion)", "satu"],
     "一双":["a pair of", "sepasang"],
@@ -9630,5 +9696,62 @@ function makeClouds(){
 }
 makeClouds();
 </script>
+
+<script>
+/* Fox mascot artwork: keeps existing gameplay handlers and DOM IDs intact. */
+(function(){
+  const foxAssets = {
+    neutral: 'assets/fox/fox-neutral.png',
+    curious: 'assets/fox/fox-curious.png',
+    happy: 'assets/fox/fox-laugh.png',
+    think: 'assets/fox/fox-think.png',
+    sad: 'assets/fox/fox-sad.png',
+    victory: 'assets/fox/fox-victory.png'
+  };
+  function refreshMascot(img){
+    if (!img || !img.classList || !img.classList.contains('mascot')) return;
+    let state = 'neutral';
+    if (img.id === 'mascot-results') state = 'victory';
+    else if (img.classList.contains('sad')) state = 'sad';
+    else if (img.classList.contains('happy')) state = 'happy';
+    else if (img.dataset.foxThinking === 'true') state = 'think';
+    const next = state === 'neutral' ? (img.dataset.baseSrc || foxAssets.neutral) : foxAssets[state];
+    if (next && img.getAttribute('src') !== next) img.setAttribute('src', next);
+  }
+  function refreshAll(){
+    document.querySelectorAll('img.mascot').forEach(refreshMascot);
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    refreshAll();
+    document.querySelectorAll('img.mascot').forEach(function(img){
+      new MutationObserver(function(){ refreshMascot(img); })
+        .observe(img, {attributes:true, attributeFilter:['class','data-fox-thinking']});
+    });
+    /* Hint controls temporarily show the thinking fox; gameplay logic remains unchanged. */
+    document.addEventListener('click', function(event){
+      const control = event.target.closest('button,[role="button"]');
+      if (!control) return;
+      const label = ((control.textContent || '') + ' ' + (control.getAttribute('aria-label') || '') + ' ' + (control.id || '')).toLowerCase();
+      if (/hint|help|clue|think/.test(label)) {
+        const screen = control.closest('.screen');
+        const mascot = screen && screen.querySelector('img.mascot');
+        if (mascot) {
+          mascot.dataset.foxThinking = 'true';
+          refreshMascot(mascot);
+          window.setTimeout(function(){
+            if (mascot && mascot.isConnected) {
+              delete mascot.dataset.foxThinking;
+              refreshMascot(mascot);
+            }
+          }, 1800);
+        }
+      }
+    });
+  });
+  /* If this script runs after DOMContentLoaded, still initialise. */
+  if (document.readyState !== 'loading') refreshAll();
+})();
+</script>
+
 </body>
 </html>
