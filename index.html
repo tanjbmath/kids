@@ -8511,6 +8511,21 @@ function showRinggitResults(score){
   if(ratio>=0.6){ playFanfare(); launchConfetti(40); }
 }
 
+/* Curated Chinese word problems for Malaysian Standard 2–3 students.
+   Answers are numeric because the existing quiz uses a numeric answer field. */
+const MATH_ZH_Y2_Y3_BANK = [
+  {scenario:"文具店原有245支铅笔。上午卖出78支，下午又卖出56支。",question:"文具店还剩下多少支铅笔？",answer:111,explanation:"245 − 78 − 56 = 111支。"},
+  {scenario:"老师买了8盒彩色笔，每盒有12支。她把其中35支分给学生。",question:"老师还剩下多少支彩色笔？",answer:61,explanation:"8 × 12 = 96；96 − 35 = 61支。"},
+  {scenario:"一辆巴士原有36名乘客。第一站有9人下车，第二站有14人上车。",question:"现在巴士上有多少名乘客？",answer:41,explanation:"36 − 9 + 14 = 41人。"},
+  {scenario:"妈妈买了3袋橙子，每袋有8个。她把橙子平均分给4个孩子。",question:"每个孩子得到多少个橙子？",answer:6,explanation:"3 × 8 = 24；24 ÷ 4 = 6个。"},
+  {scenario:"美玲有RM50。她买了一本RM18的书和一盒彩色笔，彩色笔售价RM12。",question:"美玲还剩下多少钱？（输入令吉数额，不必输入RM）",answer:20,explanation:"18 + 12 = 30；50 − 30 = RM20。"},
+  {scenario:"一场电影下午2时25分开始，下午4时05分结束。",question:"这场电影一共播放了多少分钟？",answer:100,explanation:"2时25分到3时25分是60分钟，再到4时05分是40分钟；共100分钟。"},
+  {scenario:"农夫收获了96个鸡蛋，每盒装6个。他卖出了11盒鸡蛋。",question:"农夫还剩下多少个鸡蛋？",answer:30,explanation:"96 ÷ 6 = 16盒；16 − 11 = 5盒；5 × 6 = 30个。"},
+  {scenario:"一本故事书有120页。小华星期一读了28页，星期二读了35页。",question:"小华还有多少页没有读？",answer:57,explanation:"28 + 35 = 63；120 − 63 = 57页。"},
+  {scenario:"一条彩带长5米。手工课用了185厘米，之后又用了120厘米。",question:"彩带还剩下多少厘米？",answer:195,explanation:"5米 = 500厘米；500 − 185 − 120 = 195厘米。"},
+  {scenario:"学校准备了7箱矿泉水，每箱有24瓶。运动会后还剩下58瓶。",question:"运动会期间一共喝了多少瓶矿泉水？",answer:110,explanation:"7 × 24 = 168；168 − 58 = 110瓶。"}
+];
+
 /* ---------------- MATH WORD PROBLEMS ---------------- */
 function pickMathLang(lang){
   state.mathLang = lang;
@@ -8542,12 +8557,17 @@ function pickMathYear(year){
 function renderMathInstructions(){
   const isZh = state.mathLang === "zh";
   document.getElementById("math-instr-title").textContent = isZh ? "游戏玩法" : "How to play";
-  document.getElementById("math-instr-text").textContent = isZh
-    ? "Pip 会为你实时想出一道全新的数学应用题！仔细阅读题目，输入你的答案，然后点击检查。每题有两次机会。"
-    : "Pip will think up a brand-new math word problem for you in real time! Read carefully, type your answer, then check. You get 2 tries per question.";
-  document.getElementById("math-instr-note").textContent = isZh
-    ? "💡 这个功能需要在 Claude.ai 里打开才能实时生成题目。"
-    : "💡 This feature needs to be running inside Claude.ai to generate live questions.";
+  const hasCuratedZhBank = isZh && [2,3].includes(state.mathYear);
+  document.getElementById("math-instr-text").textContent = hasCuratedZhBank
+    ? "这里有10道为二至三年级准备的数学应用题。仔细阅读题目，输入你的答案，然后点击检查。每题有两次机会。"
+    : isZh
+      ? "Pip 会为你实时想出一道全新的数学应用题！仔细阅读题目，输入你的答案，然后点击检查。每题有两次机会。"
+      : "Pip will think up a brand-new math word problem for you in real time! Read carefully, type your answer, then check. You get 2 tries per question.";
+  document.getElementById("math-instr-note").textContent = hasCuratedZhBank
+    ? "⭐ 每次游戏都会随机排列这10道题目。"
+    : isZh
+      ? "💡 这个功能需要在 Claude.ai 里打开才能实时生成题目。"
+      : "💡 This feature needs to be running inside Claude.ai to generate live questions.";
   document.getElementById("btn-start-math").textContent = isZh ? "⭐ 开始游戏！" : "⭐ Let's Play!";
 }
 
@@ -8557,6 +8577,10 @@ function startMathGame(){
   state.mathWrongCount = 0;
   state.mathScore = 0;
   state.mathTotalStars = 0;
+  // Standard 2–3 Chinese math sessions use the curated 应用题 bank.
+  state.mathQuestionQueue = (state.mathLang === "zh" && [2,3].includes(state.mathYear))
+    ? shuffle(MATH_ZH_Y2_Y3_BANK).slice(0, state.mathTotalQuestions)
+    : [];
   goTo("math-game");
   requestMathQuestion();
 }
@@ -8608,6 +8632,28 @@ async function requestMathQuestion(){
   state.mathAttempts = 0;
   state.mathResolved = false;
   state.mathCurrentQuestion = null;
+
+  // Serve the curated Chinese Standard 2–3 word problems first.
+  if(state.mathQuestionQueue && state.mathQuestionQueue.length){
+    const q = state.mathQuestionQueue.shift();
+    state.mathCurrentQuestion = q;
+    document.getElementById("math-counter").textContent = "Q " + (state.mathIndex+1) + "/" + state.mathTotalQuestions;
+    document.getElementById("math-progress-fill").style.width = ((state.mathIndex)/state.mathTotalQuestions*100)+"%";
+    document.getElementById("math-score-pill").textContent = "🏅 " + state.mathScore + "/100";
+    document.getElementById("math-feedback-line").textContent = "";
+    document.getElementById("math-feedback-line").className = "feedback-line";
+    document.getElementById("btn-math-next").style.display = "none";
+    document.getElementById("math-answer-input").value = "";
+    document.getElementById("math-error-wrap").style.display = "none";
+    document.getElementById("math-loading-wrap").style.display = "none";
+    document.getElementById("math-question-wrap").style.display = "";
+    document.getElementById("math-scenario").textContent = q.scenario;
+    document.getElementById("math-question").textContent = q.question;
+    document.getElementById("btn-math-check").disabled = false;
+    document.getElementById("math-answer-input").disabled = false;
+    document.getElementById("math-answer-input").focus();
+    return;
+  }
 
   document.getElementById("math-counter").textContent = "Q " + (state.mathIndex+1) + "/" + state.mathTotalQuestions;
   document.getElementById("math-progress-fill").style.width = ((state.mathIndex)/state.mathTotalQuestions*100)+"%";
