@@ -10048,6 +10048,24 @@ makeClouds();
   const prettyMode=k=>String(k||"").replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase());
   const escapeHtml=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const levelForXp=xp=>Math.floor(Math.max(0,Number(xp)||0)/100)+1;
+  const MODE_FAVOURITE_BADGES={
+    "sentence-builder":"📝 Sentence Star",
+    "word-match":"🔤 Word Matcher",
+    "story-blanks":"📖 Story Solver",
+    "ringgit-shop":"💰 Ringgit Ranger",
+    "word-detective":"🕵️ Word Detective",
+    "math-word-problems":"🔢 Problem Solver",
+    "fill-in-the-blank":"🧩 Blank Builder",
+    "math-quiz":"🧮 Quiz Whiz"
+  };
+  function addModeAchievements(badges,stats){
+    const attemptsByMode=Object.fromEntries(Object.keys(MODE_FAVOURITE_BADGES).map(mode=>[mode,Math.max(0,Number(stats[mode]?.attempts)||0)]));
+    const playedModes=Object.values(attemptsByMode).filter(attempts=>attempts>0).length;
+    if(playedModes>=3)badges.push("🧭 Game Explorer");
+    if(playedModes===Object.keys(MODE_FAVOURITE_BADGES).length)badges.push("🌈 All-Round Adventurer");
+    const ranked=Object.entries(attemptsByMode).sort(([,a],[,b])=>b-a),[favouriteMode,favouriteAttempts]=ranked[0];
+    if(favouriteAttempts>=3&&favouriteAttempts>ranked[1][1])badges.push(MODE_FAVOURITE_BADGES[favouriteMode]);
+  }
   function show(view){["wa-signin-view","wa-leaderboard-view","wa-nickname-view","wa-dashboard-view","wa-admin-view"].forEach(id=>$(id).style.display=id===view?"":"none");}
   function updateProfileButton(){const b=document.querySelector(".wa-profile-pill");if(b){b.classList.toggle("wa-logged-in",!!user);b.textContent=user?"👤 "+(profile?.displayName||user.displayName||"Student"):"👤 Student";}}
   function recentProfiles(){try{return JSON.parse(localStorage.getItem(RECENT_PROFILES_KEY)||"[]");}catch(_){return [];}}
@@ -10069,7 +10087,7 @@ makeClouds();
     if(!profile||!user)return;
     try{const ref=db.collection("students").doc(user.uid),snap=await ref.get();if(!snap.exists){status("Your saved profile could not be found. Progress was not changed.",true);return;}const d=snap.data(),xp=Number(d.totalXp);if(!Number.isFinite(xp)||xp<0){status("Your saved XP is invalid. Progress was not changed.",true);return;}const stats=d.gameStats||{};profile={id:user.uid,...d,totalXp:xp};
       $("wa-welcome-name").textContent="Welcome back, "+d.displayName+"!";$("wa-level").textContent=String(levelForXp(xp));$("wa-xp").textContent=String(xp);$("wa-attempts").textContent=String(d.totalAttempts||0);
-      const badges=[];if((d.totalAttempts||0)>=1)badges.push("🌱 First Steps");if((d.totalAttempts||0)>=10)badges.push("🎯 10 Attempts");if(xp>=100)badges.push("⭐ 100 XP");if(xp>=500)badges.push("💎 500 XP");
+      const badges=[];if((d.totalAttempts||0)>=1)badges.push("🌱 First Steps");if((d.totalAttempts||0)>=10)badges.push("🎯 10 Attempts");if(xp>=100)badges.push("⭐ 100 XP");if(xp>=500)badges.push("💎 500 XP");addModeAchievements(badges,stats);
       $("wa-badges").innerHTML=badges.length?badges.map(b=>'<span class="wa-badge">'+escapeHtml(b)+"</span>").join(""):'<span class="wa-muted">Play a game to earn your first achievement.</span>';
       $("wa-game-stats").innerHTML=Object.entries(stats).length?Object.entries(stats).map(([k,v])=>'<div class="wa-attempt-row"><span>'+escapeHtml(prettyMode(k))+'</span><span><b>'+(v.attempts||0)+"</b> plays · best "+(v.bestScore||0)+"</span></div>").join(""):'<p class="wa-muted">No games completed yet.</p>';
       const attempts=await ref.collection("attempts").orderBy("completedAt","desc").limit(10).get();$("wa-recent-attempts").innerHTML=attempts.empty?'<p class="wa-muted">Your completed games will appear here.</p>':attempts.docs.map(doc=>{const a=doc.data(),date=a.completedAt?.toDate?a.completedAt.toDate().toLocaleDateString():"";return '<div class="wa-attempt-row"><span>'+escapeHtml(prettyMode(a.gameMode))+'<br><span class="wa-muted">'+date+"</span></span><span><b>"+a.score+"/"+a.maxScore+'</b><br><span class="wa-muted">+'+(a.xpAwarded||0)+" XP</span></span></div>";}).join("");
