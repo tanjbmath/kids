@@ -8160,13 +8160,50 @@ function renderDetectiveBank(){
   const wrap = document.getElementById("detective-choice-wrap");
   wrap.innerHTML = "";
   q.choiceTiles.forEach(tile=>{
-    const btn = document.createElement("button");
-    btn.className = "bank-tile" + (tile.used ? " used":"");
-    btn.textContent = tile.letter;
-    btn.disabled = tile.used || state.detectiveResolved;
-    btn.onclick = ()=> placeDetectiveLetter(tile.id);
-    wrap.appendChild(btn);
+    if(q.lang === "zh"){
+      const choice = document.createElement("div");
+      choice.className = "detective-choice-with-audio";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bank-tile" + (tile.used ? " used":"");
+      btn.textContent = tile.letter;
+      btn.disabled = tile.used || state.detectiveResolved;
+      btn.onclick = ()=> placeDetectiveLetter(tile.id);
+
+      const audioBtn = document.createElement("button");
+      audioBtn.type = "button";
+      audioBtn.className = "detective-choice-audio";
+      audioBtn.textContent = "🔊";
+      audioBtn.title = "听一听这个词";
+      audioBtn.setAttribute("aria-label", "播放完整中文词语 " + q.entry.zh);
+      audioBtn.disabled = state.detectiveResolved;
+      audioBtn.onclick = (event)=>{
+        event.stopPropagation();
+        speakDetectiveChoice(q.entry.zh);
+      };
+      choice.append(btn, audioBtn);
+      wrap.appendChild(choice);
+    } else {
+      const btn = document.createElement("button");
+      btn.className = "bank-tile" + (tile.used ? " used":"");
+      btn.textContent = tile.letter;
+      btn.disabled = tile.used || state.detectiveResolved;
+      btn.onclick = ()=> placeDetectiveLetter(tile.id);
+      wrap.appendChild(btn);
+    }
   });
+}
+
+function speakDetectiveChoice(word){
+  if(!word || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "zh-CN";
+  utterance.rate = 0.85;
+  const voices = window.speechSynthesis.getVoices();
+  const chineseVoice = voices.find(voice => /^zh(-|_)/i.test(voice.lang));
+  if(chineseVoice) utterance.voice = chineseVoice;
+  window.speechSynthesis.speak(utterance);
 }
 
 function placeDetectiveLetter(id){
