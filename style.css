@@ -205,8 +205,18 @@
   .word-bank{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0;}
   .placed-tile, .bank-tile{position:relative;}
   .sentence-trans{margin:10px 0 4px; padding:10px 14px; background:#F5F7FF; border:2px dashed #C7CEFF; border-radius:14px;}
-  .sentence-trans .trans-row{display:flex; gap:8px; align-items:flex-start; font-weight:800; color:var(--plum); font-size:16px; padding:3px 0;}
+  .sentence-trans .trans-row{display:flex; gap:8px; align-items:center; font-weight:800; color:var(--plum); font-size:16px; padding:5px 0;}
   .sentence-trans .trans-flag{flex-shrink:0;}
+  .sentence-trans .trans-sentence-text{flex:1; min-width:0;}
+  .sentence-audio-btn{
+    flex-shrink:0; min-width:32px; min-height:30px; padding:3px 7px;
+    border:1.5px solid #C7CEFF; border-radius:9px; background:#F1F3FF;
+    box-shadow:0 2px 0 #C7CEFF; font-size:14px; line-height:1;
+    cursor:pointer; touch-action:manipulation;
+  }
+  .sentence-audio-btn:active{transform:translateY(2px);}
+  .sentence-audio-btn:focus-visible{outline:3px solid #6C7BFF; outline-offset:2px;}
+  #sentence-target .sentence-audio-btn{margin-left:4px;}
 
   /* Vocab Match */
   .vocab-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px;}
