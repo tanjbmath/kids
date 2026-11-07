@@ -7542,17 +7542,59 @@ function addTileMeaning(el, word, tipId){
   el.appendChild(tip);
 }
 
+function sentenceText(tokens, lang){
+  return lang === "zh" ? tokens.join("") : tokens.join(" ");
+}
+
+function speakSentence(text, lang){
+  if(!text || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang === "en" ? "en-US" : lang === "ms" ? "ms-MY" : "zh-CN";
+  utterance.rate = 0.9;
+  const voices = window.speechSynthesis.getVoices();
+  const prefix = lang === "zh" ? /^zh(-|_)/i : lang === "ms" ? /^ms(-|_)/i : /^en(-|_)/i;
+  const voice = voices.find(v => prefix.test(v.lang));
+  if(voice) utterance.voice = voice;
+  window.speechSynthesis.speak(utterance);
+}
+
+function createSentenceAudioButton(text, lang){
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "sentence-audio-btn";
+  btn.textContent = "🔊";
+  btn.title = "Play sentence";
+  btn.setAttribute("aria-label", "Play sentence aloud");
+  btn.addEventListener("click", function(e){
+    e.stopPropagation();
+    speakSentence(text, lang);
+  });
+  return btn;
+}
+
 function showSentenceTranslations(q){
   const el = document.getElementById("sentence-translations");
   if(!el || q.idx === undefined) return;
-  const rows = ["en","ms","zh"].filter(function(l){ return l !== state.lang; }).map(function(l){
+  el.innerHTML = "";
+  ["en","ms","zh"].filter(function(l){ return l !== state.lang; }).forEach(function(l){
     const tq = BANK[l][q.lv] && BANK[l][q.lv][q.idx];
-    if(!tq) return "";
-    const txt = l === "zh" ? tq.tokens.join("") : tq.tokens.join(" ");
-    return '<div class="trans-row"><span class="trans-flag">' + UI_TEXT[l].flag + '</span><span>' + txt + '</span></div>';
-  }).join("");
-  el.innerHTML = rows;
-  el.style.display = rows ? "" : "none";
+    if(!tq) return;
+    const txt = sentenceText(tq.tokens, l);
+    const row = document.createElement("div");
+    row.className = "trans-row";
+    const flag = document.createElement("span");
+    flag.className = "trans-flag";
+    flag.textContent = UI_TEXT[l].flag;
+    const sentence = document.createElement("span");
+    sentence.className = "trans-sentence-text";
+    sentence.textContent = txt;
+    row.appendChild(flag);
+    row.appendChild(sentence);
+    row.appendChild(createSentenceAudioButton(txt, l));
+    el.appendChild(row);
+  });
+  el.style.display = el.children.length ? "" : "none";
 }
 
 function renderTiles(){
@@ -7637,6 +7679,8 @@ function checkAnswer(){
     document.getElementById("mascot-game").classList.add("happy");
     playCorrectSound();
     launchConfetti();
+    const completedSentence = sentenceText(q.tokens, state.lang);
+    targetEl.appendChild(createSentenceAudioButton(completedSentence, state.lang));
     showSentenceTranslations(q);
     resolveQuestion();
   } else {
