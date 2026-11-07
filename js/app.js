@@ -8174,12 +8174,13 @@ function renderDetectiveBank(){
       audioBtn.type = "button";
       audioBtn.className = "detective-choice-audio";
       audioBtn.textContent = "🔊";
-      audioBtn.title = "听一听这个词";
-      audioBtn.setAttribute("aria-label", "播放完整中文词语 " + q.entry.zh);
+      audioBtn.title = "听一听这个选项词语";
+      const candidateWord = q.displayChars.map(ch => ch === null ? tile.letter : ch).join("");
+      audioBtn.setAttribute("aria-label", "播放选项词语 " + candidateWord);
       audioBtn.disabled = state.detectiveResolved;
       audioBtn.onclick = (event)=>{
         event.stopPropagation();
-        speakDetectiveChoice(q.entry.zh);
+        speakDetectiveChoice(candidateWord);
       };
       choice.append(btn, audioBtn);
       wrap.appendChild(choice);
