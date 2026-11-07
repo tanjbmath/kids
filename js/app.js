@@ -3820,7 +3820,7 @@ const MATH_QUESTION_BANK = [
   },
   {
     id: 194, topic: "分数、小数与百分比", year: 3, difficulty: "基础",
-    scenario_zh: "一张纸的 3/4 被涂上颜色，小明擦掉了其中的 1/2。",
+    scenario_zh: "一张纸的 3/4 被涂上颜色，其中相当于整张纸 1/2 的部分被擦掉。",
     question_zh: "如果擦掉的是整张纸的 1/2，剩下未擦掉的涂色部分占整张纸的几分之几？",
     options: ["1/4", "2/4", "1/2", "2/3"],
     correct_index: 0,
