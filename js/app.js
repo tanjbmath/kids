@@ -3811,7 +3811,7 @@ const MATH_QUESTION_BANK = [
     explanation_zh: "把 2/3 的分子和分母同时乘以 2，得到 4/6。"
   },
   {
-    id: 193, topic: "分数、小数与百分比", year: 3, difficulty: "基础",
+    id: 193, topic: "分数、小数与百分比", year: 3, difficulty: "中等",
     scenario_zh: "一盒巧克力有 5 颗，小文吃了 2 颗，哥哥吃了 1 颗。",
     question_zh: "两人一共吃了这盒巧克力的几分之几？",
     options: ["2/5", "3/5", "3/10", "1/5"],
@@ -3819,7 +3819,7 @@ const MATH_QUESTION_BANK = [
     explanation_zh: "2/5 + 1/5 = 3/5。分母相同，分子相加。"
   },
   {
-    id: 194, topic: "分数、小数与百分比", year: 3, difficulty: "基础",
+    id: 194, topic: "分数、小数与百分比", year: 3, difficulty: "中等",
     scenario_zh: "一张纸的 3/4 被涂上颜色，其中相当于整张纸 1/2 的部分被擦掉。",
     question_zh: "如果擦掉的是整张纸的 1/2，剩下未擦掉的涂色部分占整张纸的几分之几？",
     options: ["1/4", "2/4", "1/2", "2/3"],
