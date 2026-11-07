@@ -159,15 +159,17 @@
     padding:10px 16px; cursor:pointer; box-shadow:0 3px 0 #C7CEFF;
     transition:transform .1s ease; touch-action:manipulation; user-select:none;
   }
+  .detective-character-item,
   .detective-choice-with-audio{
-    display:inline-flex; align-items:center; gap:5px;
+    display:inline-flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:3px; vertical-align:middle;
   }
   .detective-choice-with-audio .bank-tile{min-width:48px;}
   .detective-choice-audio{
-    min-width:38px; min-height:42px; padding:5px 7px;
-    border:2px solid #C7CEFF; border-radius:12px;
-    background:#F1F3FF; box-shadow:0 3px 0 #C7CEFF;
-    font-size:17px; cursor:pointer; touch-action:manipulation;
+    min-width:30px; min-height:28px; padding:2px 5px;
+    border:1.5px solid #C7CEFF; border-radius:9px;
+    background:#F1F3FF; box-shadow:0 2px 0 #C7CEFF;
+    font-size:13px; line-height:1; cursor:pointer; touch-action:manipulation;
   }
   .detective-choice-audio:active{transform:translateY(2px);}
   .detective-choice-audio:disabled{cursor:default; opacity:.6;}

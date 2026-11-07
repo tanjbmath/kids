@@ -8142,17 +8142,27 @@ function loadDetectiveQuestion(){
 function renderDetectiveWord(){
   const q = state.detectiveQuestions[state.detectiveIndex];
   const el = document.getElementById("detective-word");
+  el.innerHTML = "";
   let blankIdx = 0;
-  const parts = q.displayChars.map((ch)=>{
-    if(ch !== null) return `<span>${ch}</span>`;
-    const myIdx = blankIdx;
-    const filled = q.placed[myIdx];
-    const cls = "story-blank" + (filled ? " filled":"");
-    const text = filled ? filled.letter : "_";
-    blankIdx++;
-    return `<span class="${cls}" data-blank="${myIdx}" onclick="removeDetectiveLetter(${myIdx})">${text}</span>`;
+  q.displayChars.forEach((ch)=>{
+    const character = ch !== null ? ch : (q.placed[blankIdx]?.letter || "_");
+    const item = document.createElement("span");
+    item.className = "detective-character-item";
+    const glyph = document.createElement("span");
+    glyph.textContent = character;
+    if(ch === null){
+      const myIdx = blankIdx;
+      glyph.className = "story-blank" + (q.placed[myIdx] ? " filled":"");
+      glyph.dataset.blank = myIdx;
+      glyph.onclick = ()=>removeDetectiveLetter(myIdx);
+      blankIdx++;
+    }
+    item.appendChild(glyph);
+    if(q.lang === "zh" && character !== "_"){
+      item.appendChild(createDetectiveAudioButton(character));
+    }
+    el.appendChild(item);
   });
-  el.innerHTML = parts.join("");
 }
 
 function renderDetectiveBank(){
@@ -8169,20 +8179,7 @@ function renderDetectiveBank(){
       btn.textContent = tile.letter;
       btn.disabled = tile.used || state.detectiveResolved;
       btn.onclick = ()=> placeDetectiveLetter(tile.id);
-
-      const audioBtn = document.createElement("button");
-      audioBtn.type = "button";
-      audioBtn.className = "detective-choice-audio";
-      audioBtn.textContent = "🔊";
-      audioBtn.title = "听一听这个选项词语";
-      const candidateWord = q.displayChars.map(ch => ch === null ? tile.letter : ch).join("");
-      audioBtn.setAttribute("aria-label", "播放选项词语 " + candidateWord);
-      audioBtn.disabled = state.detectiveResolved;
-      audioBtn.onclick = (event)=>{
-        event.stopPropagation();
-        speakDetectiveChoice(candidateWord);
-      };
-      choice.append(btn, audioBtn);
+      choice.append(btn, createDetectiveAudioButton(tile.letter));
       wrap.appendChild(choice);
     } else {
       const btn = document.createElement("button");
@@ -8195,10 +8192,25 @@ function renderDetectiveBank(){
   });
 }
 
-function speakDetectiveChoice(word){
-  if(!word || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
+function createDetectiveAudioButton(character){
+  const audioBtn = document.createElement("button");
+  audioBtn.type = "button";
+  audioBtn.className = "detective-choice-audio";
+  audioBtn.textContent = "🔊";
+  audioBtn.title = "朗读这个字";
+  audioBtn.setAttribute("aria-label", "朗读 " + character);
+  audioBtn.disabled = state.detectiveResolved;
+  audioBtn.onclick = (event)=>{
+    event.stopPropagation();
+    speakDetectiveChoice(character);
+  };
+  return audioBtn;
+}
+
+function speakDetectiveChoice(character){
+  if(!character || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(word);
+  const utterance = new SpeechSynthesisUtterance(character);
   utterance.lang = "zh-CN";
   utterance.rate = 0.85;
   const voices = window.speechSynthesis.getVoices();
