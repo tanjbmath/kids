@@ -3633,6 +3633,246 @@ const MATH_QUESTION_BANK = [
     options: ["10", "9", "15", "8"],
     correct_index: 3,
     explanation_zh: "最多 15 本，最少 7 本，15 - 7 = 8 本。"
+  },
+  {
+    id: 171, topic: "10,000以内的整数", year: 3, difficulty: "基础",
+    scenario_zh: "老师在黑板上写了「九千零四十六」。",
+    question_zh: "这个数应该写成哪一个数字？",
+    options: ["9 406", "9 046", "9 064", "9 460"],
+    correct_index: 1,
+    explanation_zh: "九千零四十六写成数字是 9 046。"
+  },
+  {
+    id: 172, topic: "10,000以内的整数", year: 3, difficulty: "基础",
+    scenario_zh: "数字 7 582 中有一个数字是 7。",
+    question_zh: "数字 7 的数值是多少？",
+    options: ["7", "70", "700", "7 000"],
+    correct_index: 3,
+    explanation_zh: "7 在千位上，所以它的数值是 7 000。"
+  },
+  {
+    id: 173, topic: "10,000以内的整数", year: 3, difficulty: "基础",
+    scenario_zh: "一个数由 6 个千、3 个百、4 个十和 5 个一组成。",
+    question_zh: "这个数是多少？",
+    options: ["6 345", "6 435", "6 354", "6 305"],
+    correct_index: 0,
+    explanation_zh: "6 000 + 300 + 40 + 5 = 6 345。"
+  },
+  {
+    id: 174, topic: "10,000以内的整数", year: 3, difficulty: "中等",
+    scenario_zh: "四个班级参加数学活动，人数分别是 4 809 人、4 089 人、4 890 人和 4 098 人。",
+    question_zh: "哪一个排列是由小至大的正确顺序？",
+    options: ["4 098、4 089、4 809、4 890", "4 809、4 890、4 089、4 098", "4 089、4 098、4 809、4 890", "4 890、4 809、4 098、4 089"],
+    correct_index: 2,
+    explanation_zh: "先比较千位，再比较百位和十位，正确顺序是 4 089、4 098、4 809、4 890。"
+  },
+  {
+    id: 175, topic: "10,000以内的整数", year: 3, difficulty: "基础",
+    scenario_zh: "运动会记录了 3 426 名学生参加活动。",
+    question_zh: "3 426 是奇数还是偶数？",
+    options: ["奇数", "偶数", "既是奇数也是偶数", "无法判断"],
+    correct_index: 1,
+    explanation_zh: "个位是 6，能被 2 整除，所以 3 426 是偶数。"
+  },
+  {
+    id: 176, topic: "10,000以内的整数", year: 3, difficulty: "中等",
+    scenario_zh: "观察数列：1 250，1 500，1 750，2 000，……",
+    question_zh: "下一个数是多少？",
+    options: ["2 100", "2 150", "2 250", "2 500"],
+    correct_index: 2,
+    explanation_zh: "每一个数增加 250，所以 2 000 + 250 = 2 250。"
+  },
+  {
+    id: 177, topic: "10,000以内的整数", year: 3, difficulty: "中等",
+    scenario_zh: "学校图书馆有 398 本故事书和 205 本科学书。",
+    question_zh: "估算两种书的总数，最接近哪一个数？",
+    options: ["500 本", "600 本", "700 本", "800 本"],
+    correct_index: 1,
+    explanation_zh: "398 约是 400，205 约是 200，400 + 200 = 600 本。"
+  },
+  {
+    id: 178, topic: "10,000以内的整数", year: 3, difficulty: "中等",
+    scenario_zh: "一间工厂一天生产了 6 748 个零件。",
+    question_zh: "6 748 近似至百位是多少？",
+    options: ["6 700", "6 800", "6 740", "6 750"],
+    correct_index: 0,
+    explanation_zh: "十位数字是 4，小于 5，因此百位不变，近似值是 6 700。"
+  },
+  {
+    id: 179, topic: "10,000以内的整数", year: 3, difficulty: "挑战",
+    scenario_zh: "小明有 0、2、5 和 8 四张数字卡，每张卡只能使用一次。",
+    question_zh: "他可以组成的最大四位数是多少？",
+    options: ["8 520", "8 502", "8 250", "8 205"],
+    correct_index: 0,
+    explanation_zh: "要组成最大数，应把数字由大至小排列，8、5、2、0，所以是 8 520。"
+  },
+  {
+    id: 180, topic: "10,000以内的整数", year: 3, difficulty: "挑战",
+    scenario_zh: "学校上午有 2 486 人参观展览，下午有 1 897 人参观展览。",
+    question_zh: "把全天参观人数的总数近似至千位，答案是多少？",
+    options: ["3 000 人", "4 000 人", "5 000 人", "6 000 人"],
+    correct_index: 1,
+    explanation_zh: "2 486 + 1 897 = 4 383。4 383 近似至千位是 4 000。"
+  },
+  {
+    id: 181, topic: "基本运算", year: 3, difficulty: "基础",
+    scenario_zh: "文具店第一天卖出 3 786 支铅笔，第二天卖出 2 459 支。",
+    question_zh: "两天一共卖出多少支铅笔？",
+    options: ["6 145 支", "6 235 支", "6 245 支", "6 345 支"],
+    correct_index: 2,
+    explanation_zh: "3 786 + 2 459 = 6 245 支。"
+  },
+  {
+    id: 182, topic: "基本运算", year: 3, difficulty: "基础",
+    scenario_zh: "仓库原有 8 002 个口罩，运走了 3 578 个。",
+    question_zh: "仓库还剩下多少个口罩？",
+    options: ["4 324 个", "4 424 个", "4 524 个", "5 424 个"],
+    correct_index: 1,
+    explanation_zh: "8 002 - 3 578 = 4 424 个。"
+  },
+  {
+    id: 183, topic: "基本运算", year: 3, difficulty: "中等",
+    scenario_zh: "书店原有 1 250 本练习簿，又进货 875 本，后来卖出 630 本。",
+    question_zh: "书店现在有多少本练习簿？",
+    options: ["1 495 本", "1 505 本", "1 625 本", "2 125 本"],
+    correct_index: 0,
+    explanation_zh: "1 250 + 875 - 630 = 2 125 - 630 = 1 495 本。"
+  },
+  {
+    id: 184, topic: "基本运算", year: 3, difficulty: "基础",
+    scenario_zh: "一间工厂每天生产 248 个玩具，连续生产 7 天。",
+    question_zh: "工厂一共生产多少个玩具？",
+    options: ["1 636 个", "1 686 个", "1 736 个", "1 786 个"],
+    correct_index: 2,
+    explanation_zh: "248 × 7 = 1 736 个。"
+  },
+  {
+    id: 185, topic: "基本运算", year: 3, difficulty: "中等",
+    scenario_zh: "老师把 3 275 张贴纸平均分给 10 个小组。",
+    question_zh: "每组可得到多少张贴纸？还剩多少张？",
+    options: ["327 张，余 5 张", "325 张，余 7 张", "32 张，余 75 张", "328 张，余 0 张"],
+    correct_index: 0,
+    explanation_zh: "3 275 ÷ 10 = 327，余数是 5。"
+  },
+  {
+    id: 186, topic: "基本运算", year: 3, difficulty: "中等",
+    scenario_zh: "学校准备了 4 500 张彩纸，先用了 1 280 张，再用了 975 张。",
+    question_zh: "还剩下多少张彩纸？",
+    options: ["2 145 张", "2 225 张", "2 245 张", "2 345 张"],
+    correct_index: 2,
+    explanation_zh: "4 500 - 1 280 - 975 = 3 220 - 975 = 2 245 张。"
+  },
+  {
+    id: 187, topic: "基本运算", year: 3, difficulty: "中等",
+    scenario_zh: "一个数加上 1 275，结果是 3 000。",
+    question_zh: "这个未知数是多少？",
+    options: ["1 625", "1 725", "1 825", "2 275"],
+    correct_index: 1,
+    explanation_zh: "未知数 = 3 000 - 1 275 = 1 725。"
+  },
+  {
+    id: 188, topic: "基本运算", year: 3, difficulty: "挑战",
+    scenario_zh: "书店原有 1 250 本故事书。上午卖出 368 本，下午卖出 427 本。",
+    question_zh: "书店还剩下多少本故事书？",
+    options: ["445 本", "455 本", "465 本", "475 本"],
+    correct_index: 1,
+    explanation_zh: "1 250 - 368 - 427 = 882 - 427 = 455 本。"
+  },
+  {
+    id: 189, topic: "基本运算", year: 3, difficulty: "挑战",
+    scenario_zh: "每箱有 24 支铅笔，学校买了 8 箱，再把铅笔平均分给 6 个小组。",
+    question_zh: "每个小组可分到多少支铅笔？",
+    options: ["32 支", "24 支", "36 支", "48 支"],
+    correct_index: 0,
+    explanation_zh: "24 × 8 = 192，192 ÷ 6 = 32 支。"
+  },
+  {
+    id: 190, topic: "基本运算", year: 3, difficulty: "挑战",
+    scenario_zh: "学校有 6 个班，每班 32 名学生。当天有 18 名学生请假，出席的学生平均每 6 人坐一张桌子。",
+    question_zh: "出席的学生需要多少张桌子？",
+    options: ["27 张", "28 张", "30 张", "29 张"],
+    correct_index: 3,
+    explanation_zh: "6 × 32 = 192，192 - 18 = 174，174 ÷ 6 = 29 张。"
+  },
+  {
+    id: 191, topic: "分数、小数与百分比", year: 3, difficulty: "基础",
+    scenario_zh: "一个蛋糕平均切成 8 份，小丽吃了其中 3 份。",
+    question_zh: "哪一个分数是真分数？",
+    options: ["8/3", "3/8", "1 3/8", "8/8"],
+    correct_index: 1,
+    explanation_zh: "真分数的分子小于分母，所以 3/8 是真分数。"
+  },
+  {
+    id: 192, topic: "分数、小数与百分比", year: 3, difficulty: "中等",
+    scenario_zh: "一条绳子平均分成 3 段，取其中 2 段。",
+    question_zh: "哪一个分数与 2/3 等值？",
+    options: ["3/6", "4/6", "4/5", "2/6"],
+    correct_index: 1,
+    explanation_zh: "把 2/3 的分子和分母同时乘以 2，得到 4/6。"
+  },
+  {
+    id: 193, topic: "分数、小数与百分比", year: 3, difficulty: "基础",
+    scenario_zh: "一盒巧克力有 5 颗，小文吃了 2 颗，哥哥吃了 1 颗。",
+    question_zh: "两人一共吃了这盒巧克力的几分之几？",
+    options: ["2/5", "3/5", "3/10", "1/5"],
+    correct_index: 1,
+    explanation_zh: "2/5 + 1/5 = 3/5。分母相同，分子相加。"
+  },
+  {
+    id: 194, topic: "分数、小数与百分比", year: 3, difficulty: "基础",
+    scenario_zh: "一张纸的 3/4 被涂上颜色，小明擦掉了其中的 1/2。",
+    question_zh: "如果擦掉的是整张纸的 1/2，剩下未擦掉的涂色部分占整张纸的几分之几？",
+    options: ["1/4", "2/4", "1/2", "2/3"],
+    correct_index: 0,
+    explanation_zh: "3/4 - 1/2 = 3/4 - 2/4 = 1/4。"
+  },
+  {
+    id: 195, topic: "分数、小数与百分比", year: 3, difficulty: "基础",
+    scenario_zh: "一条彩带的长度是 7/10 米。",
+    question_zh: "7/10 米写成小数是多少米？",
+    options: ["0.07 米", "0.17 米", "0.7 米", "7.0 米"],
+    correct_index: 2,
+    explanation_zh: "十分之七写成小数是 0.7。"
+  },
+  {
+    id: 196, topic: "分数、小数与百分比", year: 3, difficulty: "基础",
+    scenario_zh: "小美有 12.50 元，买文具用了 3.75 元。",
+    question_zh: "她还剩下多少钱？",
+    options: ["8.75 元", "9.25 元", "9.75 元", "10.25 元"],
+    correct_index: 0,
+    explanation_zh: "12.50 - 3.75 = 8.75 元。"
+  },
+  {
+    id: 197, topic: "分数、小数与百分比", year: 3, difficulty: "中等",
+    scenario_zh: "一个百格图有 100 个小格，其中 25 个小格涂上颜色。",
+    question_zh: "哪一组表示涂色部分的数量？",
+    options: ["0.25、25%、25/100", "0.25、2.5%、25/10", "2.5、25%、25/100", "0.025、25%、25/100"],
+    correct_index: 0,
+    explanation_zh: "25/100 = 0.25 = 25%。"
+  },
+  {
+    id: 198, topic: "分数、小数与百分比", year: 3, difficulty: "挑战",
+    scenario_zh: "一个百格图平均分成 100 个小格，其中 40 个小格涂上颜色。",
+    question_zh: "涂色部分化成最简分数、小数和百分比，哪一组正确？",
+    options: ["2/5、0.4、40%", "4/5、0.4、40%", "2/5、0.04、4%", "4/10、0.04、40%"],
+    correct_index: 0,
+    explanation_zh: "40/100 化简为 2/5，也可以写成 0.4 或 40%。"
+  },
+  {
+    id: 199, topic: "分数、小数与百分比", year: 3, difficulty: "挑战",
+    scenario_zh: "一条长 3.5 米的彩带，做手工用了 1.25 米，后来又用了 0.75 米。",
+    question_zh: "彩带还剩下多少米？",
+    options: ["1.25 米", "1.4 米", "1.5 米", "1.75 米"],
+    correct_index: 2,
+    explanation_zh: "3.5 - 1.25 - 0.75 = 3.5 - 2 = 1.5 米。"
+  },
+  {
+    id: 200, topic: "分数、小数与百分比", year: 3, difficulty: "挑战",
+    scenario_zh: "瓶子里原有 2 升果汁。小明倒出了果汁的 25%，然后加入 0.3 升水。",
+    question_zh: "瓶子里的混合液现在共有多少升？",
+    options: ["1.3 升", "1.5 升", "1.8 升", "2.3 升"],
+    correct_index: 2,
+    explanation_zh: "25% = 1/4，2 升的 1/4 是 0.5 升。2 - 0.5 + 0.3 = 1.8 升。"
   }
 ];
 
@@ -8474,7 +8714,7 @@ function startMathQuizGame(){
     const options = shuffledIdxs.map(i => q.options[i]);
     const correct_index = shuffledIdxs.indexOf(q.correct_index);
     return {
-      id:q.id, topic:q.topic, year:q.year,
+      id:q.id, topic:q.topic, year:q.year, difficulty:q.difficulty,
       scenario_zh:q.scenario_zh, question_zh:q.question_zh,
       options, correct_index, explanation_zh:q.explanation_zh
     };
